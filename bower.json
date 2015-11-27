@@ -1,0 +1,19 @@
+{
+  "name": "ld-html5-history",
+  "version": "0.1.0",
+  "authors": [
+    "tpluscode"
+  ],
+  "main": "ld-html5-history.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "webcomponentsjs": "~0.7.18"
+  }
+}

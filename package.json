@@ -1,0 +1,15 @@
+{
+  "name": "ld-html5-history",
+  "version": "0.1.0",
+  "description": "Custom element, which wraps HTML5 history API to expose addresses as resource URLs",
+  "main": "ld-html5-history.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "install": "npm install -g web-component-tester",
+    "test": "wct"
+  },
+  "author": "tpluscode",
+  "license": "MIT"
+}
