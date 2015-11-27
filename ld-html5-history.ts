@@ -13,6 +13,12 @@ class Html5HistoryElement extends HTMLElement {
     set baseURL(url: string ){
         this._baseURL = url;
     }
+
+    attributeChangedCallback(attr, oldVal, newVal) {
+        if(attr === 'baseurl'){
+            this.baseURL = newVal;
+        }
+    }
 }
 
 document.registerElement('ld-html5-history', Html5HistoryElement);

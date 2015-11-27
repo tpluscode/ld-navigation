@@ -10,9 +10,51 @@
 <ld-html5-history id="vanilla"></ld-html5-history>
 
 <script>
-    suite('<ld-html5-history>', function () {
-        test('has empty base URL', function () {
+    describe('<ld-html5-history>', function () {
+        it('has empty base URL', function () {
             assert.equal(document.getElementById('vanilla').baseURL, '');
+        });
+
+        describe('when setting base URL property', function(){
+
+            var elem = document.getElementById('vanilla');
+
+            before(function() {
+                elem.baseURI = 'http://example.org/';
+            });
+
+            it('doesn\'t set attribute', function(){
+                assert.isNull(document.getElementById('vanilla').getAttribute('baseURL'));
+            });
+
+        });
+
+        describe('when setting base URL attribute', function(){
+
+            var elem = document.getElementById('vanilla');
+
+            before(function() {
+                elem.setAttribute('baseURL', 'http://example.org/');
+            });
+
+            it('has property set', function(){
+                assert.equal(document.getElementById('vanilla').baseURL, 'http://example.org/');
+            });
+
+        });
+
+        describe('when setting base URL property', function(){
+
+            var elem = document.getElementById('vanilla');
+
+            before(function() {
+                elem.baseURI = 'http://example.org/';
+            });
+
+            it('has attribute set', function(){
+                assert.equal(document.getElementById('vanilla').baseURL, 'http://example.org/');
+            });
+
         });
     });
 </script>
