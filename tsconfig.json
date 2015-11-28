@@ -5,7 +5,8 @@
     "target": "es5",
     "noImplicitAny": false,
     "experimentalDecorators": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "out": "ld-navigation.js"
   },
   "exclude": [
     "node_modules",
