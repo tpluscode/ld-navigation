@@ -12,7 +12,7 @@ var Html5HistoryElement = (function (_super) {
     Html5HistoryElement.prototype.createdCallback = function () {
         this._baseURL = '';
     };
-    Object.defineProperty(Html5HistoryElement.prototype, "baseURL", {
+    Object.defineProperty(Html5HistoryElement.prototype, "baseUrl", {
         get: function () {
             return this._baseURL;
         },
@@ -22,7 +22,7 @@ var Html5HistoryElement = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Html5HistoryElement.prototype, "resourceURL", {
+    Object.defineProperty(Html5HistoryElement.prototype, "resourceUrl", {
         get: function () {
             return '/example/path';
         },
@@ -31,7 +31,7 @@ var Html5HistoryElement = (function (_super) {
     });
     Html5HistoryElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
         if (attr === 'baseurl') {
-            this.baseURL = newVal;
+            this.baseUrl = newVal;
         }
     };
     return Html5HistoryElement;

@@ -7,20 +7,20 @@ class Html5HistoryElement extends HTMLElement {
         this._baseURL = '';
     }
 
-    get baseURL(): string {
+    get baseUrl(): string {
         return this._baseURL;
     }
-    set baseURL(url: string){
+    set baseUrl(url: string){
         this._baseURL = url;
     }
 
-    get resourceURL(): string {
+    get resourceUrl(): string {
         return '/example/path';
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
         if(attr === 'baseurl'){
-            this.baseURL = newVal;
+            this.baseUrl = newVal;
         }
     }
 }

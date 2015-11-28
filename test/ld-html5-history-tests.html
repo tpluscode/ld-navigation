@@ -23,7 +23,7 @@
         });
 
         it('has empty base URL', function () {
-            assert.equal(elem.baseURL, '');
+            assert.equal(elem.baseUrl, '');
         });
 
         describe('when setting base URL property', function(){
@@ -33,7 +33,7 @@
             });
 
             it('doesn\'t set attribute', function(){
-                assert.isNull(elem.getAttribute('baseURL'));
+                assert.isNull(elem.getAttribute('baseUrl'));
             });
 
         });
@@ -41,11 +41,11 @@
         describe('when setting base URL attribute', function(){
 
             beforeEach(function() {
-                elem.setAttribute('baseurl', 'http://example.org/');
+                elem.setAttribute('baseUrl', 'http://example.org/');
             });
 
             it('has property set', function(){
-                assert.equal(elem.baseURL, 'http://example.org/');
+                assert.equal(elem.baseUrl, 'http://example.org/');
             });
 
         });
@@ -53,11 +53,11 @@
         describe('when setting base URL property with URL not ending in slash', function(){
 
             beforeEach(function() {
-                elem.baseURL = 'http://example.org';
+                elem.baseUrl = 'http://example.org';
             });
 
             it('should append slash to value', function(){
-                assert.equal(elem.baseURL, 'http://example.org/');
+                assert.equal(elem.baseUrl, 'http://example.org/');
             });
 
         });
@@ -71,7 +71,7 @@
             });
 
             it('should have resource url pointing to the relative path', function() {
-                assert.equal(elem.resourceURL, path);
+                assert.equal(elem.resourceUrl, path);
             });
 
         });
