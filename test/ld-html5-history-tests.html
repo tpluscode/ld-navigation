@@ -61,6 +61,20 @@
             });
 
         });
+
+        describe('when pushing state', function() {
+
+            var path = '/example/path';
+
+            beforeEach(function() {
+               history.pushState(null, '', path);
+            });
+
+            it('should have resource url pointing to the relative path', function() {
+                assert.equal(elem.resourceURL, path);
+            });
+
+        });
     });
 </script>
 </body>

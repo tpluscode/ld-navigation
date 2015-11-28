@@ -22,6 +22,13 @@ var Html5HistoryElement = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Html5HistoryElement.prototype, "resourceURL", {
+        get: function () {
+            return '/example/path';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Html5HistoryElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
         if (attr === 'baseurl') {
             this.baseURL = newVal;

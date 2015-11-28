@@ -14,6 +14,10 @@ class Html5HistoryElement extends HTMLElement {
         this._baseURL = url;
     }
 
+    get resourceURL(): string {
+        return '/example/path';
+    }
+
     attributeChangedCallback(attr, oldVal, newVal) {
         if(attr === 'baseurl'){
             this.baseURL = newVal;
