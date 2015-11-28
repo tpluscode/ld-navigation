@@ -5,24 +5,50 @@
     <title>ld-link-tests</title>
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
-    <link rel="import" href="../ld-navigation.js">
+    <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
     <a is="ld-link" id="no-resource-url"></a>
+    <a is="ld-link" id="has-resource-url"
+       resource-url="http://example.org/some/path"></a>
 
     <script>
         var ldLink;
 
-        describe('<a is="ld-link">', function(){
+        describe('<a is="ld-link">', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
                 ldLink = document.querySelector('#no-resource-url');
             });
 
-            it('has empty href', function(){
-               assert.isNull(ldLink.getAttribute('href'));
+            it('has empty href', function () {
+                assert.isNull(ldLink.getAttribute('href'));
             });
 
+        });
+
+        describe('<a is="ld-link" resource-url="http://example.org/some/path">', function () {
+
+            beforeEach(function () {
+
+                ldLink = document.querySelector('#has-resource-url');
+            });
+
+            it('has absolute href', function () {
+
+                assert.equal(ldLink.getAttribute('href'), 'http://example.org/some/path');
+            });
+
+            it('when clicked, triggers navigation', function(done) {
+
+                window.addEventListener('ld-navigated', function(e) {
+                    assert.equal(e.detail.resourceUrl, ldLink.resourceUrl);
+
+                    done();
+                });
+
+                ldLink.click();
+            });
         });
 
     </script>

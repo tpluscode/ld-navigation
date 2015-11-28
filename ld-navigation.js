@@ -56,23 +56,49 @@ var Html5HistoryElement = (function (_super) {
 document.registerElement('ld-html5-history', Html5HistoryElement);
 /// <reference path="LdNavigation.ts" />
 'use strict';
+var resourceUrlAttrName = 'resource-url';
 var LinkedDataLink = (function (_super) {
     __extends(LinkedDataLink, _super);
     function LinkedDataLink() {
         _super.apply(this, arguments);
     }
+    LinkedDataLink.prototype.createdCallback = function () {
+        var _this = this;
+        if (this.hasAttribute(resourceUrlAttrName)) {
+            this.resourceUrl = this.getAttribute(resourceUrlAttrName);
+        }
+        this.addEventListener('click', function (e) {
+            _this.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: _this.resourceUrl
+                },
+                bubbles: true
+            }));
+            e.preventDefault();
+        });
+    };
     Object.defineProperty(LinkedDataLink.prototype, "resourceUrl", {
         get: function () {
             return this._resourceUrl;
         },
         set: function (url) {
+            this._resourceUrl = url;
+            this.setAttribute('href', url);
         },
         enumerable: true,
         configurable: true
     });
+    LinkedDataLink.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
+        if (attr === resourceUrlAttrName) {
+            this.resourceUrl = newVal;
+        }
+    };
     return LinkedDataLink;
 })(HTMLAnchorElement);
-document.registerElement('ld-link', LinkedDataLink);
+document.registerElement('ld-link', {
+    prototype: LinkedDataLink.prototype,
+    extends: 'a'
+});
 /// <reference path="LdNavigation.ts" />
 var LdNavigatorElement = (function (_super) {
     __extends(LdNavigatorElement, _super);
