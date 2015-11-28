@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html" />
+    <link rel="import" href="ld-html5-history.html">
+</head>
+<body>
+
+<template is="dom-bind">
+    <ld-html5-history resource-url="{{resourceUrl}}" base-url="http://api.example.com"></ld-html5-history>
+
+    <div>Resource URL: <span>{{resourceUrl}}</span></div>
+
+    <div>
+        <button onclick="history.back()">back</button>
+        <button onclick="history.pushState('/path1', 'path one', '/path1')">path1</button>
+        <button onclick="history.pushState('/path2', 'path two', '/path2')">path2</button>
+        <button onclick="history.forward()">forward</button>
+    </div>
+</template>
+</body>

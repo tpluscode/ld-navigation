@@ -7,19 +7,25 @@
     <link rel="import" href="../ld-html5-history.html">
 </head>
 <body>
-<test-fixture id="HistoryElementFixture">
+<test-fixture id="EmptyHistoryElementFixture">
     <template>
         <ld-html5-history></ld-html5-history>
     </template>
 </test-fixture>
 
+<test-fixture id="HistoryElementWithBaseUrlFixture">
+    <template>
+        <ld-html5-history base-url="http://example.org"></ld-html5-history>
+    </template>
+</test-fixture>
+
 <script>
+    var elem;
+
     describe('<ld-html5-history>', function () {
 
-        var elem;
-
         beforeEach(function(){
-            elem = fixture('HistoryElementFixture');
+            elem = fixture('EmptyHistoryElementFixture');
         });
 
         it('has empty base URL', function () {
@@ -33,7 +39,7 @@
             });
 
             it('doesn\'t set attribute', function(){
-                assert.isNull(elem.getAttribute('baseUrl'));
+                assert.isNull(elem.getAttribute('base-url'));
             });
 
         });
@@ -41,7 +47,7 @@
         describe('when setting base URL attribute', function(){
 
             beforeEach(function() {
-                elem.setAttribute('baseUrl', 'http://example.org/');
+                elem.setAttribute('base-url', 'http://example.org/');
             });
 
             it('has property set', function(){
@@ -67,11 +73,56 @@
             var path = '/example/path';
 
             beforeEach(function() {
-               history.pushState(null, '', path);
+               history.pushState(path, '', path);
             });
 
             it('should have resource url pointing to the relative path', function() {
                 assert.equal(elem.resourceUrl, path);
+            });
+
+        });
+    });
+
+    describe('<ld-html5-history base-url="http://example.org">', function () {
+
+        beforeEach(function(){
+            elem = fixture('HistoryElementWithBaseUrlFixture');
+        });
+
+        describe('when pushing state', function() {
+
+            var path = '/example/path';
+
+            beforeEach(function() {
+                history.pushState(path, '', path);
+            });
+
+            it('should have resource url pointing to the pushed path', function() {
+                assert.equal(elem.resourceUrl, 'http://example.org/example/path');
+            });
+
+            describe('and pushing again', function(){
+
+                beforeEach(function() {
+                    history.pushState('/example/path2', '', '/example/path2');
+                });
+
+                it('should have resource url pointing to the correct path', function() {
+                    assert.equal(elem.resourceUrl, 'http://example.org/example/path2');
+                });
+
+                describe('and then popping', function(){
+
+                    beforeEach(function() {
+                        history.go(-1);
+                    });
+
+                    it('should have resource url pointing to the previous path', function() {
+                        assert.equal(elem.resourceUrl, 'http://example.org/example/path');
+                    });
+
+                });
+
             });
 
         });

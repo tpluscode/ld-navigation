@@ -10,7 +10,17 @@ var Html5HistoryElement = (function (_super) {
         _super.apply(this, arguments);
     }
     Html5HistoryElement.prototype.createdCallback = function () {
-        this._baseURL = '';
+        this.baseUrl = this.getAttribute('base-url') || '';
+    };
+    Html5HistoryElement.prototype.attachedCallback = function () {
+        var _this = this;
+        window.addEventListener('popstate', function () {
+            _this.dispatchEvent(new CustomEvent('resource-url-changed', {
+                detail: {
+                    value: _this.resourceUrl
+                }
+            }));
+        });
     };
     Object.defineProperty(Html5HistoryElement.prototype, "baseUrl", {
         get: function () {
@@ -18,19 +28,25 @@ var Html5HistoryElement = (function (_super) {
         },
         set: function (url) {
             this._baseURL = url;
+            this.dispatchEvent(new CustomEvent('resource-url-changed', {
+                detail: {
+                    value: this.resourceUrl
+                }
+            }));
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Html5HistoryElement.prototype, "resourceUrl", {
         get: function () {
-            return '/example/path';
+            var resourcePath = document.location.pathname + document.location.search;
+            return this.baseUrl + resourcePath;
         },
         enumerable: true,
         configurable: true
     });
     Html5HistoryElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
-        if (attr === 'baseurl') {
+        if (attr === 'base-url') {
             this.baseUrl = newVal;
         }
     };

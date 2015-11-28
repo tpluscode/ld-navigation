@@ -4,7 +4,17 @@ class Html5HistoryElement extends HTMLElement {
     private _baseURL: string;
 
     createdCallback() {
-        this._baseURL = '';
+        this.baseUrl = this.getAttribute('base-url') || '';
+    }
+
+    attachedCallback(){
+        window.addEventListener('popstate', () => {
+            this.dispatchEvent(new CustomEvent('resource-url-changed', {
+                detail:{
+                    value: this.resourceUrl
+                }
+            }));
+        });
     }
 
     get baseUrl(): string {
@@ -12,14 +22,22 @@ class Html5HistoryElement extends HTMLElement {
     }
     set baseUrl(url: string){
         this._baseURL = url;
+
+        this.dispatchEvent(new CustomEvent('resource-url-changed', {
+            detail:{
+                value: this.resourceUrl
+            }
+        }));
     }
 
     get resourceUrl(): string {
-        return '/example/path';
+        var resourcePath = document.location.pathname + document.location.search;
+
+        return this.baseUrl + resourcePath;
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
-        if(attr === 'baseurl'){
+        if(attr === 'base-url'){
             this.baseUrl = newVal;
         }
     }
