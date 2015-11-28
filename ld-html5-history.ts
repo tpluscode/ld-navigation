@@ -10,7 +10,7 @@ class Html5HistoryElement extends HTMLElement {
     get baseURL(): string {
         return this._baseURL;
     }
-    set baseURL(url: string ){
+    set baseURL(url: string){
         this._baseURL = url;
     }
 

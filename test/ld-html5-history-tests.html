@@ -7,52 +7,57 @@
     <link rel="import" href="../ld-html5-history.html">
 </head>
 <body>
-<ld-html5-history id="vanilla"></ld-html5-history>
+<test-fixture id="HistoryElementFixture">
+    <template>
+        <ld-html5-history></ld-html5-history>
+    </template>
+</test-fixture>
 
 <script>
     describe('<ld-html5-history>', function () {
+
+        var elem;
+
+        beforeEach(function(){
+            elem = fixture('HistoryElementFixture');
+        });
+
         it('has empty base URL', function () {
-            assert.equal(document.getElementById('vanilla').baseURL, '');
+            assert.equal(elem.baseURL, '');
         });
 
         describe('when setting base URL property', function(){
 
-            var elem = document.getElementById('vanilla');
-
-            before(function() {
+            beforeEach(function() {
                 elem.baseURI = 'http://example.org/';
             });
 
             it('doesn\'t set attribute', function(){
-                assert.isNull(document.getElementById('vanilla').getAttribute('baseURL'));
+                assert.isNull(elem.getAttribute('baseURL'));
             });
 
         });
 
         describe('when setting base URL attribute', function(){
 
-            var elem = document.getElementById('vanilla');
-
-            before(function() {
-                elem.setAttribute('baseURL', 'http://example.org/');
+            beforeEach(function() {
+                elem.setAttribute('baseurl', 'http://example.org/');
             });
 
             it('has property set', function(){
-                assert.equal(document.getElementById('vanilla').baseURL, 'http://example.org/');
+                assert.equal(elem.baseURL, 'http://example.org/');
             });
 
         });
 
-        describe('when setting base URL property', function(){
+        describe('when setting base URL property with URL not ending in slash', function(){
 
-            var elem = document.getElementById('vanilla');
-
-            before(function() {
-                elem.baseURI = 'http://example.org/';
+            beforeEach(function() {
+                elem.baseURL = 'http://example.org';
             });
 
-            it('has attribute set', function(){
-                assert.equal(document.getElementById('vanilla').baseURL, 'http://example.org/');
+            it('should append slash to value', function(){
+                assert.equal(elem.baseURL, 'http://example.org/');
             });
 
         });
