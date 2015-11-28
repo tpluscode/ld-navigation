@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ld-link-tests</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <link rel="import" href="../ld-link.html">
+</head>
+<body>
+    <a is="ld-link" id="no-resource-url"></a>
+
+    <script>
+        var ldLink;
+
+        describe('<a is="ld-link">', function(){
+
+            beforeEach(function(){
+                ldLink = document.querySelector('#no-resource-url');
+            });
+
+            it('has empty href', function(){
+               assert.isNull(ldLink.getAttribute('href'));
+            });
+
+        });
+
+    </script>
+</body>
+</html>
