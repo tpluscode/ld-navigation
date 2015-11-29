@@ -58,6 +58,10 @@
 
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
             });
+
+            it('has resource URL set to relative document path', function() {
+               assert.isTrue(new RegExp('^/.*test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
+            });
         });
 
         describe('<ld-navigator base="some">', function(){
@@ -69,8 +73,11 @@
 
             it('sets LdNavigation.Context', function() {
                 assert.equal(LdNavigation.Context.base, 'http://example.com');
-            })
+            });
 
+            it('has resource URL set to absolute document path', function() {
+                assert.isTrue(new RegExp('http://example.com.*/test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
+            });
         });
 
     </script>

@@ -125,6 +125,9 @@ var LdNavigatorElement = (function (_super) {
         this.base = this.getAttribute('base') || '';
         window.addEventListener('ld-navigated', function (e) { return _this.resourceUrl = e.detail.resourceUrl; });
     };
+    LdNavigatorElement.prototype.attachedCallback = function () {
+        notifyResourceUrlChanged.call(this, this.resourceUrl);
+    };
     Object.defineProperty(LdNavigatorElement.prototype, "base", {
         get: function () {
             return LdNavigation.Context.base;
@@ -137,15 +140,14 @@ var LdNavigatorElement = (function (_super) {
     });
     Object.defineProperty(LdNavigatorElement.prototype, "resourceUrl", {
         get: function () {
+            if (!this._resourceUrl) {
+                this._resourceUrl = LdNavigation.Context.base + document.location.pathname + document.location.search;
+            }
             return this._resourceUrl;
         },
         set: function (url) {
             this._resourceUrl = url;
-            this.dispatchEvent(new CustomEvent('resource-url-changed', {
-                detail: {
-                    value: url
-                }
-            }));
+            notifyResourceUrlChanged.call(this, url);
         },
         enumerable: true,
         configurable: true
@@ -157,5 +159,12 @@ var LdNavigatorElement = (function (_super) {
     };
     return LdNavigatorElement;
 })(HTMLElement);
+function notifyResourceUrlChanged(url) {
+    this.dispatchEvent(new CustomEvent('resource-url-changed', {
+        detail: {
+            value: url
+        }
+    }));
+}
 document.registerElement('ld-navigator', LdNavigatorElement);
 //# sourceMappingURL=ld-navigation.js.map

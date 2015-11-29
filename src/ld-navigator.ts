@@ -9,6 +9,10 @@ class LdNavigatorElement extends HTMLElement {
         window.addEventListener('ld-navigated', (e: CustomEvent) => this.resourceUrl = e.detail.resourceUrl);
     }
 
+    attachedCallback() {
+        notifyResourceUrlChanged.call(this, this.resourceUrl);
+    }
+
     get base(): string {
         return LdNavigation.Context.base;
     }
@@ -17,16 +21,15 @@ class LdNavigatorElement extends HTMLElement {
     }
 
     get resourceUrl(): string {
+        if(!this._resourceUrl){
+            this._resourceUrl = LdNavigation.Context.base + document.location.pathname + document.location.search;
+        }
+
         return this._resourceUrl;
     }
     set resourceUrl(url: string) {
         this._resourceUrl = url;
-
-        this.dispatchEvent(new CustomEvent('resource-url-changed', {
-            detail: {
-                value: url
-            }
-        }));
+        notifyResourceUrlChanged.call(this, url);
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
@@ -34,6 +37,14 @@ class LdNavigatorElement extends HTMLElement {
             this.base = newVal;
         }
     }
+}
+
+function notifyResourceUrlChanged(url) {
+    this.dispatchEvent(new CustomEvent('resource-url-changed', {
+        detail: {
+            value: url
+        }
+    }));
 }
 
 document.registerElement('ld-navigator', LdNavigatorElement);
