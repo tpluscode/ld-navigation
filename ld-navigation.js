@@ -47,6 +47,14 @@ var Html5HistoryElement = (function (_super) {
                 history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
             }
         });
+        window.addEventListener('popstate', function (e) {
+            _this.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: history.state
+                },
+                bubbles: true
+            }));
+        });
     };
     Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
         if (LdNavigation.Context.base === new URL(absoluteUrl).origin) {

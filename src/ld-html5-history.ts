@@ -10,6 +10,15 @@ class Html5HistoryElement extends HTMLElement {
                 history.pushState(e.detail.resourceUrl, '', this.getStatePath(e.detail.resourceUrl));
             }
         });
+
+        window.addEventListener('popstate', (e: CustomEvent) => {
+            this.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: history.state
+                },
+                 bubbles: true
+            }));
+        });
     }
 
     private getStatePath(absoluteUrl:string):string {

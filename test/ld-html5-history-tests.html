@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="mocha-helpers.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -47,12 +48,21 @@
 
             window.addEventListener('ld-navigated', handler);
 
-            document.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: 'http://example.org/some/path'
-                },
-                bubbles: true
-            }))
+            NavigateTo('http://example.org/some/path');
+        });
+
+        it('should trigger navigation on popstate event', function(done) {
+
+            NavigateTo('http://example.org/initial/path');
+            NavigateTo('http://example.org/next/path');
+
+            handler = function(e) {
+                assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
+                done();
+            };
+
+            window.addEventListener('ld-navigated', handler);
+            history.back();
         });
 
         afterEach(function () {
@@ -78,12 +88,7 @@
 
             window.addEventListener('ld-navigated', handler);
 
-            document.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: 'http://example.org/some/other/path'
-                },
-                bubbles: true
-            }))
+            NavigateTo('http://example.org/some/other/path');
         });
 
         afterEach(function () {
