@@ -34,13 +34,8 @@ var Html5HistoryElement = (function (_super) {
         _super.apply(this, arguments);
     }
     Html5HistoryElement.prototype.attachedCallback = function () {
-        var _this = this;
-        window.addEventListener('popstate', function () {
-            _this.dispatchEvent(new CustomEvent('resource-url-changed', {
-                detail: {
-                    value: _this.resourceUrl
-                }
-            }));
+        window.addEventListener('ld-navigated', function (e) {
+            history.pushState(e.detail.resourceUrl, '', '/' + e.detail.resourceUrl);
         });
     };
     Object.defineProperty(Html5HistoryElement.prototype, "resourceUrl", {

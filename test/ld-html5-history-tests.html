@@ -32,19 +32,21 @@
             elem = fixture('EmptyHistoryElementFixture');
         });
 
-        describe('when pushing state', function() {
+        it('should push absolute URL state when ld-navigated event occurs', function(done) {
 
-            var path = '/example/path';
-
-            beforeEach(function() {
-               history.pushState(path, '', path);
+            window.addEventListener('ld-navigated', function(e) {
+                assert.equal(location.pathname, '/http://example.org/some/path');
+                done();
             });
 
-            it('should have resource url pointing to the relative path', function() {
-                assert.equal(elem.resourceUrl, path);
-            });
-
+            document.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: 'http://example.org/some/path'
+                },
+                bubbles: true
+            }))
         });
+
     });
 
     describe('<ld-html5-history> with base', function () {

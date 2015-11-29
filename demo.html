@@ -9,7 +9,9 @@
 <body>
 
 <template is="dom-bind">
-    <ld-html5-history resource-url="{{resourceUrl}}" base-url="http://api.example.com"></ld-html5-history>
+    <ld-navigator base="http://api.example.com"></ld-navigator>
+
+    <ld-html5-history resource-url="{{resourceUrl}}"></ld-html5-history>
 
     <div>Resource URL: <span>{{resourceUrl}}</span></div>
 

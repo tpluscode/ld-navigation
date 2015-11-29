@@ -5,12 +5,8 @@
 class Html5HistoryElement extends HTMLElement {
 
     attachedCallback(){
-        window.addEventListener('popstate', () => {
-            this.dispatchEvent(new CustomEvent('resource-url-changed', {
-                detail:{
-                    value: this.resourceUrl
-                }
-            }));
+        window.addEventListener('ld-navigated', (e: CustomEvent) => {
+            history.pushState(e.detail.resourceUrl, '', '/' + e.detail.resourceUrl);
         });
     }
 
