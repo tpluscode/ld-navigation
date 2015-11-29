@@ -22,6 +22,20 @@ var LdNavigation;
         };
         return LdContext;
     })();
+    var Helpers = (function () {
+        function Helpers() {
+        }
+        Helpers.fireNavigation = function (dispatcher, resourceUrl) {
+            dispatcher.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: resourceUrl
+                },
+                bubbles: true
+            }));
+        };
+        return Helpers;
+    })();
+    LdNavigation.Helpers = Helpers;
     var context = new LdContext();
     if (LdNavigation && LdNavigation.Context) {
         context.base = LdNavigation.Context.base;
@@ -47,13 +61,8 @@ var Html5HistoryElement = (function (_super) {
                 history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
             }
         });
-        window.addEventListener('popstate', function (e) {
-            _this.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: history.state
-                },
-                bubbles: true
-            }));
+        window.addEventListener('popstate', function () {
+            LdNavigation.Helpers.fireNavigation(_this, history.state);
         });
     };
     Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
@@ -79,12 +88,7 @@ var LinkedDataLink = (function (_super) {
             this.resourceUrl = this.getAttribute(resourceUrlAttrName);
         }
         this.addEventListener('click', function (e) {
-            _this.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: _this.resourceUrl
-                },
-                bubbles: true
-            }));
+            LdNavigation.Helpers.fireNavigation(_this, _this.resourceUrl);
             e.preventDefault();
         });
     };

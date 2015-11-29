@@ -7,10 +7,11 @@ module LdNavigation {
             this._base = '';
         }
 
-        get base(): string {
+        get base():string {
             return this._base;
         }
-        set base(url: string) {
+
+        set base(url:string) {
             if (url && url.replace) {
                 url = url.replace(new RegExp('/$'), '');
             }
@@ -23,9 +24,20 @@ module LdNavigation {
         }
     }
 
+    export class Helpers {
+        static fireNavigation(dispatcher:EventTarget, resourceUrl:string) {
+            dispatcher.dispatchEvent(new CustomEvent('ld-navigated', {
+                detail: {
+                    resourceUrl: resourceUrl
+                },
+                bubbles: true
+            }));
+        }
+    }
+
     var context = new LdContext();
 
-    if(LdNavigation && LdNavigation.Context){
+    if (LdNavigation && LdNavigation.Context) {
         context.base = LdNavigation.Context.base;
     }
 

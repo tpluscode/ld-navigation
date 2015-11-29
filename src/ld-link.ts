@@ -12,12 +12,7 @@ class LinkedDataLink extends HTMLAnchorElement {
         }
 
         this.addEventListener('click', e => {
-            this.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: this.resourceUrl
-                },
-                bubbles: true
-            }));
+            LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
             e.preventDefault();
         });
     }

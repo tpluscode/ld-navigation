@@ -11,13 +11,8 @@ class Html5HistoryElement extends HTMLElement {
             }
         });
 
-        window.addEventListener('popstate', (e: CustomEvent) => {
-            this.dispatchEvent(new CustomEvent('ld-navigated', {
-                detail: {
-                    resourceUrl: history.state
-                },
-                 bubbles: true
-            }));
+        window.addEventListener('popstate', () => {
+            LdNavigation.Helpers.fireNavigation(this, history.state);
         });
     }
 

@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
-    <script src="mocha-helpers.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -18,11 +17,7 @@
     <template>
         <!-- fails on IE, because script inside <template> aren't inert -->
         <script type="application/javascript">
-            LdNavigation = {
-                Context: {
-                    base: 'http://example.org'
-                }
-            };
+            LdNavigation.Context.base = 'http://example.org';
         </script>
 
         <ld-html5-history></ld-html5-history>
@@ -48,13 +43,13 @@
 
             window.addEventListener('ld-navigated', handler);
 
-            NavigateTo('http://example.org/some/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/path');
         });
 
         it('should trigger navigation on popstate event', function(done) {
 
-            NavigateTo('http://example.org/initial/path');
-            NavigateTo('http://example.org/next/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
 
             handler = function(e) {
                 assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
@@ -88,7 +83,7 @@
 
             window.addEventListener('ld-navigated', handler);
 
-            NavigateTo('http://example.org/some/other/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/other/path');
         });
 
         afterEach(function () {

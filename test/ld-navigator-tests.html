@@ -5,7 +5,6 @@
     <title>ld-link-tests</title>
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
-    <script src="mocha-helpers.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -57,7 +56,7 @@
                     done();
                 });
 
-                NavigateTo('http://example.org/current/resource');
+                LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
             });
         });
 
