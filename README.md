@@ -26,17 +26,16 @@ Add `bower_components/ld-navigation/ld-navigation.html` in your HTML document
 
 ## Usage
 
-Your website is at `http://www.my.app/`.
-
-Your Linked Data API is at `http://api.my.app/`.
-
-When you HTTP GET a resource from `http://api.my.app/some/data`, the browser moves to `http://www.my.app/http://api.my.app/some/data`
+Let's assume that:
+* Your website is at `http://www.my.app/`.
+* Your Linked Data API is at `http://api.my.app/`.
 
 ``` html
 <!-- navigator exposes a resourceUrl property, see below -->
 <ld-navigator></ld-navigator>
 
 <!-- just drop in html and it will maintain the history -->
+<!-- you could do without it, but would break the 'backspace button' -->
 <ld-html5-history></ld-html5-history>
 
 <!-- ld-link extends anchor -->
@@ -54,17 +53,20 @@ navigator.addEventListener('resource-url-changed', function(e) {
   });
 </script>
 ```
+With the above code, when you click the first link, the browser moves to `http://www.my.app/http://api.my.app/people` and the
+`resource-url-changed` event is fired.
 
 ### Base URL
 
-Obviously an URL like `http://www.my.app/http://api.my.app/some/data` is ugly. It is possible to get rid of the API domain
+Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly. It is possible to get rid of the API domain
 by changing the `<ld-navigator>` tag to:
 
 ``` html
 <ld-navigator base="http://api.my.app"></ld-navigator>
 ```
 
-This way the API domain is stripped out from the browser address bar and `http://www.my.app/some/data` remains.
+This way the API domain is stripped out from the browser address bar and `http://www.my.app/people` remains. This is where client-side
+routing becomes virtually obsolete.
 
 ### Polymer
 
