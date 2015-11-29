@@ -10,7 +10,6 @@ module LdNavigation {
         get base(): string {
             return this._base;
         }
-
         set base(url: string) {
             if (url && url.replace) {
                 url = url.replace(new RegExp('/$'), '');

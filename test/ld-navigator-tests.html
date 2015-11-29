@@ -49,6 +49,20 @@
                 assert.equal(ldNavigator.base, 'http://example.org');
             });
 
+            it('should change resource url when ld-navigation occurs', function(done) {
+
+                ldNavigator.addEventListener('resource-url-changed', function(e) {
+                    assert.equal(e.detail.value, 'http://example.org/current/resource');
+                    done();
+                });
+
+                document.dispatchEvent(new CustomEvent('ld-navigated', {
+                    detail: {
+                        resourceUrl: 'http://example.org/current/resource'
+                    },
+                    bubbles: true
+                }));
+            });
         });
 
         describe('<ld-navigator base="some">', function(){

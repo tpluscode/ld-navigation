@@ -109,7 +109,9 @@ var LdNavigatorElement = (function (_super) {
         _super.apply(this, arguments);
     }
     LdNavigatorElement.prototype.createdCallback = function () {
+        var _this = this;
         this.base = this.getAttribute('base') || '';
+        window.addEventListener('ld-navigated', function (e) { return _this.resourceUrl = e.detail.resourceUrl; });
     };
     Object.defineProperty(LdNavigatorElement.prototype, "base", {
         get: function () {
@@ -117,6 +119,21 @@ var LdNavigatorElement = (function (_super) {
         },
         set: function (url) {
             LdNavigation.Context.base = url;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "resourceUrl", {
+        get: function () {
+            return this._resourceUrl;
+        },
+        set: function (url) {
+            this._resourceUrl = url;
+            this.dispatchEvent(new CustomEvent('resource-url-changed', {
+                detail: {
+                    value: url
+                }
+            }));
         },
         enumerable: true,
         configurable: true
