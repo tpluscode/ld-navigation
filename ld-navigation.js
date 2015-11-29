@@ -9,6 +9,9 @@ var LdNavigation;
                 return this._base;
             },
             set: function (url) {
+                if (url && url.replace) {
+                    url = url.replace(new RegExp('/$'), '');
+                }
                 this._base = url;
             },
             enumerable: true,
@@ -102,7 +105,7 @@ var LdNavigatorElement = (function (_super) {
         _super.apply(this, arguments);
     }
     LdNavigatorElement.prototype.createdCallback = function () {
-        this.base = this.getAttribute('base');
+        this.base = this.getAttribute('base') || '';
     };
     Object.defineProperty(LdNavigatorElement.prototype, "base", {
         get: function () {

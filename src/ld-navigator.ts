@@ -3,7 +3,7 @@
 class LdNavigatorElement extends HTMLElement {
 
     createdCallback() {
-        this.base = this.getAttribute('base');
+        this.base = this.getAttribute('base') || '';
     }
 
     get base(): string {

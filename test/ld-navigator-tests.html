@@ -40,13 +40,13 @@
             });
 
             it('has property set when setting base URL attribute', function(){
-                ldNavigator.setAttribute('base', 'http://example.org/');
-                assert.equal(ldNavigator.base, 'http://example.org/');
+                ldNavigator.setAttribute('base', 'http://example.org');
+                assert.equal(ldNavigator.base, 'http://example.org');
             });
 
-            it('should append slash to value when setting base URL property with URL not ending in slash', function(){
-                ldNavigator.base = 'http://example.org';
-                assert.equal(ldNavigator.base, 'http://example.org/');
+            it('should remove trailing slash from base URL', function(){
+                ldNavigator.base = 'http://example.org/';
+                assert.equal(ldNavigator.base, 'http://example.org');
             });
 
         });
