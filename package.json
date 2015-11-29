@@ -1,8 +1,8 @@
 {
-  "name": "ld-html5-history",
+  "name": "ld-navigation",
   "version": "0.1.0",
-  "description": "Custom element, which wraps HTML5 history API to expose addresses as resource URLs",
-  "main": "ld-html5-history.js",
+  "description": "Custom elements, which help build a SPA in a true REST style",
+  "main": "ld-navigation.html",
   "directories": {
     "test": "tests"
   },
