@@ -6,14 +6,17 @@ class Html5HistoryElement extends HTMLElement {
 
     attachedCallback(){
         window.addEventListener('ld-navigated', (e: CustomEvent) => {
-            history.pushState(e.detail.resourceUrl, '', '/' + e.detail.resourceUrl);
+            history.pushState(e.detail.resourceUrl, '', this.getStatePath(e.detail.resourceUrl));
         });
     }
 
-    get resourceUrl(): string {
-        var resourcePath = document.location.pathname + document.location.search;
+    private getStatePath(absoluteUrl: string): string {
 
-        return LdNavigation.Context.base + resourcePath;
+        if(LdNavigation.Context.base){
+            return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
+        }
+
+        return '/' + absoluteUrl;
     }
 }
 

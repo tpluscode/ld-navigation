@@ -34,18 +34,17 @@ var Html5HistoryElement = (function (_super) {
         _super.apply(this, arguments);
     }
     Html5HistoryElement.prototype.attachedCallback = function () {
+        var _this = this;
         window.addEventListener('ld-navigated', function (e) {
-            history.pushState(e.detail.resourceUrl, '', '/' + e.detail.resourceUrl);
+            history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
         });
     };
-    Object.defineProperty(Html5HistoryElement.prototype, "resourceUrl", {
-        get: function () {
-            var resourcePath = document.location.pathname + document.location.search;
-            return LdNavigation.Context.base + resourcePath;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
+        if (LdNavigation.Context.base) {
+            return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
+        }
+        return '/' + absoluteUrl;
+    };
     return Html5HistoryElement;
 })(HTMLElement);
 document.registerElement('ld-html5-history', Html5HistoryElement);
@@ -100,6 +99,9 @@ var LdNavigatorElement = (function (_super) {
     function LdNavigatorElement() {
         _super.apply(this, arguments);
     }
+    LdNavigatorElement.prototype.createdCallback = function () {
+        this.base = this.getAttribute('base');
+    };
     Object.defineProperty(LdNavigatorElement.prototype, "base", {
         get: function () {
             return LdNavigation.Context.base;

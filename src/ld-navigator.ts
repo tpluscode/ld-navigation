@@ -2,6 +2,10 @@
 
 class LdNavigatorElement extends HTMLElement {
 
+    createdCallback() {
+        this.base = this.getAttribute('base');
+    }
+
     get base(): string {
         return LdNavigation.Context.base;
     }
