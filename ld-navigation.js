@@ -22,7 +22,11 @@ var LdNavigation;
         };
         return LdContext;
     })();
-    LdNavigation.Context = new LdContext();
+    var context = new LdContext();
+    if (LdNavigation && LdNavigation.Context) {
+        context.base = LdNavigation.Context.base;
+    }
+    LdNavigation.Context = context;
 })(LdNavigation || (LdNavigation = {}));
 /// <reference path="LdNavigation.ts" />
 'use strict';

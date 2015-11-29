@@ -3,7 +3,7 @@ module LdNavigation {
     class LdContext {
         private _base;
 
-        constructor(){
+        constructor() {
             this._base = '';
         }
 
@@ -24,5 +24,11 @@ module LdNavigation {
         }
     }
 
-    export var Context = new LdContext();
+    var context = new LdContext();
+
+    if(LdNavigation && LdNavigation.Context){
+        context.base = LdNavigation.Context.base;
+    }
+
+    export var Context = context;
 }

@@ -15,8 +15,13 @@
 
 <test-fixture id="HistoryElementWithBaseUrlFixture">
     <template>
-        <script>
-            LdNavigation.Context.base = 'http://example.org';
+        <!-- fails on IE, because script inside <template> aren't inert -->
+        <script type="application/javascript">
+            LdNavigation = {
+                Context: {
+                    base: 'http://example.org'
+                }
+            };
         </script>
 
         <ld-html5-history></ld-html5-history>
@@ -28,16 +33,19 @@
 
     describe('<ld-html5-history>', function () {
 
+        var handler;
         beforeEach(function(){
             elem = fixture('EmptyHistoryElementFixture');
         });
 
         it('should push absolute URL state when ld-navigated event occurs', function(done) {
 
-            window.addEventListener('ld-navigated', function(e) {
+            handler = function() {
                 assert.equal(location.pathname, '/http://example.org/some/path');
                 done();
-            });
+            };
+
+            window.addEventListener('ld-navigated', handler);
 
             document.dispatchEvent(new CustomEvent('ld-navigated', {
                 detail: {
@@ -47,9 +55,15 @@
             }))
         });
 
+        afterEach(function () {
+            window.removeEventListener('ld-navigated', handler);
+        });
+
     });
 
     describe('<ld-html5-history> with base', function () {
+
+        var handler;
 
         beforeEach(function(){
             elem = fixture('HistoryElementWithBaseUrlFixture')[1];
@@ -57,56 +71,25 @@
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
-            window.addEventListener('ld-navigated', function(e) {
-                assert.equal(location.pathname, '/some/path');
+            handler = function() {
+                assert.equal(location.pathname, '/some/other/path');
                 done();
-            });
+            };
+
+            window.addEventListener('ld-navigated', handler);
 
             document.dispatchEvent(new CustomEvent('ld-navigated', {
                 detail: {
-                    resourceUrl: 'http://example.org/some/path'
+                    resourceUrl: 'http://example.org/some/other/path'
                 },
                 bubbles: true
             }))
         });
 
-//        describe('when pushing state', function() {
-//
-//            var path = '/example/path';
-//
-//            beforeEach(function() {
-//                history.pushState(path, '', path);
-//            });
-//
-//            it('should have resource url pointing to the pushed path', function() {
-//                assert.equal(elem.resourceUrl, 'http://example.org/example/path');
-//            });
-//
-//            describe('and pushing again', function(){
-//
-//                beforeEach(function() {
-//                    history.pushState('/example/path2', '', '/example/path2');
-//                });
-//
-//                it('should have resource url pointing to the correct path', function() {
-//                    assert.equal(elem.resourceUrl, 'http://example.org/example/path2');
-//                });
-//
-//                describe('and then popping', function(){
-//
-//                    beforeEach(function() {
-//                        history.go(-1);
-//                    });
-//
-//                    it('should have resource url pointing to the previous path', function() {
-//                        assert.equal(elem.resourceUrl, 'http://example.org/example/path');
-//                    });
-//
-//                });
-//
-//            });
+        afterEach(function () {
+            window.removeEventListener('ld-navigated', handler);
+        });
 
-//        });
     });
 </script>
 </body>
