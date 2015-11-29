@@ -36,11 +36,13 @@ var Html5HistoryElement = (function (_super) {
     Html5HistoryElement.prototype.attachedCallback = function () {
         var _this = this;
         window.addEventListener('ld-navigated', function (e) {
-            history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
+            if (e.detail.resourceUrl !== history.state) {
+                history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
+            }
         });
     };
     Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
-        if (LdNavigation.Context.base) {
+        if (LdNavigation.Context.base === new URL(absoluteUrl).origin) {
             return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
         }
         return '/' + absoluteUrl;
