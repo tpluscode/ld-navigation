@@ -14,7 +14,7 @@ You then simply GET and decide what to display based on the data returned.
 > Initiate transition between application states
 
 ### &lt;ld-html-history&gt;
-> Maintain state history with HTML history API
+> Maintain browser history with HTML history API
 
 ## Installation
 
