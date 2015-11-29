@@ -1,10 +1,10 @@
 {
-  "name": "ld-html5-history",
+  "name": "ld-navigation",
   "version": "0.1.0",
   "authors": [
     "tpluscode"
   ],
-  "main": "ld-html5-history.html",
+  "main": "ld-navigation.html",
   "license": "MIT",
   "ignore": [
     "**/.*",
