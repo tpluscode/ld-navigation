@@ -31,6 +31,9 @@ Let's assume that:
 * Your Linked Data API is at `http://api.my.app/`.
 
 ``` html
+<!-- there is no direct dependency, but you'll likely need that -->
+<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+
 <!-- navigator exposes a resourceUrl property, see below -->
 <ld-navigator></ld-navigator>
 
