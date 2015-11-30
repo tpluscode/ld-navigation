@@ -146,8 +146,10 @@ var LdNavigatorElement = (function (_super) {
             return this._resourceUrl;
         },
         set: function (url) {
-            this._resourceUrl = url;
-            notifyResourceUrlChanged.call(this, url);
+            if (this._resourceUrl != url) {
+                this._resourceUrl = url;
+                notifyResourceUrlChanged.call(this, url);
+            }
         },
         enumerable: true,
         configurable: true

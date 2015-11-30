@@ -59,6 +59,21 @@
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
             });
 
+            it('should not change resource url when it is same as current', function(done) {
+
+                LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
+
+                ldNavigator.addEventListener('resource-url-changed', function(e) {
+                    done(new Error('event shouldn\'t have happened'));
+                });
+
+                LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
+
+                window.setTimeout(function() {
+                    done();
+                }, 200);
+            });
+
             it('has resource URL set to relative document path', function() {
                assert.isTrue(new RegExp('^/.*test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
             });

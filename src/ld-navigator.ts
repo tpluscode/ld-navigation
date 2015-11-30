@@ -6,34 +6,38 @@ class LdNavigatorElement extends HTMLElement {
     createdCallback() {
         this.base = this.getAttribute('base') || '';
 
-        window.addEventListener('ld-navigated', (e: CustomEvent) => this.resourceUrl = e.detail.resourceUrl);
+        window.addEventListener('ld-navigated', (e:CustomEvent) => this.resourceUrl = e.detail.resourceUrl);
     }
 
     attachedCallback() {
         notifyResourceUrlChanged.call(this, this.resourceUrl);
     }
 
-    get base(): string {
+    get base():string {
         return LdNavigation.Context.base;
     }
-    set base(url: string){
+
+    set base(url:string) {
         LdNavigation.Context.base = url;
     }
 
-    get resourceUrl(): string {
-        if(!this._resourceUrl){
+    get resourceUrl():string {
+        if (!this._resourceUrl) {
             this._resourceUrl = LdNavigation.Context.base + document.location.pathname + document.location.search;
         }
 
         return this._resourceUrl;
     }
-    set resourceUrl(url: string) {
-        this._resourceUrl = url;
-        notifyResourceUrlChanged.call(this, url);
+
+    set resourceUrl(url:string) {
+        if (this._resourceUrl != url) {
+            this._resourceUrl = url;
+            notifyResourceUrlChanged.call(this, url);
+        }
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
-        if(attr === 'base') {
+        if (attr === 'base') {
             this.base = newVal;
         }
     }
