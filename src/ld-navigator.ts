@@ -19,6 +19,8 @@ class LdNavigatorElement extends HTMLElement {
 
     set base(url:string) {
         LdNavigation.Context.base = url;
+        this._resourceUrl = null;
+        notifyResourceUrlChanged.call(this, url);
     }
 
     get resourceUrl():string {

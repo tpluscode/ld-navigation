@@ -134,6 +134,8 @@ var LdNavigatorElement = (function (_super) {
         },
         set: function (url) {
             LdNavigation.Context.base = url;
+            this._resourceUrl = null;
+            notifyResourceUrlChanged.call(this, url);
         },
         enumerable: true,
         configurable: true

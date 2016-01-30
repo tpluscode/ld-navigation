@@ -30,6 +30,10 @@
                 ldNavigator = fixture('EmptyNavigator');
             });
 
+            afterEach(function(){
+                document.getElementById('EmptyNavigator').restore();
+            });
+
             it('has empty base URL', function () {
                 assert.equal(ldNavigator.base, '');
             });
@@ -57,6 +61,17 @@
                 });
 
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
+            });
+
+            it('should change resource url when base changes', function(done) {
+
+                ldNavigator.addEventListener('resource-url-changed', function x(e) {
+                    assert.equal(e.detail.value, 'http://example.org/');
+                    //ldNavigator.removeEventListener('resource-url-changed', x);
+                    done();
+                });
+
+                ldNavigator.base = 'http://example.org/';
             });
 
             it('should not change resource url when it is same as current', function(done) {
