@@ -67,7 +67,7 @@
 
                 ldNavigator.addEventListener('resource-url-changed', function x(e) {
                     assert.equal(e.detail.value, 'http://example.org/');
-                    //ldNavigator.removeEventListener('resource-url-changed', x);
+                    ldNavigator.removeEventListener('resource-url-changed', x);
                     done();
                 });
 
