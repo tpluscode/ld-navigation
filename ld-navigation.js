@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var LdNavigation;
 (function (LdNavigation) {
     var LdContext = (function () {
@@ -21,7 +26,7 @@ var LdNavigation;
             this.base = '';
         };
         return LdContext;
-    })();
+    }());
     var Helpers = (function () {
         function Helpers() {
         }
@@ -34,7 +39,7 @@ var LdNavigation;
             }));
         };
         return Helpers;
-    })();
+    }());
     LdNavigation.Helpers = Helpers;
     var context = new LdContext();
     if (LdNavigation && LdNavigation.Context) {
@@ -44,25 +49,36 @@ var LdNavigation;
 })(LdNavigation || (LdNavigation = {}));
 /// <reference path="LdNavigation.ts" />
 'use strict';
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Html5HistoryElement = (function (_super) {
     __extends(Html5HistoryElement, _super);
     function Html5HistoryElement() {
         _super.apply(this, arguments);
     }
+    Html5HistoryElement.prototype.createdCallback = function () {
+        if (!(window.history && window.history.pushState)) {
+            this.setAttribute('use-hash-fragment', '');
+        }
+    };
     Html5HistoryElement.prototype.attachedCallback = function () {
         var _this = this;
         window.addEventListener('ld-navigated', function (e) {
-            if (e.detail.resourceUrl !== history.state) {
+            if (usesHashFragment(_this)) {
+                document.location.hash = e.detail.resourceUrl;
+            }
+            else if (e.detail.resourceUrl !== history.state) {
                 history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
             }
         });
         window.addEventListener('popstate', function () {
-            LdNavigation.Helpers.fireNavigation(_this, history.state);
+            if (usesHashFragment(_this) === false) {
+                LdNavigation.Helpers.fireNavigation(_this, history.state);
+            }
+        });
+        window.addEventListener('hashchange', function () {
+            if (usesHashFragment(_this)) {
+                var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
+                LdNavigation.Helpers.fireNavigation(_this, resourceUrl);
+            }
         });
     };
     Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
@@ -72,7 +88,10 @@ var Html5HistoryElement = (function (_super) {
         return '/' + absoluteUrl;
     };
     return Html5HistoryElement;
-})(HTMLElement);
+}(HTMLElement));
+function usesHashFragment(historyElement) {
+    return historyElement.getAttribute('use-hash-fragment') !== null;
+}
 document.registerElement('ld-html5-history', Html5HistoryElement);
 /// <reference path="LdNavigation.ts" />
 'use strict';
@@ -109,7 +128,7 @@ var LinkedDataLink = (function (_super) {
         }
     };
     return LinkedDataLink;
-})(HTMLAnchorElement);
+}(HTMLAnchorElement));
 document.registerElement('ld-link', {
     prototype: LinkedDataLink.prototype,
     extends: 'a'
@@ -162,7 +181,7 @@ var LdNavigatorElement = (function (_super) {
         }
     };
     return LdNavigatorElement;
-})(HTMLElement);
+}(HTMLElement));
 function notifyResourceUrlChanged(url) {
     this.dispatchEvent(new CustomEvent('resource-url-changed', {
         detail: {

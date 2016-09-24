@@ -24,6 +24,12 @@
     </template>
 </test-fixture>
 
+<test-fixture id="HistoryElementUsingHash">
+    <template>
+        <ld-html5-history use-hash-fragment></ld-html5-history>
+    </template>
+</test-fixture>
+
 <script>
     var elem;
 
@@ -90,6 +96,44 @@
             window.removeEventListener('ld-navigated', handler);
         });
 
+    });
+
+    describe('<ld-html5-history use-hash-fragment>', function() {
+
+        var handler;
+        beforeEach(function(){
+            elem = fixture('HistoryElementUsingHash');
+        });
+
+        it('should set URL hash when ld-navigated event occurs', function(done) {
+
+            handler = function() {
+                assert.equal(location.hash, '#http://example.org/hash/path');
+                done();
+            };
+
+            window.addEventListener('ld-navigated', handler);
+
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/hash/path');
+        });
+
+        it('should trigger navigation on hashchange event', function(done) {
+
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
+
+            handler = function(e) {
+                assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
+                done();
+            };
+
+            window.addEventListener('ld-navigated', handler);
+            history.back();
+        });
+
+        afterEach(function () {
+            window.removeEventListener('ld-navigated', handler);
+        });
     });
 </script>
 </body>
