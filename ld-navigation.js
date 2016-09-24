@@ -61,9 +61,12 @@ var Html5HistoryElement = (function (_super) {
     };
     Html5HistoryElement.prototype.attachedCallback = function () {
         var _this = this;
+        if (document.location.hash) {
+            hashChanged.call(this);
+        }
         window.addEventListener('ld-navigated', function (e) {
             if (usesHashFragment(_this)) {
-                document.location.hash = e.detail.resourceUrl;
+                document.location.hash = _this.getStatePath(e.detail.resourceUrl);
             }
             else if (e.detail.resourceUrl !== history.state) {
                 history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
@@ -74,21 +77,31 @@ var Html5HistoryElement = (function (_super) {
                 LdNavigation.Helpers.fireNavigation(_this, history.state);
             }
         });
-        window.addEventListener('hashchange', function () {
-            if (usesHashFragment(_this)) {
-                var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
-                LdNavigation.Helpers.fireNavigation(_this, resourceUrl);
-            }
-        });
+        window.addEventListener('hashchange', hashChanged.bind(this));
     };
     Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
-        if (LdNavigation.Context.base === new URL(absoluteUrl).origin) {
+        if (resourceUrlMatchesBase(absoluteUrl)) {
             return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
+        }
+        if (usesHashFragment(this)) {
+            return absoluteUrl;
         }
         return '/' + absoluteUrl;
     };
     return Html5HistoryElement;
 }(HTMLElement));
+function hashChanged() {
+    if (usesHashFragment(this)) {
+        var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
+        if (!resourceUrl.match('^http://')) {
+            resourceUrl = LdNavigation.Context.base + resourceUrl;
+        }
+        LdNavigation.Helpers.fireNavigation(this, resourceUrl);
+    }
+}
+function resourceUrlMatchesBase(absoluteUrl) {
+    return !!LdNavigation.Context.base && !!absoluteUrl.match('^' + LdNavigation.Context.base);
+}
 function usesHashFragment(historyElement) {
     return historyElement.getAttribute('use-hash-fragment') !== null;
 }
