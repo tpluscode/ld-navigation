@@ -8,7 +8,8 @@
   },
   "scripts": {
     "install": "npm install -g web-component-tester",
-    "test": "wct"
+    "test": "wct",
+    "test-local": "wct -p -l chrome --skip-selenium-install"
   },
   "author": "tpluscode",
   "license": "MIT"
