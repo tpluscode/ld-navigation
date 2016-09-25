@@ -88,6 +88,33 @@ document.registerElement('ld-link', {
     extends: 'a'
 });
 /// <reference path="LdNavigation.ts" />
+var LdNavigationContextElement = (function (_super) {
+    __extends(LdNavigationContextElement, _super);
+    function LdNavigationContextElement() {
+        _super.apply(this, arguments);
+    }
+    LdNavigationContextElement.prototype.createdCallback = function () {
+        if (this.getAttribute('base')) {
+            LdNavigation.Context.base = this.getAttribute('base');
+        }
+        if (this.getAttribute('client-base-path')) {
+            LdNavigation.Context.clientBasePath = this.getAttribute('client-base-path');
+        }
+    };
+    LdNavigationContextElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
+        switch (attr) {
+            case 'base':
+                LdNavigation.Context.base = newVal;
+                break;
+            case 'client-base-path':
+                LdNavigation.Context.clientBasePath = newVal;
+                break;
+        }
+    };
+    return LdNavigationContextElement;
+}(HTMLElement));
+document.registerElement('ld-navigation-context', LdNavigationContextElement);
+/// <reference path="LdNavigation.ts" />
 'use strict';
 (function (window, document) {
     var currentResourceUrl;
@@ -143,9 +170,8 @@ document.registerElement('ld-link', {
         else {
             resourcePath = '/' + absoluteUrl;
         }
-        var basePathAttribute = this.getAttribute('base-client-path');
-        if (basePathAttribute) {
-            return '/' + basePathAttribute + resourcePath;
+        if (LdNavigation.Context.clientBasePath && usesHashFragment(this) === false) {
+            return '/' + LdNavigation.Context.clientBasePath + resourcePath;
         }
         return resourcePath;
     }
@@ -174,32 +200,22 @@ var LdNavigatorElement = (function (_super) {
     function LdNavigatorElement() {
         _super.apply(this, arguments);
     }
-    LdNavigatorElement.prototype.createdCallback = function () {
-        this.base = this.getAttribute('base') || '';
-        window.addEventListener('ld-navigated', this._handleLdNavigated);
-    };
     LdNavigatorElement.prototype.attachedCallback = function () {
+        this._ldNavigatedHandler = handleLdNavigated.bind(this);
+        window.addEventListener('ld-navigated', this._ldNavigatedHandler);
         notifyResourceUrlChanged.call(this, this.resourceUrl);
     };
     LdNavigatorElement.prototype.detachedCallback = function () {
-        window.removeEventListener('ld-navigated', this._handleLdNavigated);
+        window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
     };
-    Object.defineProperty(LdNavigatorElement.prototype, "base", {
-        get: function () {
-            return LdNavigation.Context.base;
-        },
-        set: function (url) {
-            LdNavigation.Context.base = url;
-            this._resourceUrl = null;
-            notifyResourceUrlChanged.call(this, url);
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(LdNavigatorElement.prototype, "resourceUrl", {
         get: function () {
             if (!this._resourceUrl) {
-                this._resourceUrl = LdNavigation.Context.base + document.location.pathname + document.location.search;
+                var path = document.location.pathname;
+                if (LdNavigation.Context.clientBasePath) {
+                    path = path.replace('\/' + LdNavigation.Context.clientBasePath, '');
+                }
+                this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
             }
             return this._resourceUrl;
         },
@@ -212,16 +228,11 @@ var LdNavigatorElement = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    LdNavigatorElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
-        if (attr === 'base') {
-            this.base = newVal;
-        }
-    };
-    LdNavigatorElement.prototype._handleLdNavigated = function (e) {
-        this.resourceUrl = e.detail.resourceUrl;
-    };
     return LdNavigatorElement;
 }(HTMLElement));
+function handleLdNavigated(e) {
+    this.resourceUrl = e.detail.resourceUrl;
+}
 function notifyResourceUrlChanged(url) {
     this.dispatchEvent(new CustomEvent('resource-url-changed', {
         detail: {

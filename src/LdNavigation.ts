@@ -2,6 +2,7 @@ module LdNavigation {
 
     class LdContext {
         private _base;
+        public clientBasePath;
 
         constructor() {
             this._base = '';

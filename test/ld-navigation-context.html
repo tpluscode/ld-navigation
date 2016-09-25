@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ld-navigation-context-tests</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <link rel="import" href="../ld-navigation.html">
+</head>
+<body>
+    <test-fixture id="ContextFixture">
+        <template>
+            <ld-navigation-context></ld-navigation-context>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="ContextCreatedWithAttributesFixture">
+        <template>
+            <ld-navigation-context base="http://example.org/b2" client-base-path="my-base"></ld-navigation-context>
+        </template>
+    </test-fixture>
+
+    <script>
+        describe('<ld-navigation-context>', function () {
+
+            var testElem;
+
+            beforeEach(function () {
+                LdNavigation.Context.clear();
+                testElem = fixture('ContextFixture');
+            });
+
+            it('setting base sets value on LdNavigation.Context', function () {
+                testElem.setAttribute('base', 'http://test.base/url');
+
+                assert.equal(LdNavigation.Context.base, 'http://test.base/url');
+            });
+
+            it('setting client base path sets value on LdNavigation.Context', function () {
+                testElem.setAttribute('client-base-path', 'my-app-base');
+
+                assert.equal(LdNavigation.Context.clientBasePath, 'my-app-base');
+            });
+
+            it('should remove trailing slash from base URL', function(){
+                testElem.setAttribute('base', 'http://example.org/');
+
+                assert.equal(LdNavigation.Context.base, 'http://example.org');
+            });
+
+        });
+
+        describe('<ld-navigation-context> created with attributes', function (){var testElem;
+
+            beforeEach(function () {
+                LdNavigation.Context.clear();
+                testElem = fixture('ContextCreatedWithAttributesFixture');
+            });
+
+            it('should have set base on LdNavigation.Context', function(){
+                assert.equal(LdNavigation.Context.base, 'http://example.org/b2');
+            });
+
+            it('should have set clientBasePath on LdNavigation.Context', function(){
+                assert.equal(LdNavigation.Context.clientBasePath, 'my-base');
+            });
+
+        });
+    </script>
+</body>
+</html>

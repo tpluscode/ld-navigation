@@ -15,10 +15,15 @@
 
 <test-fixture id="HistoryElementWithBaseUrlFixture">
     <template>
-        <!-- fails on IE, because script inside <template> aren't inert -->
-        <script type="application/javascript">
-            LdNavigation.Context.base = 'http://base2.example.org';
-        </script>
+        <ld-navigation-context base="http://base2.example.org"></ld-navigation-context>
+
+        <ld-navigation-history></ld-navigation-history>
+    </template>
+</test-fixture>
+
+<test-fixture id="HistoryElementWithBaseResourceAndClientPathFixture">
+    <template>
+        <ld-navigation-context base="http://base2.example.org" client-base-path="app-base"></ld-navigation-context>
 
         <ld-navigation-history></ld-navigation-history>
     </template>
@@ -99,8 +104,7 @@
         var handler;
         beforeEach(function(){
             LdNavigation.Context.clear();
-            elem = fixture('EmptyHistoryElementFixture');
-            elem.setAttribute('base-client-path', 'app-base');
+            elem = fixture('HistoryElementWithBaseResourceAndClientPathFixture');
         });
 
         it('should push absolute URL state with base prepended when ld-navigated event occurs', function(done) {

@@ -2,33 +2,27 @@
 
 class LdNavigatorElement extends HTMLElement {
     private _resourceUrl;
-
-    createdCallback() {
-        this.base = this.getAttribute('base') || '';
-        window.addEventListener('ld-navigated', this._handleLdNavigated);
-    }
+    private _ldNavigatedHandler;
 
     attachedCallback() {
+        this._ldNavigatedHandler = handleLdNavigated.bind(this);
+        window.addEventListener('ld-navigated', this._ldNavigatedHandler);
         notifyResourceUrlChanged.call(this, this.resourceUrl);
     }
 
     detachedCallback() {
-        window.removeEventListener('ld-navigated', this._handleLdNavigated);
-    }
-
-    get base():string {
-        return LdNavigation.Context.base;
-    }
-
-    set base(url:string) {
-        LdNavigation.Context.base = url;
-        this._resourceUrl = null;
-        notifyResourceUrlChanged.call(this, url);
+        window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
     }
 
     get resourceUrl():string {
         if (!this._resourceUrl) {
-            this._resourceUrl = LdNavigation.Context.base + document.location.pathname + document.location.search;
+            var path = document.location.pathname;
+
+            if(LdNavigation.Context.clientBasePath) {
+                path = path.replace('\/' + LdNavigation.Context.clientBasePath, '');
+            }
+
+            this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
         }
 
         return this._resourceUrl;
@@ -40,16 +34,10 @@ class LdNavigatorElement extends HTMLElement {
             notifyResourceUrlChanged.call(this, url);
         }
     }
+}
 
-    attributeChangedCallback(attr, oldVal, newVal) {
-        if (attr === 'base') {
-            this.base = newVal;
-        }
-    }
-
-    _handleLdNavigated(e:CustomEvent) {
-        this.resourceUrl = e.detail.resourceUrl
-    }
+function handleLdNavigated(e:CustomEvent) {
+    this.resourceUrl = e.detail.resourceUrl;
 }
 
 function notifyResourceUrlChanged(url) {

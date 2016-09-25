@@ -16,10 +16,7 @@
 
 <test-fixture id="HistoryElementWithBaseUsingHashFixture">
     <template>
-        <!-- fails on IE, because script inside <template> aren't inert -->
-        <script type="application/javascript">
-            LdNavigation.Context.base = 'http://base.example.org';
-        </script>
+        <ld-navigation-context base="http://base.example.org"></ld-navigation-context>
 
         <ld-navigation-history use-hash-fragment></ld-navigation-history>
     </template>

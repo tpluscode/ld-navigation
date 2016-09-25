@@ -16,7 +16,15 @@
 
     <test-fixture id="NavigatorWithBase">
         <template>
-            <ld-navigator base="http://example.com"></ld-navigator>
+            <ld-navigation-context base="http://example.com"></ld-navigation-context>
+            <ld-navigator></ld-navigator>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="NavigatorWithClientBase">
+        <template>
+            <ld-navigation-context base="http://example.com" client-base-path="components/html5-history/test"></ld-navigation-context>
+            <ld-navigator></ld-navigator>
         </template>
     </test-fixture>
 
@@ -34,23 +42,9 @@
                 document.getElementById('EmptyNavigator').restore();
             });
 
-            it('has empty base URL', function () {
-                assert.equal(ldNavigator.base, '');
-            });
-
             it('doesn\'t set attribute when setting base URL property', function(){
                 ldNavigator.base = 'http://example.org/';
                 assert.isNull(ldNavigator.getAttribute('base'));
-            });
-
-            it('has property set when setting base URL attribute', function(){
-                ldNavigator.setAttribute('base', 'http://example.org');
-                assert.equal(ldNavigator.base, 'http://example.org');
-            });
-
-            it('should remove trailing slash from base URL', function(){
-                ldNavigator.base = 'http://example.org/';
-                assert.equal(ldNavigator.base, 'http://example.org');
             });
 
             it('should change resource url when ld-navigation occurs', function(done) {
@@ -61,17 +55,6 @@
                 });
 
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
-            });
-
-            it('should change resource url when base changes', function(done) {
-
-                ldNavigator.addEventListener('resource-url-changed', function x(e) {
-                    assert.equal(e.detail.value, 'http://example.org/');
-                    ldNavigator.removeEventListener('resource-url-changed', x);
-                    done();
-                });
-
-                ldNavigator.base = 'http://example.org/';
             });
 
             it('should not change resource url when it is same as current', function(done) {
@@ -94,19 +77,27 @@
             });
         });
 
-        describe('<ld-navigator base="some">', function(){
+        describe('<ld-navigator> with base', function(){
 
             beforeEach(function(){
                 LdNavigation.Context.clear();
-                ldNavigator = fixture('NavigatorWithBase');
-            });
-
-            it('sets LdNavigation.Context', function() {
-                assert.equal(LdNavigation.Context.base, 'http://example.com');
+                ldNavigator = fixture('NavigatorWithBase')[1];
             });
 
             it('has resource URL set to absolute document path', function() {
-                assert.isTrue(new RegExp('http://example.com.*/test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
+                assert.equal(ldNavigator.resourceUrl, 'http://example.com/components/html5-history/test/ld-navigator-tests.html');
+            });
+        });
+
+        describe('<ld-navigator> with client base', function(){
+
+            beforeEach(function(){
+                LdNavigation.Context.clear();
+                ldNavigator = fixture('NavigatorWithClientBase')[1];
+            });
+
+            it('has resource URL without base client path', function() {
+                assert.equal(ldNavigator.resourceUrl, 'http://example.com/ld-navigator-tests.html');
             });
         });
 

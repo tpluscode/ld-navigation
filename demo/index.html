@@ -9,9 +9,9 @@
 <body>
 
 <template is="dom-bind">
-    <ld-navigator base="http://api.example.com" resource-url="{{resourceUrl}}"></ld-navigator>
-
-    <ld-navigation-history></ld-navigation-history>
+    <ld-navigation-context base="http://api.example.com" client-base-path="demo"></ld-navigation-context>
+    <ld-navigator resource-url="{{resourceUrl}}"></ld-navigator>
+    <ld-navigation-history use-hash-fragment></ld-navigation-history>
 
     <div>Resource URL: <span>{{resourceUrl}}</span></div>
 

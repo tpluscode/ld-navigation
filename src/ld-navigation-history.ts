@@ -62,9 +62,8 @@
             resourcePath = '/' + absoluteUrl;
         }
 
-        var basePathAttribute = this.getAttribute('base-client-path');
-        if(basePathAttribute) {
-            return '/' + basePathAttribute + resourcePath;
+        if(LdNavigation.Context.clientBasePath && usesHashFragment(this) === false) {
+            return '/' + LdNavigation.Context.clientBasePath + resourcePath;
         }
 
         return resourcePath;
