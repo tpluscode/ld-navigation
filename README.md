@@ -39,7 +39,7 @@ Let's assume that:
 
 <!-- just drop in html and it will maintain the history -->
 <!-- you could do without it, but would break the 'backspace button' -->
-<ld-html5-history></ld-html5-history>
+<ld-navigation-history></ld-navigation-history>
 
 <!-- ld-link extends anchor -->
 <a is="ld-link" resource-url="http://api.my.app/people">get people</a>

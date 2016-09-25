@@ -1,6 +1,6 @@
 {
   "name": "ld-navigation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Custom elements, which help build a SPA in a true REST style",
   "main": "ld-navigation.html",
   "directories": {

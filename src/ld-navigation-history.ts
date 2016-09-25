@@ -4,7 +4,7 @@
 (function (window, document) {
     var currentResourceUrl;
 
-    class Html5HistoryElement extends HTMLElement {
+    class NavigationHistoryElement extends HTMLElement {
 
         createdCallback() {
             if (!(window.history && window.history.pushState)) {
@@ -68,9 +68,9 @@
         return !!LdNavigation.Context.base && !!absoluteUrl.match('^' + LdNavigation.Context.base);
     }
 
-    function usesHashFragment(historyElement: Html5HistoryElement): boolean {
+    function usesHashFragment(historyElement: NavigationHistoryElement): boolean {
         return historyElement.getAttribute('use-hash-fragment') !== null;
     }
 
-    document.registerElement('ld-html5-history', Html5HistoryElement);
+    document.registerElement('ld-navigation-history', NavigationHistoryElement);
 })(window, document);

@@ -7,48 +7,47 @@
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
-
-<test-fixture id="HistoryElementUsingHash">
+<test-fixture id="EmptyHistoryElementFixture">
     <template>
-        <ld-html5-history use-hash-fragment></ld-html5-history>
+        <ld-navigation-history></ld-navigation-history>
     </template>
 </test-fixture>
 
-<test-fixture id="HistoryElementWithBaseUsingHashFixture">
+<test-fixture id="HistoryElementWithBaseUrlFixture">
     <template>
         <!-- fails on IE, because script inside <template> aren't inert -->
         <script type="application/javascript">
-            LdNavigation.Context.base = 'http://base.example.org';
+            LdNavigation.Context.base = 'http://base2.example.org';
         </script>
 
-        <ld-html5-history use-hash-fragment></ld-html5-history>
+        <ld-navigation-history></ld-navigation-history>
     </template>
 </test-fixture>
 
 <script>
     var elem;
 
-    describe('<ld-html5-history use-hash-fragment>', function() {
+    describe('<ld-navigation-history>', function () {
 
         var handler;
         beforeEach(function(){
             LdNavigation.Context.clear();
-            elem = fixture('HistoryElementUsingHash');
+            elem = fixture('EmptyHistoryElementFixture');
         });
 
-        it('should set URL hash when ld-navigated event occurs', function(done) {
+        it('should push absolute URL state when ld-navigated event occurs', function(done) {
 
             handler = function() {
-                assert.equal(location.hash, '#http://example.org/hash/path');
+                assert.equal(location.pathname, '/http://example.org/some/path');
                 done();
             };
 
             window.addEventListener('ld-navigated', handler);
 
-            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/hash/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/path');
         });
 
-        it('should trigger navigation on hashchange event', function(done) {
+        it('should trigger navigation on popstate event', function(done) {
 
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
@@ -65,31 +64,34 @@
         afterEach(function () {
             window.removeEventListener('ld-navigated', handler);
         });
+
     });
 
-    describe('<ld-html5-history use-hash-fragment> with base', function() {
+    describe('<ld-navigation-history> with base', function () {
 
         var handler;
+
         beforeEach(function(){
             LdNavigation.Context.clear();
-            elem = fixture('HistoryElementWithBaseUsingHashFixture')[1];
+            elem = fixture('HistoryElementWithBaseUrlFixture')[1];
         });
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
             handler = function() {
-                assert.equal(location.hash, '#/some/other/path');
+                assert.equal(location.pathname, '/some/other/path');
                 done();
             };
 
             window.addEventListener('ld-navigated', handler);
 
-            LdNavigation.Helpers.fireNavigation(document, 'http://base.example.org/some/other/path');
+            LdNavigation.Helpers.fireNavigation(document, 'http://base2.example.org/some/other/path');
         });
 
         afterEach(function () {
             window.removeEventListener('ld-navigated', handler);
         });
+
     });
 </script>
 </body>
