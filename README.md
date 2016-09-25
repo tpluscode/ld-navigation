@@ -16,6 +16,15 @@ You then simply GET and decide what to display based on the data returned.
 ### &lt;ld-navigation-history&gt;
 > Maintain browser history with HTML history API
 
+### &lt;ld-navigation-context&gt;
+> Set up base resource URL and base client path to tweak routing
+
+## Demos
+
+[Demos and sort-of documentation](http://t-code.pl/ld-navigation).
+
+[`ld-navigation` also plays nice with location.hash history](http://t-code.pl/ld-navigation/?useHash).
+
 ## Installation
 
 Run `bower install --save tpluscode/ld-navigation`
@@ -62,10 +71,10 @@ With the above code, when you click the first link, the browser moves to `http:/
 ### Base URL
 
 Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly. It is possible to get rid of the API domain
-by changing the `<ld-navigator>` tag to:
+by changing adding the `<ld-navigation-context>` tag:
 
 ``` html
-<ld-navigator base="http://api.my.app"></ld-navigator>
+<ld-navigation-context base="http://api.my.app"></ld-navigation-context>
 ```
 
 This way the API domain is stripped out from the browser address bar and `http://www.my.app/people` remains. This is where client-side
@@ -73,17 +82,7 @@ routing becomes virtually obsolete.
 
 ### Polymer
 
-`ld-navigation` will also play nice with [Polymer](/Polymer/polymer/) - see the [demo](demo/index.html) (below).
-
-## Demo
-
-There is a minimalist demo. To run, clone this repository and then:
-
-``` bash
-npm install -g http-server
-http-server
-
-```
+`ld-navigation` will also play nice with [Polymer](/Polymer/polymer/) - see the [demos](#demo) above.
 
 ## Tests
 
@@ -91,5 +90,5 @@ Tests are written with [web-component-tester](/Polymer/web-component-tester) in 
 
 ``` bash
 npm install
-wct
+npm run test-local
 ```
