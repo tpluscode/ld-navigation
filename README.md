@@ -13,7 +13,7 @@ You then simply GET and decide what to display based on the data returned.
 ### &lt;a is="ld-link"&gt;
 > Initiate transition between application states
 
-### &lt;ld-html-history&gt;
+### &lt;ld-navigation-history&gt;
 > Maintain browser history with HTML history API
 
 ## Installation
