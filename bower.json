@@ -2,8 +2,15 @@
   "name": "ld-navigation",
   "version": "0.2.2",
   "authors": [
-    "tpluscode"
+    "tpluscode <tpluscode@users.noreply.github.com>"
   ],
+  "keywords": [
+    "history",
+    "routing",
+    "web-components"
+  ],
+  "moduleType": "globals",
+  "homepage": "http://t-code.pl/ld-navigation/",
   "main": "ld-navigation.html",
   "license": "MIT",
   "ignore": [
