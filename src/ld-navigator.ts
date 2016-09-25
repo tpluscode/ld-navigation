@@ -5,12 +5,15 @@ class LdNavigatorElement extends HTMLElement {
 
     createdCallback() {
         this.base = this.getAttribute('base') || '';
-
-        window.addEventListener('ld-navigated', (e:CustomEvent) => this.resourceUrl = e.detail.resourceUrl);
+        window.addEventListener('ld-navigated', this._handleLdNavigated);
     }
 
     attachedCallback() {
         notifyResourceUrlChanged.call(this, this.resourceUrl);
+    }
+
+    detachedCallback() {
+        window.removeEventListener('ld-navigated', this._handleLdNavigated);
     }
 
     get base():string {
@@ -42,6 +45,10 @@ class LdNavigatorElement extends HTMLElement {
         if (attr === 'base') {
             this.base = newVal;
         }
+    }
+
+    _handleLdNavigated(e:CustomEvent) {
+        this.resourceUrl = e.detail.resourceUrl
     }
 }
 

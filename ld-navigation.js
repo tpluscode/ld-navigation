@@ -175,12 +175,14 @@ var LdNavigatorElement = (function (_super) {
         _super.apply(this, arguments);
     }
     LdNavigatorElement.prototype.createdCallback = function () {
-        var _this = this;
         this.base = this.getAttribute('base') || '';
-        window.addEventListener('ld-navigated', function (e) { return _this.resourceUrl = e.detail.resourceUrl; });
+        window.addEventListener('ld-navigated', this._handleLdNavigated);
     };
     LdNavigatorElement.prototype.attachedCallback = function () {
         notifyResourceUrlChanged.call(this, this.resourceUrl);
+    };
+    LdNavigatorElement.prototype.detachedCallback = function () {
+        window.removeEventListener('ld-navigated', this._handleLdNavigated);
     };
     Object.defineProperty(LdNavigatorElement.prototype, "base", {
         get: function () {
@@ -214,6 +216,9 @@ var LdNavigatorElement = (function (_super) {
         if (attr === 'base') {
             this.base = newVal;
         }
+    };
+    LdNavigatorElement.prototype._handleLdNavigated = function (e) {
+        this.resourceUrl = e.detail.resourceUrl;
     };
     return LdNavigatorElement;
 }(HTMLElement));
