@@ -49,63 +49,69 @@ var LdNavigation;
 })(LdNavigation || (LdNavigation = {}));
 /// <reference path="LdNavigation.ts" />
 'use strict';
-var Html5HistoryElement = (function (_super) {
-    __extends(Html5HistoryElement, _super);
-    function Html5HistoryElement() {
-        _super.apply(this, arguments);
-    }
-    Html5HistoryElement.prototype.createdCallback = function () {
-        if (!(window.history && window.history.pushState)) {
-            this.setAttribute('use-hash-fragment', '');
+(function (window, document) {
+    var currentResourceUrl;
+    var Html5HistoryElement = (function (_super) {
+        __extends(Html5HistoryElement, _super);
+        function Html5HistoryElement() {
+            _super.apply(this, arguments);
         }
-    };
-    Html5HistoryElement.prototype.attachedCallback = function () {
-        var _this = this;
-        if (document.location.hash) {
-            hashChanged.call(this);
-        }
-        window.addEventListener('ld-navigated', function (e) {
-            if (usesHashFragment(_this)) {
-                document.location.hash = _this.getStatePath(e.detail.resourceUrl);
+        Html5HistoryElement.prototype.createdCallback = function () {
+            if (!(window.history && window.history.pushState)) {
+                this.setAttribute('use-hash-fragment', '');
             }
-            else if (e.detail.resourceUrl !== history.state) {
-                history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
+        };
+        Html5HistoryElement.prototype.attachedCallback = function () {
+            var _this = this;
+            if (document.location.hash) {
+                hashChanged.call(this);
             }
-        });
-        window.addEventListener('popstate', function () {
-            if (usesHashFragment(_this) === false) {
-                LdNavigation.Helpers.fireNavigation(_this, history.state);
+            window.addEventListener('ld-navigated', function (e) {
+                currentResourceUrl = e.detail.resourceUrl;
+                if (usesHashFragment(_this)) {
+                    document.location.hash = _this.getStatePath(e.detail.resourceUrl);
+                }
+                else if (e.detail.resourceUrl !== history.state) {
+                    history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
+                }
+            });
+            window.addEventListener('popstate', function () {
+                if (usesHashFragment(_this) === false) {
+                    LdNavigation.Helpers.fireNavigation(_this, history.state);
+                }
+            });
+            window.addEventListener('hashchange', hashChanged.bind(this));
+        };
+        Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
+            if (resourceUrlMatchesBase(absoluteUrl)) {
+                return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
             }
-        });
-        window.addEventListener('hashchange', hashChanged.bind(this));
-    };
-    Html5HistoryElement.prototype.getStatePath = function (absoluteUrl) {
-        if (resourceUrlMatchesBase(absoluteUrl)) {
-            return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
-        }
+            if (usesHashFragment(this)) {
+                return absoluteUrl;
+            }
+            return '/' + absoluteUrl;
+        };
+        return Html5HistoryElement;
+    }(HTMLElement));
+    function hashChanged() {
         if (usesHashFragment(this)) {
-            return absoluteUrl;
+            var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
+            if (!resourceUrl.match('^http://')) {
+                resourceUrl = LdNavigation.Context.base + resourceUrl;
+            }
+            if (currentResourceUrl !== resourceUrl) {
+                LdNavigation.Helpers.fireNavigation(this, resourceUrl);
+            }
         }
-        return '/' + absoluteUrl;
-    };
-    return Html5HistoryElement;
-}(HTMLElement));
-function hashChanged() {
-    if (usesHashFragment(this)) {
-        var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
-        if (!resourceUrl.match('^http://')) {
-            resourceUrl = LdNavigation.Context.base + resourceUrl;
-        }
-        LdNavigation.Helpers.fireNavigation(this, resourceUrl);
     }
-}
-function resourceUrlMatchesBase(absoluteUrl) {
-    return !!LdNavigation.Context.base && !!absoluteUrl.match('^' + LdNavigation.Context.base);
-}
-function usesHashFragment(historyElement) {
-    return historyElement.getAttribute('use-hash-fragment') !== null;
-}
-document.registerElement('ld-html5-history', Html5HistoryElement);
+    function resourceUrlMatchesBase(absoluteUrl) {
+        return !!LdNavigation.Context.base && !!absoluteUrl.match('^' + LdNavigation.Context.base);
+    }
+    function usesHashFragment(historyElement) {
+        return historyElement.getAttribute('use-hash-fragment') !== null;
+    }
+    document.registerElement('ld-html5-history', Html5HistoryElement);
+})(window, document);
 /// <reference path="LdNavigation.ts" />
 'use strict';
 var resourceUrlAttrName = 'resource-url';
