@@ -106,7 +106,7 @@ document.registerElement('ld-link', {
             if (document.location.hash) {
                 hashChanged.call(this);
             }
-            window.addEventListener('ld-navigated', function (e) {
+            this._ldNavigatedHandler = function (e) {
                 currentResourceUrl = e.detail.resourceUrl;
                 if (usesHashFragment(_this)) {
                     document.location.hash = getStatePath.call(_this, e.detail.resourceUrl);
@@ -114,13 +114,21 @@ document.registerElement('ld-link', {
                 else if (e.detail.resourceUrl !== history.state) {
                     history.pushState(e.detail.resourceUrl, '', getStatePath.call(_this, e.detail.resourceUrl));
                 }
-            });
-            window.addEventListener('popstate', function () {
+            };
+            window.addEventListener('ld-navigated', this._ldNavigatedHandler);
+            this._popstateHandler = function () {
                 if (usesHashFragment(_this) === false) {
                     LdNavigation.Helpers.fireNavigation(_this, history.state);
                 }
-            });
-            window.addEventListener('hashchange', hashChanged.bind(this));
+            };
+            window.addEventListener('popstate', this._popstateHandler);
+            this._hashchangeHandler = hashChanged.bind(this);
+            window.addEventListener('hashchange', this._hashchangeHandler);
+        };
+        NavigationHistoryElement.prototype.detachedCallback = function () {
+            window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
+            window.removeEventListener('popstate', this._popstateHandler);
+            window.removeEventListener('hashchange', this._hashchangeHandler);
         };
         return NavigationHistoryElement;
     }(HTMLElement));
