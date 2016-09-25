@@ -109,10 +109,10 @@ document.registerElement('ld-link', {
             window.addEventListener('ld-navigated', function (e) {
                 currentResourceUrl = e.detail.resourceUrl;
                 if (usesHashFragment(_this)) {
-                    document.location.hash = _this.getStatePath(e.detail.resourceUrl);
+                    document.location.hash = getStatePath.call(_this, e.detail.resourceUrl);
                 }
                 else if (e.detail.resourceUrl !== history.state) {
-                    history.pushState(e.detail.resourceUrl, '', _this.getStatePath(e.detail.resourceUrl));
+                    history.pushState(e.detail.resourceUrl, '', getStatePath.call(_this, e.detail.resourceUrl));
                 }
             });
             window.addEventListener('popstate', function () {
@@ -122,17 +122,25 @@ document.registerElement('ld-link', {
             });
             window.addEventListener('hashchange', hashChanged.bind(this));
         };
-        NavigationHistoryElement.prototype.getStatePath = function (absoluteUrl) {
-            if (resourceUrlMatchesBase(absoluteUrl)) {
-                return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
-            }
-            if (usesHashFragment(this)) {
-                return absoluteUrl;
-            }
-            return '/' + absoluteUrl;
-        };
         return NavigationHistoryElement;
     }(HTMLElement));
+    function getStatePath(absoluteUrl) {
+        var resourcePath;
+        if (resourceUrlMatchesBase(absoluteUrl)) {
+            resourcePath = absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
+        }
+        else if (usesHashFragment(this)) {
+            resourcePath = absoluteUrl;
+        }
+        else {
+            resourcePath = '/' + absoluteUrl;
+        }
+        var basePathAttribute = this.getAttribute('base-client-path');
+        if (basePathAttribute) {
+            return '/' + basePathAttribute + resourcePath;
+        }
+        return resourcePath;
+    }
     function hashChanged() {
         if (usesHashFragment(this)) {
             var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);

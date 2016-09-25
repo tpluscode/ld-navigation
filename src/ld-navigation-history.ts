@@ -21,9 +21,9 @@
                 currentResourceUrl = e.detail.resourceUrl;
 
                 if (usesHashFragment(this)) {
-                    document.location.hash = this.getStatePath(e.detail.resourceUrl);
+                    document.location.hash = getStatePath.call(this, e.detail.resourceUrl);
                 } else if (e.detail.resourceUrl !== history.state) {
-                    history.pushState(e.detail.resourceUrl, '', this.getStatePath(e.detail.resourceUrl));
+                    history.pushState(e.detail.resourceUrl, '', getStatePath.call(this, e.detail.resourceUrl));
                 }
             });
 
@@ -35,19 +35,26 @@
 
             window.addEventListener('hashchange', hashChanged.bind(this));
         }
+    }
 
-        private getStatePath(absoluteUrl: string): string {
+    function getStatePath(absoluteUrl: string): string {
 
-            if (resourceUrlMatchesBase(absoluteUrl)) {
-                return absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
-            }
+        var resourcePath;
 
-            if (usesHashFragment(this)) {
-                return absoluteUrl;
-            }
-
-            return '/' + absoluteUrl;
+        if (resourceUrlMatchesBase(absoluteUrl)) {
+            resourcePath = absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
+        } else if (usesHashFragment(this)) {
+            resourcePath = absoluteUrl;
+        } else {
+            resourcePath = '/' + absoluteUrl;
         }
+
+        var basePathAttribute = this.getAttribute('base-client-path');
+        if(basePathAttribute) {
+            return '/' + basePathAttribute + resourcePath;
+        }
+
+        return resourcePath;
     }
 
     function hashChanged() {

@@ -93,6 +93,32 @@
         });
 
     });
+
+    describe('<ld-navigation-history base-client-path="app-base">', function() {
+
+        var handler;
+        beforeEach(function(){
+            LdNavigation.Context.clear();
+            elem = fixture('EmptyHistoryElementFixture');
+            elem.setAttribute('base-client-path', 'app-base');
+        });
+
+        it('should push absolute URL state with base prepended when ld-navigated event occurs', function(done) {
+
+            handler = function() {
+                assert.equal(location.pathname, '/app-base/http://example.org/some/path');
+                done();
+            };
+
+            window.addEventListener('ld-navigated', handler);
+
+            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/path');
+        });
+
+        afterEach(function () {
+            window.removeEventListener('ld-navigated', handler);
+        });
+    });
 </script>
 </body>
 </html>
