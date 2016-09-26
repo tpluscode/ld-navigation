@@ -27,7 +27,7 @@ You then simply GET and decide what to display based on the data returned.
 
 ## Installation
 
-Run `bower install --save tpluscode/ld-navigation`
+Run `bower install --save ld-navigation`
 
 Add `bower_components/ld-navigation/ld-navigation.html` in your HTML document
 
