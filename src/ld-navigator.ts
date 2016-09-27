@@ -19,10 +19,18 @@ class LdNavigatorElement extends HTMLElement {
             var path = document.location.pathname;
 
             if(LdNavigation.Context.clientBasePath) {
-                path = path.replace('\/' + LdNavigation.Context.clientBasePath, '');
+                path = path.replace(new RegExp('\/' + LdNavigation.Context.clientBasePath + '\/'), '');
             }
 
-            this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
+            if(/^http:\/\//.test(path)) {
+                this._resourceUrl = path + document.location.search;
+            } else {
+                if(LdNavigation.Context.clientBasePath) {
+                    path = '/' + path;
+                }
+
+                this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
+            }
         }
 
         return this._resourceUrl;

@@ -178,7 +178,7 @@ document.registerElement('ld-navigation-context', LdNavigationContextElement);
     function hashChanged() {
         if (usesHashFragment(this)) {
             var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
-            if (!resourceUrl.match('^http://')) {
+            if (!/^http:\/\//.test(resourceUrl)) {
                 resourceUrl = LdNavigation.Context.base + resourceUrl;
             }
             if (currentResourceUrl !== resourceUrl) {
@@ -213,9 +213,17 @@ var LdNavigatorElement = (function (_super) {
             if (!this._resourceUrl) {
                 var path = document.location.pathname;
                 if (LdNavigation.Context.clientBasePath) {
-                    path = path.replace('\/' + LdNavigation.Context.clientBasePath, '');
+                    path = path.replace(new RegExp('\/' + LdNavigation.Context.clientBasePath + '\/'), '');
                 }
-                this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
+                if (/^http:\/\//.test(path)) {
+                    this._resourceUrl = path + document.location.search;
+                }
+                else {
+                    if (LdNavigation.Context.clientBasePath) {
+                        path = '/' + path;
+                    }
+                    this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
+                }
             }
             return this._resourceUrl;
         },

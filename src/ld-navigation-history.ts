@@ -73,7 +73,7 @@
         if (usesHashFragment(this)) {
             var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
 
-            if (!resourceUrl.match('^http://')) {
+            if (!/^http:\/\//.test(resourceUrl)) {
                 resourceUrl = LdNavigation.Context.base + resourceUrl;
             }
 
