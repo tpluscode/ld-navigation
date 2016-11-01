@@ -1,5 +1,4 @@
 {
-  "verbose": true,
   "plugins": {
     "sauce": {
       "disabled": true,
