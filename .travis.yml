@@ -8,8 +8,6 @@ install:
   - typings i
 before_script:
   - tsc
-script:
-  - xvfb-run wct --plugn sauce --verbose true
 branches:
   except:
     - gh-pages
