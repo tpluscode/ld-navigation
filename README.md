@@ -70,7 +70,7 @@ With the above code, when you click the first link, the browser moves to `http:/
 
 ### Base URL
 
-Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly. It is possible to get rid of the API domain
+Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly (and, well, invalid). It is possible to get rid of the API domain
 by changing adding the `<ld-navigation-context>` tag:
 
 ``` html
