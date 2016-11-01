@@ -3,8 +3,8 @@
     "test": "tests"
   },
   "scripts": {
-    "install": "npm install -g web-component-tester",
-    "test": "wct",
+    "install": "npm install -g web-component-tester wct-local wct-sauce bower typings",
+    "test": "wct --plugin sauce",
     "test-local": "wct -p -l chrome --skip-selenium-install"
   }
 }

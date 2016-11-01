@@ -1,0 +1,12 @@
+language: node_js
+node:
+  - 5.5
+install:
+  - npm i
+  - bower i
+  - typings i
+before_script:
+  - tsc
+branches:
+  except:
+    - gh-pages

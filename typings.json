@@ -1,0 +1,7 @@
+{
+  "name": "ld-navigation",
+  "dependencies": {},
+  "globalDependencies": {
+    "webcomponents.js": "registry:dt/webcomponents.js#0.6.0+20160728153134"
+  }
+}
