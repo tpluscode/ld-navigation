@@ -5,28 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var LdNavigation;
 (function (LdNavigation) {
-    var LdContext = (function () {
-        function LdContext() {
-            this._base = '';
-        }
-        Object.defineProperty(LdContext.prototype, "base", {
-            get: function () {
-                return this._base;
-            },
-            set: function (url) {
-                if (url && url.replace) {
-                    url = url.replace(new RegExp('/$'), '');
-                }
-                this._base = url;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LdContext.prototype.clear = function () {
-            this.base = '';
-        };
-        return LdContext;
-    }());
     var Helpers = (function () {
         function Helpers() {
         }
@@ -41,11 +19,6 @@ var LdNavigation;
         return Helpers;
     }());
     LdNavigation.Helpers = Helpers;
-    var context = new LdContext();
-    if (LdNavigation && LdNavigation.Context) {
-        context.base = LdNavigation.Context.base;
-    }
-    LdNavigation.Context = context;
 })(LdNavigation || (LdNavigation = {}));
 /// <reference path="LdNavigation.ts" />
 'use strict';
@@ -208,30 +181,64 @@ var LdNavigatorElement = (function (_super) {
     LdNavigatorElement.prototype.detachedCallback = function () {
         window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
     };
+    LdNavigatorElement.prototype.createdCallback = function () {
+        this.base = this.getAttribute('base') || '';
+        this.clientBasePath = this.getAttribute('client-base-path') || '';
+    };
+    LdNavigatorElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
+        switch (attr) {
+            case 'base':
+                this.base = newVal;
+                break;
+            case 'client-base-path':
+                this.clientBasePath = newVal;
+                break;
+        }
+    };
     Object.defineProperty(LdNavigatorElement.prototype, "resourceUrl", {
         get: function () {
-            if (!this._resourceUrl) {
-                var path = document.location.pathname;
-                if (LdNavigation.Context.clientBasePath) {
-                    path = path.replace(new RegExp('\/' + LdNavigation.Context.clientBasePath + '\/'), '');
-                }
-                if (/^http:\/\//.test(path)) {
-                    this._resourceUrl = path + document.location.search;
-                }
-                else {
-                    if (LdNavigation.Context.clientBasePath) {
-                        path = '/' + path;
-                    }
-                    this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
-                }
+            var path = document.location.pathname;
+            if (this._clientBasePath) {
+                path = path.replace(new RegExp('\/' + this._clientBasePath + '\/'), '');
             }
-            return this._resourceUrl;
+            if (/^http:\/\//.test(path)) {
+                return path + document.location.search;
+            }
+            else {
+                if (this._clientBasePath) {
+                    path = '/' + path;
+                }
+                return this._base + path + document.location.search;
+            }
         },
         set: function (url) {
             if (this._resourceUrl != url) {
                 this._resourceUrl = url;
                 notifyResourceUrlChanged.call(this, url);
             }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "base", {
+        get: function () {
+            return this._base;
+        },
+        set: function (url) {
+            if (url && url.replace) {
+                url = url.replace(new RegExp('/$'), '');
+            }
+            this._base = url || '';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "clientBasePath", {
+        get: function () {
+            return this._clientBasePath;
+        },
+        set: function (clientBasePath) {
+            this._clientBasePath = clientBasePath || '';
         },
         enumerable: true,
         configurable: true

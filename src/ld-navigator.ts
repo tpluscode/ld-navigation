@@ -3,6 +3,8 @@
 class LdNavigatorElement extends HTMLElement {
     private _resourceUrl;
     private _ldNavigatedHandler;
+    private _base;
+    private _clientBasePath;
 
     attachedCallback() {
         this._ldNavigatedHandler = handleLdNavigated.bind(this);
@@ -14,26 +16,38 @@ class LdNavigatorElement extends HTMLElement {
         window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
     }
 
+    createdCallback() {
+        this.base = this.getAttribute('base') || '';
+        this.clientBasePath = this.getAttribute('client-base-path') || '';
+    }
+
+    attributeChangedCallback(attr, oldVal, newVal) {
+        switch(attr) {
+            case 'base':
+                this.base = newVal;
+                break;
+            case 'client-base-path':
+                this.clientBasePath = newVal;
+                break;
+        }
+    }
+
     get resourceUrl():string {
-        if (!this._resourceUrl) {
             var path = document.location.pathname;
 
-            if(LdNavigation.Context.clientBasePath) {
-                path = path.replace(new RegExp('\/' + LdNavigation.Context.clientBasePath + '\/'), '');
+            if(this._clientBasePath) {
+                path = path.replace(new RegExp('\/' + this._clientBasePath + '\/'), '');
             }
 
             if(/^http:\/\//.test(path)) {
-                this._resourceUrl = path + document.location.search;
+                return path + document.location.search;
             } else {
-                if(LdNavigation.Context.clientBasePath) {
+                if(this._clientBasePath) {
                     path = '/' + path;
                 }
 
-                this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
+                return this._base + path + document.location.search;
             }
-        }
-
-        return this._resourceUrl;
     }
 
     set resourceUrl(url:string) {
@@ -41,6 +55,26 @@ class LdNavigatorElement extends HTMLElement {
             this._resourceUrl = url;
             notifyResourceUrlChanged.call(this, url);
         }
+    }
+
+    get base(): string {
+        return this._base;
+    }
+
+    set base(url:string) {
+        if (url && url.replace) {
+            url = url.replace(new RegExp('/$'), '');
+        }
+
+        this._base = url || '';
+    }
+
+    get clientBasePath(): string{
+        return this._clientBasePath;
+    }
+
+    set clientBasePath(clientBasePath: string) {
+        this._clientBasePath = clientBasePath || '';
     }
 }
 

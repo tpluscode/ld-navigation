@@ -16,15 +16,13 @@
 
     <test-fixture id="NavigatorWithBase">
         <template>
-            <ld-navigation-context base="http://example.com"></ld-navigation-context>
-            <ld-navigator></ld-navigator>
+            <ld-navigator base="http://example.com"></ld-navigator>
         </template>
     </test-fixture>
 
     <test-fixture id="NavigatorWithClientBase">
         <template>
-            <ld-navigation-context base="http://example.com" client-base-path="components/html5-history/test"></ld-navigation-context>
-            <ld-navigator></ld-navigator>
+            <ld-navigator base="http://example.com" client-base-path="components/html5-history/test"></ld-navigator>
         </template>
     </test-fixture>
 
@@ -34,7 +32,6 @@
         describe('<ld-navigator>', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
                 ldNavigator = fixture('EmptyNavigator');
             });
 
@@ -75,13 +72,28 @@
             it('has resource URL set to relative document path', function() {
                assert.isTrue(new RegExp('^/.*test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
             });
+
+          it('sets property when setting base attribute', function() {
+            ldNavigator.setAttribute('base', 'http://example.org');
+            assert.equal(ldNavigator.base, 'http://example.org');
+          });
+
+          it('sets property when setting client-base-path attribute', function() {
+            ldNavigator.setAttribute('client-base-path', 'my/test');
+            assert.equal(ldNavigator.clientBasePath, 'my/test');
+          });
+
+          it('should remove trailing slash from base URL', function(){
+            ldNavigator.setAttribute('base', 'http://example.org/');
+
+            assert.equal(ldNavigator.base, 'http://example.org');
+          });
         });
 
-        describe('<ld-navigator> with base', function(){
+        describe('<ld-navigator base="">', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
-                ldNavigator = fixture('NavigatorWithBase')[1];
+                ldNavigator = fixture('NavigatorWithBase');
             });
 
             it('has resource URL set to absolute document path', function() {
@@ -92,11 +104,10 @@
             });
         });
 
-        describe('<ld-navigator> with client base', function(){
+        describe('<ld-navigator client-base-path="">', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
-                ldNavigator = fixture('NavigatorWithClientBase')[1];
+                ldNavigator = fixture('NavigatorWithClientBase');
             });
 
             it('has resource URL without base client path', function() {
