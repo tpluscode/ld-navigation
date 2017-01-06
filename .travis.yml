@@ -5,7 +5,6 @@ node_js:
 install:
   - npm i
   - bower i
-  - typings i
 before_script:
   - tsc
 branches:
