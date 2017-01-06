@@ -9,34 +9,29 @@
 <body>
 <test-fixture id="EmptyHistoryElementFixture">
     <template>
-        <ld-navigation-history></ld-navigation-history>
+        <ld-navigator></ld-navigator>
     </template>
 </test-fixture>
 
 <test-fixture id="HistoryElementWithBaseUrlFixture">
     <template>
-        <ld-navigation-context base="http://base2.example.org"></ld-navigation-context>
-
-        <ld-navigation-history></ld-navigation-history>
+        <ld-navigator base="http://base2.example.org"></ld-navigator>
     </template>
 </test-fixture>
 
 <test-fixture id="HistoryElementWithBaseResourceAndClientPathFixture">
     <template>
-        <ld-navigation-context base="http://base2.example.org" client-base-path="app-base"></ld-navigation-context>
-
-        <ld-navigation-history></ld-navigation-history>
+        <ld-navigator base="http://base2.example.org" client-base-path="app-base"></ld-navigator>
     </template>
 </test-fixture>
 
 <script>
     var elem;
 
-    describe('<ld-navigation-history>', function () {
+    describe('<ld-navigator>', function () {
 
         var handler;
         beforeEach(function(){
-            LdNavigation.Context.clear();
             elem = fixture('EmptyHistoryElementFixture');
         });
 
@@ -72,13 +67,12 @@
 
     });
 
-    describe('<ld-navigation-history> with base', function () {
+    describe('<ld-navigator base="">', function () {
 
         var handler;
 
         beforeEach(function(){
-            LdNavigation.Context.clear();
-            elem = fixture('HistoryElementWithBaseUrlFixture')[1];
+            elem = fixture('HistoryElementWithBaseUrlFixture');
         });
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
@@ -99,11 +93,10 @@
 
     });
 
-    describe('<ld-navigation-history base-client-path="app-base">', function() {
+    describe('<ld-navigator base="" base-client-path="app-base">', function() {
 
         var handler;
         beforeEach(function(){
-            LdNavigation.Context.clear();
             elem = fixture('HistoryElementWithBaseResourceAndClientPathFixture');
         });
 

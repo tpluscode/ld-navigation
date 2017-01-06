@@ -70,6 +70,7 @@
             });
 
             it('has resource URL set to relative document path', function() {
+               window.history.pushState({}, '', '/test/ld-navigator-tests.html');
                assert.isTrue(new RegExp('^/.*test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
             });
 
