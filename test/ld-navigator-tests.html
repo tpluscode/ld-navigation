@@ -53,16 +53,19 @@
 
             it('should not change resource url when it is same as current', function(done) {
 
+                var handled;
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
 
                 ldNavigator.addEventListener('resource-url-changed', function(e) {
+                    handled = true;
                     done(new Error('event shouldn\'t have happened'));
                 });
 
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
 
                 window.setTimeout(function() {
-                    done();
+                    if(!handled)
+                        done();
                 }, 200);
             });
 
@@ -88,7 +91,7 @@
           });
         });
 
-        describe('<ld-navigator base="">', function(){
+        describe('<ld-navigator base="http://example.com">', function(){
 
             beforeEach(function(){
                 ldNavigator = fixture('NavigatorWithBase');
@@ -96,13 +99,12 @@
 
             it('has resource URL set to absolute document path', function() {
                 window.history.pushState({}, '', '/some/client/path/ld-navigator-tests.html');
-                delete ldNavigator._resourceUrl;
 
                 assert.equal(ldNavigator.resourceUrl, 'http://example.com/some/client/path/ld-navigator-tests.html');
             });
         });
 
-        describe('<ld-navigator client-base-path="">', function(){
+        describe('<ld-navigator base="http://example.com" client-base-path="components/html5-history/test">', function(){
 
             beforeEach(function(){
                 ldNavigator = fixture('NavigatorWithClientBase');
@@ -110,7 +112,6 @@
 
             it('has resource URL without base client path', function() {
                 window.history.pushState({}, '', '/components/html5-history/test/ld-navigator-tests.html');
-                delete ldNavigator._resourceUrl;
 
                 assert.equal(ldNavigator.resourceUrl, 'http://example.com/ld-navigator-tests.html');
             });

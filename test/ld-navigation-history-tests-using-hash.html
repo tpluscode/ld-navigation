@@ -60,7 +60,7 @@
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
-            testHandler(window, 'ld-navigated', function() {
+            testHandler(window, 'hashchange', function() {
               assert.equal(location.hash, '#/some/other/path');
               done();
             });

@@ -37,7 +37,7 @@
 
         it('should push absolute URL state when ld-navigated event occurs', function(done) {
 
-            testHandler(window, 'ld-navigated', function() {
+            testHandler(elem, 'resource-url-changed', function() {
                 assert.equal(location.pathname, '/http://example.org/some/path');
                 done();
             });
@@ -50,8 +50,8 @@
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
 
-            testHandler(window, 'ld-navigated', function(e) {
-                assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
+            testHandler(elem, 'resource-url-changed', function(e) {
+                assert.equal(e.detail.value, 'http://example.org/initial/path');
                 done();
             });
 
