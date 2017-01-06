@@ -1,10 +1,10 @@
 /// <reference path="LdNavigation.ts" />
 
-'use strict';
 const resourceUrlAttrName = 'resource-url';
 
 class LinkedDataLink extends HTMLAnchorElement {
     private _resourceUrl:string;
+    private _anchor:HTMLAnchorElement;
 
     createdCallback() {
         if (this.hasAttribute(resourceUrlAttrName)) {
@@ -24,6 +24,10 @@ class LinkedDataLink extends HTMLAnchorElement {
     set resourceUrl(url:string) {
         this._resourceUrl = url;
         this.setAttribute('href', url);
+
+        if(!this._anchor) {
+            this._createAnchor();
+        }
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
@@ -31,9 +35,22 @@ class LinkedDataLink extends HTMLAnchorElement {
             this.resourceUrl = newVal;
         }
     }
+
+    private _createAnchor() {
+        const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
+        console.log(state);
+        this._anchor = document.createElement('a');
+
+        if(LdNavigator.Instance.useHashFragment) {
+            this._anchor.href = '#' + state;
+        } else {
+            this._anchor.href = state;
+        }
+
+        this.appendChild(this._anchor);
+    }
 }
 
 document['registerElement']('ld-link', {
-    prototype: LinkedDataLink.prototype,
-    extends: 'a'
+    prototype: LinkedDataLink.prototype
 });
