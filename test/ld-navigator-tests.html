@@ -5,6 +5,7 @@
     <title>ld-link-tests</title>
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -33,10 +34,6 @@
 
             beforeEach(function(){
                 ldNavigator = fixture('EmptyNavigator');
-            });
-
-            afterEach(function(){
-                document.getElementById('EmptyNavigator').restore();
             });
 
             it('doesn\'t set attribute when setting base URL property', function(){

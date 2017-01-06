@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -31,18 +32,17 @@
 
         it('should set URL hash when ld-navigated event occurs', function(done) {
 
-            elem.addEventListener('ld-navigated', function() {
-              assert.equal(location.hash, '#http://example.org/hash/path');
-              done();
+            testHandler(window, 'ld-navigated', function() {
+                assert.equal(location.hash, '#http://example.org/hash/path');
+                done();
             });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/hash/path');
-            done();
         });
 
         it('should change resourceUrl on hashchange event', function(done) {
 
-            elem.addEventListener('resource-url-changed', function(e) {
+            testHandler(elem, 'resource-url-changed', function(e) {
                 assert.equal(e.detail.value, 'http://example.org/explicit/path');
                 assert.equal(elem.resourceUrl, 'http://example.org/explicit/path');
                 done();
@@ -60,15 +60,13 @@
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
-            elem.addEventListener('ld-navigated', function() {
+            testHandler(window, 'ld-navigated', function() {
               assert.equal(location.hash, '#/some/other/path');
               done();
             });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://base.example.org/some/other/path');
-            done();
         });
-
     });
 </script>
 </body>

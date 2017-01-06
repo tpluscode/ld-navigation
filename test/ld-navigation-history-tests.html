@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -30,19 +31,16 @@
 
     describe('<ld-navigator>', function () {
 
-        var handler;
         beforeEach(function(){
             elem = fixture('EmptyHistoryElementFixture');
         });
 
         it('should push absolute URL state when ld-navigated event occurs', function(done) {
 
-            handler = function() {
+            testHandler(window, 'ld-navigated', function() {
                 assert.equal(location.pathname, '/http://example.org/some/path');
                 done();
-            };
-
-            window.addEventListener('ld-navigated', handler);
+            });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/path');
         });
@@ -52,24 +50,17 @@
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
 
-            handler = function(e) {
+            testHandler(window, 'ld-navigated', function(e) {
                 assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
                 done();
-            };
+            });
 
-            window.addEventListener('ld-navigated', handler);
             history.back();
-        });
-
-        afterEach(function () {
-            window.removeEventListener('ld-navigated', handler);
         });
 
     });
 
     describe('<ld-navigator base="">', function () {
-
-        var handler;
 
         beforeEach(function(){
             elem = fixture('HistoryElementWithBaseUrlFixture');
@@ -77,43 +68,30 @@
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
-            handler = function() {
+            testHandler(window, 'ld-navigated', function() {
                 assert.equal(location.pathname, '/some/other/path');
                 done();
-            };
-
-            window.addEventListener('ld-navigated', handler);
+            });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://base2.example.org/some/other/path');
-        });
-
-        afterEach(function () {
-            window.removeEventListener('ld-navigated', handler);
         });
 
     });
 
     describe('<ld-navigator base="" base-client-path="app-base">', function() {
 
-        var handler;
         beforeEach(function(){
             elem = fixture('HistoryElementWithBaseResourceAndClientPathFixture');
         });
 
         it('should push absolute URL state with base prepended when ld-navigated event occurs', function(done) {
 
-            handler = function() {
+            testHandler(window, 'ld-navigated', function() {
                 assert.equal(location.pathname, '/app-base/http://example.org/some/path');
                 done();
-            };
-
-            window.addEventListener('ld-navigated', handler);
+            });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/some/path');
-        });
-
-        afterEach(function () {
-            window.removeEventListener('ld-navigated', handler);
         });
     });
 </script>
