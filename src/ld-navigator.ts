@@ -46,7 +46,7 @@ class LdNavigatorElement extends HTMLElement {
     }
 
     get resourceUrl():string {
-        let path = this.resourcePath;
+        const path = this.resourcePath;
 
         if(/^http:\/\//.test(path)) {
             return path + document.location.search;

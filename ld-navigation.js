@@ -61,33 +61,6 @@ document.registerElement('ld-link', {
     extends: 'a'
 });
 /// <reference path="LdNavigation.ts" />
-var LdNavigationContextElement = (function (_super) {
-    __extends(LdNavigationContextElement, _super);
-    function LdNavigationContextElement() {
-        _super.apply(this, arguments);
-    }
-    LdNavigationContextElement.prototype.createdCallback = function () {
-        if (this.getAttribute('base')) {
-            LdNavigation.Context.base = this.getAttribute('base');
-        }
-        if (this.getAttribute('client-base-path')) {
-            LdNavigation.Context.clientBasePath = this.getAttribute('client-base-path');
-        }
-    };
-    LdNavigationContextElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
-        switch (attr) {
-            case 'base':
-                LdNavigation.Context.base = newVal;
-                break;
-            case 'client-base-path':
-                LdNavigation.Context.clientBasePath = newVal;
-                break;
-        }
-    };
-    return LdNavigationContextElement;
-}(HTMLElement));
-document.registerElement('ld-navigation-context', LdNavigationContextElement);
-/// <reference path="LdNavigation.ts" />
 var LdNavigatorElement = (function (_super) {
     __extends(LdNavigatorElement, _super);
     function LdNavigatorElement() {
