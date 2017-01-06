@@ -26,7 +26,7 @@ var resourceUrlAttrName = 'resource-url';
 var LinkedDataLink = (function (_super) {
     __extends(LinkedDataLink, _super);
     function LinkedDataLink() {
-        _super.apply(this, arguments);
+        return _super.apply(this, arguments) || this;
     }
     LinkedDataLink.prototype.createdCallback = function () {
         var _this = this;
@@ -56,7 +56,7 @@ var LinkedDataLink = (function (_super) {
     };
     return LinkedDataLink;
 }(HTMLAnchorElement));
-document.registerElement('ld-link', {
+document['registerElement']('ld-link', {
     prototype: LinkedDataLink.prototype,
     extends: 'a'
 });
@@ -64,7 +64,7 @@ document.registerElement('ld-link', {
 var LdNavigatorElement = (function (_super) {
     __extends(LdNavigatorElement, _super);
     function LdNavigatorElement() {
-        _super.apply(this, arguments);
+        return _super.apply(this, arguments) || this;
     }
     LdNavigatorElement.prototype.attachedCallback = function () {
         this._handlers = [];
@@ -219,5 +219,5 @@ function notifyResourceUrlChanged(elem) {
         }
     }));
 }
-document.registerElement('ld-navigator', LdNavigatorElement);
+document['registerElement']('ld-navigator', LdNavigatorElement);
 //# sourceMappingURL=ld-navigation.js.map

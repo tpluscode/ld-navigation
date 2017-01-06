@@ -33,7 +33,7 @@ class LinkedDataLink extends HTMLAnchorElement {
     }
 }
 
-document.registerElement('ld-link', {
+document['registerElement']('ld-link', {
     prototype: LinkedDataLink.prototype,
     extends: 'a'
 });

@@ -161,4 +161,4 @@ function notifyResourceUrlChanged(elem: LdNavigatorElement) {
     }));
 }
 
-document.registerElement('ld-navigator', LdNavigatorElement);
+document['registerElement']('ld-navigator', LdNavigatorElement);
