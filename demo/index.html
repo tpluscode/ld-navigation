@@ -106,27 +106,27 @@
                     <ld-link resource-url="http://example.com/using-absolute-paths-as-state">Unmapped base URL</ld-link>
                 </paper-item>
 
-                <paper-item data-url="{{base}}/base-path-mapping">
+                <paper-item data-url$="{{base}}/base-path-mapping">
                     <ld-link resource-url="{{base}}/base-path-mapping">Mapped base URL</ld-link>
                 </paper-item>
 
-                <paper-item data-url="{{base}}/bookmark-ld-link">
+                <paper-item data-url$="{{base}}/bookmark-ld-link">
                     <ld-link resource-url="{{base}}/bookmark-ld-link">Bookmarkable ld-link</ld-link>
                 </paper-item>
 
-                <paper-item data-url="{{base}}/base-state-path">
+                <paper-item data-url$="{{base}}/base-state-path">
                     <ld-link resource-url="{{base}}/base-state-path">Base state path</ld-link>
                 </paper-item>
 
-                <paper-item data-url="{{base}}/dynamic-navigation" on-tap="navigate">
+                <paper-item data-url$="{{base}}/dynamic-navigation" on-tap="navigate">
                     Dynamic navigation
                 </paper-item>
 
-                <paper-item data-url="{{base}}/events">
+                <paper-item data-url$="{{base}}/events">
                     <ld-link resource-url="{{base}}/events">Navigation events</ld-link>
                 </paper-item>
 
-                <paper-item data-url="{{base}}/polymer">
+                <paper-item data-url$="{{base}}/polymer">
                     <ld-link resource-url="{{base}}/polymer">Works great with Polymer</ld-link>
                 </paper-item>
 
@@ -140,7 +140,7 @@
             </paper-card>
 
             <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resourceUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
-                <paper-card heading="SPA routing - Linked Data-style" data-url="{{base}}/">
+                <paper-card heading="SPA routing - Linked Data-style" data-url$="{{base}}/">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -170,7 +170,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="location.hash history fallback" data-url="{{base}}/?useHash">
+                <paper-card heading="location.hash history fallback" data-url$="{{base}}/?useHash">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -189,7 +189,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Absolute URL as route" data-url="http://example.com/using-absolute-paths-as-state">
+                <paper-card heading="Absolute URL as route" data-url$="http://example.com/using-absolute-paths-as-state">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -211,7 +211,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Bookmarkable ld-link" data-url="{{base}}/bookmark-ld-link">
+                <paper-card heading="Bookmarkable ld-link" data-url$="{{base}}/bookmark-ld-link">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -231,14 +231,17 @@
                                 </ld-link>
                                 ```
 
-                                Will set the link to `/my-app/bookmarkable/resource` which can be happily bookmarked in
-                                the browser.
+                                Will set the link's href so that it can be happily bookmarked in the browser:
+
+                                ``` html
+                                <a href="/my-app/bookmarkable/resource">The client link</a>
+                                ```
                             </script>
                         </marked-element>
                     </div>
                 </paper-card>
 
-                <paper-card heading="Relative URL as route" data-url="{{base}}/base-path-mapping">
+                <paper-card heading="Relative URL as route" data-url$="{{base}}/base-path-mapping">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -259,7 +262,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Base client path" data-url="{{base}}/base-state-path">
+                <paper-card heading="Base client path" data-url$="{{base}}/base-state-path">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -284,7 +287,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Dynamic navigation" data-url="{{base}}/dynamic-navigation">
+                <paper-card heading="Dynamic navigation" data-url$="{{base}}/dynamic-navigation">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -304,7 +307,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Navigation events" data-url="{{base}}/events">
+                <paper-card heading="Navigation events" data-url$="{{base}}/events">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -332,7 +335,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Works great with Polymer" data-url="{{base}}/polymer">
+                <paper-card heading="Works great with Polymer" data-url$="{{base}}/polymer">
                     <div class="card-content">
                         <div class="card-content">
                             <marked-element>
