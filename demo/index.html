@@ -86,7 +86,7 @@
 <template id="app" is="dom-bind">
     <ld-navigator resource-url="{{resourceUrl}}"
                   on-resource-url-changed="openToast"
-                  base="http://geeky.rest/navigation/v0.2.3/"
+                  base="{{base}}/"
                   client-base-path="ld-navigation"
                   use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
@@ -95,7 +95,7 @@
     <upper88-title hidden value$="[[getTitle(selectedItem)]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
     <paper-toast id="toast">
-        You just navigated to [[resourceUrl]]. <ld-link resource-url="http://geeky.rest/navigation/v0.2.3/events"><a>How do I know?</a></ld-link>
+        You just navigated to [[resourceUrl]]. <ld-link resource-url="{{base}}/events"><a>How do I know?</a></ld-link>
     </paper-toast>
 
     <app-drawer-layout>
@@ -106,24 +106,24 @@
                     <ld-link resource-url="http://example.com/using-absolute-paths-as-state">Unmapped base URL</ld-link>
                 </paper-item>
 
-                <paper-item data-url="http://geeky.rest/navigation/v0.2.3/base-path-mapping">
-                    <ld-link resource-url="http://geeky.rest/navigation/v0.2.3/base-path-mapping">Mapped base URL</ld-link>
+                <paper-item data-url="{{base}}/base-path-mapping">
+                    <ld-link resource-url="{{base}}/base-path-mapping">Mapped base URL</ld-link>
                 </paper-item>
 
-                <paper-item data-url="http://geeky.rest/navigation/v0.2.3/bookmark-ld-link">
-                    <ld-link resource-url="http://geeky.rest/navigation/v0.2.3/bookmark-ld-link">Bookmarkable ld-link</ld-link>
+                <paper-item data-url="{{base}}/bookmark-ld-link">
+                    <ld-link resource-url="{{base}}/bookmark-ld-link">Bookmarkable ld-link</ld-link>
                 </paper-item>
 
-                <paper-item data-url="http://geeky.rest/navigation/v0.2.3/base-state-path">
-                    <ld-link resource-url="http://geeky.rest/navigation/v0.2.3/base-state-path">Base state path</ld-link>
+                <paper-item data-url="{{base}}/base-state-path">
+                    <ld-link resource-url="{{base}}/base-state-path">Base state path</ld-link>
                 </paper-item>
 
-                <paper-item data-url="http://geeky.rest/navigation/v0.2.3/dynamic-navigation" on-tap="navigate">
+                <paper-item data-url="{{base}}/dynamic-navigation" on-tap="navigate">
                     Dynamic navigation
                 </paper-item>
 
-                <paper-item data-url="http://geeky.rest/navigation/v0.2.3/events">
-                    <ld-link resource-url="http://geeky.rest/navigation/v0.2.3/events">Navigation events</ld-link>
+                <paper-item data-url="{{base}}/events">
+                    <ld-link resource-url="{{base}}/events">Navigation events</ld-link>
                 </paper-item>
 
             </paper-listbox>
@@ -171,7 +171,7 @@
             </paper-card>
 
             <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resourceUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
-                <paper-card heading="SPA routing - Linked Data-style" data-url="http://geeky.rest/navigation/v0.2.3/">
+                <paper-card heading="SPA routing - Linked Data-style" data-url="{{base}}/">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -201,7 +201,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="location.hash history fallback" data-url="http://geeky.rest/navigation/v0.2.3/?useHash">
+                <paper-card heading="location.hash history fallback" data-url="{{base}}/?useHash">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -242,7 +242,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Bookmarkable ld-link" data-url="http://geeky.rest/navigation/v0.2.3/bookmark-ld-link">
+                <paper-card heading="Bookmarkable ld-link" data-url="{{base}}/bookmark-ld-link">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -269,7 +269,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Relative URL as route" data-url="http://geeky.rest/navigation/v0.2.3/base-path-mapping">
+                <paper-card heading="Relative URL as route" data-url="{{base}}/base-path-mapping">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -279,7 +279,7 @@
                                 possible to set a base URL for translating resource identifiers.
 
                                 ``` html
-                                <ld-navigator base="http://geeky.rest/navigation/v0.2.3/"></ld-navigator>
+                                <ld-navigator base="{{base}}/"></ld-navigator>
                                 ```
 
                                 By setting the `base` property of `<ld-navigator>` any URL relative to that base will
@@ -290,7 +290,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Base client path" data-url="http://geeky.rest/navigation/v0.2.3/base-state-path">
+                <paper-card heading="Base client path" data-url="{{base}}/base-state-path">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -315,7 +315,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Dynamic navigation" data-url="http://geeky.rest/navigation/v0.2.3/dynamic-navigation">
+                <paper-card heading="Dynamic navigation" data-url="{{base}}/dynamic-navigation">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -335,7 +335,7 @@
                     </div>
                 </paper-card>
 
-                <paper-card heading="Navigation events" data-url="http://geeky.rest/navigation/v0.2.3/events">
+                <paper-card heading="Navigation events" data-url="{{base}}/events">
                     <div class="card-content">
                         <marked-element>
                             <div class="markdown-html"></div>
@@ -386,6 +386,8 @@
 
 <script>
     var wrapperElement = document.querySelector('#app');
+
+    wrapperElement.base = 'http://geeky.rest/navigation/v0.3.0';
 
     wrapperElement.navigate = function (evt) {
         LdNavigation.Helpers.fireNavigation(window, evt.target.getAttribute('data-url'));
