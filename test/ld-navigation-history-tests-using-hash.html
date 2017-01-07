@@ -33,7 +33,7 @@
         it('should set URL hash when ld-navigated event occurs', function(done) {
 
             testHandler(window, 'ld-navigated', function() {
-                assert.equal(location.hash, '#http://example.org/hash/path');
+                assert.equal(location.hash, '#/http://example.org/hash/path');
                 done();
             });
 
@@ -48,7 +48,7 @@
                 done();
             });
 
-            document.location.hash = 'http://example.org/explicit/path';
+            document.location.hash = '/http://example.org/explicit/path';
         });
     });
 

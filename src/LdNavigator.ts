@@ -30,7 +30,7 @@ module LdNavigator {
         }
 
         get statePath() {
-            return '/' + this.resourcePath;
+            return this.resourcePath;
         }
 
         get resourceUrl():string {
@@ -45,14 +45,10 @@ module LdNavigator {
 
         getStatePath(absoluteUrl: string): string {
 
-            let resourcePath;
+            let resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
 
-            if (this._resourceUrlMatchesBase(absoluteUrl)) {
-                resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
-            } else if (this.useHashFragment) {
-                resourcePath = absoluteUrl;
-            } else {
-                resourcePath = '/' + absoluteUrl;
+            if(resourcePath[0] !== '/') {
+                resourcePath = '/' + resourcePath;
             }
 
             if(this.clientBasePath && this.useHashFragment === false) {

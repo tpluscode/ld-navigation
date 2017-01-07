@@ -249,7 +249,7 @@ var LdNavigator;
         });
         Object.defineProperty(LdNavigator.prototype, "statePath", {
             get: function () {
-                return '/' + this.resourcePath;
+                return this.resourcePath;
             },
             enumerable: true,
             configurable: true
@@ -268,15 +268,9 @@ var LdNavigator;
             configurable: true
         });
         LdNavigator.prototype.getStatePath = function (absoluteUrl) {
-            var resourcePath;
-            if (this._resourceUrlMatchesBase(absoluteUrl)) {
-                resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
-            }
-            else if (this.useHashFragment) {
-                resourcePath = absoluteUrl;
-            }
-            else {
-                resourcePath = '/' + absoluteUrl;
+            var resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
+            if (resourcePath[0] !== '/') {
+                resourcePath = '/' + resourcePath;
             }
             if (this.clientBasePath && this.useHashFragment === false) {
                 return '/' + this.clientBasePath + resourcePath;
