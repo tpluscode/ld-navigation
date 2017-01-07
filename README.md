@@ -17,7 +17,7 @@ You then simply GET and decide what to display based on the data returned.
 
 ## Demos
 
-[Demos and sort-of documentation](http://t-code.pl/ld-navigation).
+[Demos and sort-of documentation](http://t-code.pl/ld-navigation/demo/).
 
 [`ld-navigation` also plays nice with location.hash history](http://t-code.pl/ld-navigation/?useHash).
 
