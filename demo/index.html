@@ -126,47 +126,16 @@
                     <ld-link resource-url="{{base}}/events">Navigation events</ld-link>
                 </paper-item>
 
+                <paper-item data-url="{{base}}/polymer">
+                    <ld-link resource-url="{{base}}/polymer">Works great with Polymer</ld-link>
+                </paper-item>
+
             </paper-listbox>
         </app-drawer>
         <div>
             <paper-card heading="Current resource URL is">
                 <div class="card-content">
                     {{resourceUrl}}
-                </div>
-            </paper-card>
-
-            <paper-card heading="Works great with Polymer" hidden$="[[!showPolymerBox(navigationCount)]]">
-                <div class="card-content">
-                    <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                Hey, sorry to intrude, but I see that you've done some clicking.
-                                Now try using the [back][back] and [forward][fwd] buttons in your browser.
-
-                                See how the menu selection updates when you move between states? This is done using Polymer's
-                                declarative binding syntax
-
-                                ``` html
-                                <ld-navigator resource-url="{ {resource-url}}"></ld-navigator>
-
-                                <paper-listbox attr-for-selected="data-url" selected="[ [resourceUrl]]"></paper-listbox>
-                                ```
-
-                                With some code, this will of course work with any DOM library because those bindings are
-                                just attributes and events.
-
-                                (Forgive invalid binding syntax, but I don't know how to display it correctly with
-                                `<marked-element>`).
-
-                                [back]: javascript:history.back()
-                                [fwd]: javascript:history.forward()
-                            </script>
-                        </marked-element>
-                    </div>
-                    <div class="card-actions">
-                        <paper-button on-tap="hidePolymerCard">Close</paper-button>
-                    </div>
                 </div>
             </paper-card>
 
@@ -363,6 +332,35 @@
                     </div>
                 </paper-card>
 
+                <paper-card heading="Works great with Polymer" data-url="{{base}}/polymer">
+                    <div class="card-content">
+                        <div class="card-content">
+                            <marked-element>
+                                <div class="markdown-html"></div>
+                                <script type="text/markdown">
+                                See how the menu selection updates when you move between states? This is done using Polymer's
+                                declarative binding syntax
+
+                                ``` html
+                                <ld-navigator resource-url="{ {resource-url}}"></ld-navigator>
+
+                                <paper-listbox attr-for-selected="data-url" selected="[ [resourceUrl]]"></paper-listbox>
+                                ```
+
+                                With some code, this will of course work with any DOM library because those bindings are
+                                just attributes and events.
+
+                                (Forgive invalid binding syntax, but I don't know how to display it correctly with
+                                `<marked-element>`).
+
+                                [back]: javascript:history.back()
+                                [fwd]: javascript:history.forward()
+                            </script>
+                            </marked-element>
+                        </div>
+                    </div>
+                </paper-card>
+
                 <paper-card heading="No documentation page here" data-url="not-found">
                     <div class="card-content">
                         <marked-element>
@@ -394,19 +392,7 @@
     };
 
     wrapperElement.openToast = function () {
-        if(!this.polymerCardHidden) {
-            this.navigationCount = (this.navigationCount || 0) + 1;
-        }
         this.$.toast.open();
-    };
-
-    wrapperElement.showPolymerBox = function (navigationCount) {
-        return navigationCount > 3;
-    };
-
-    wrapperElement.hidePolymerCard = function() {
-        this.polymerCardHidden = true;
-        this.navigationCount = 0;
     };
 
     wrapperElement.getTitle = function(selectedItem) {
