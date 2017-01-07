@@ -10,9 +10,10 @@
     <link rel="import" href="../bower_components/paper-toast/paper-toast.html"/>
     <link rel="import" href="../bower_components/paper-button/paper-button.html"/>
     <link rel="import" href="../bower_components/iron-pages/iron-pages.html"/>
-    <link rel="import" href="../bower_components/marked-element/marked-element.html"/>
-    <link rel="import" href="../bower_components/prism-element/prism-highlighter.html" />
+    <link rel="import" href="../bower_components/zero-md/zero-md.html"/>
     <link rel="import" href="../bower_components/upper88-title/upper88-title.html" />
+    <link rel="stylesheet" href="../bower_components/zero-md/highlight-themes/default.css">
+    <link rel="stylesheet" href="../bower_components/zero-md/markdown-themes/default.css">
     <link rel="import" href="../ld-navigation.html"/>
 
     <link rel="stylesheet" href="../bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" />
@@ -90,8 +91,6 @@
                   client-base-path="ld-navigation"
                   use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
-    <prism-highlighter></prism-highlighter>
-
     <upper88-title hidden value$="[[getTitle(selectedItem)]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
     <paper-toast id="toast">
@@ -142,240 +141,83 @@
             <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resourceUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
                 <paper-card heading="SPA routing - Linked Data-style" data-url$="{{base}}/">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                Welcome to sample page for the [ld-navigation][gh] repository. It contains three elements,
-                                which can be used to manage the application state by tracking HTTP API's resource URLs.
-
-                                Go ahead and click the menu elements on the left to see them in action.
-
-                                **TL;DR;** the elements are:
-
-                                ## `<ld-navigator>`
-
-                                Allows you to bind and observe the resource URL, while maintaining history
-                                ([HTML5 history API][history] or [hash][useHash]) and rewrites browsers URL for nicer
-                                client addresses.
-
-                                ## `<ld-link> <a/> </ld-link>`
-
-                                Wraps anchor so that state transitions are possible
-
-                                [gh]: https://github.com/tpluscode/ld-navigation
-                                [history]: https://developer.mozilla.org/en/docs/Web/API/History
-                                [useHash]: ?useHash
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/index.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="location.hash history fallback" data-url$="{{base}}/?useHash">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                I see that you decided to try the hash fragment history. This is configured by setting an
-                                attribute of the `<ld-navigator>` element.
-
-                                ``` html
-                                <ld-navigator use-hash-fragment></ld-navigator>
-                                ```
-
-                                Note that it is also set automatically if the browser doesn't support
-                                [HTML5 history API](https://developer.mozilla.org/en/docs/Web/API/History)
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/hash.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
-                <paper-card heading="Absolute URL as route" data-url$="http://example.com/using-absolute-paths-as-state">
+                <paper-card heading="Absolute URL as route" data-url="http://example.com/using-absolute-paths-as-state">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                By selecting the first element from the menu you triggered route change by firing the `ld-link`
-                                element. It is declared as an extension of anchor:
-
-                                ``` html
-                                <ld-link resource-url="http://example.com/using-absolute-paths-as-state">Unmapped base URL</ld-link>
-                                ```
-
-                                Clicking it updates the `resourceUrl` property of `<ld-navigator>` and updates the page
-                                address.
-
-                                By default, the `<ld-navigator>` has no understanding of the structure of the addresses,
-                                hence you can see the entire resource URL in the address bar.
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/absolute-paths-as-state.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Bookmarkable ld-link" data-url$="{{base}}/bookmark-ld-link">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                The `<ld-link>` element can be used alone, and as such will not act as an ordinary link.
-                                It is however possible to add a child `<a>` to it and that link tag will have the `href`
-                                property set to a correct *client URL* according to the `<ld-navigator>` setup.
-
-                                For example markup like
-
-                                ``` html
-                                <ld-navigator base="http://example.com/base"
-                                              client-base-path="my-app"></ld-navigator>
-
-                                <ld-link resource-url="http://example.com/base/bookmarkable/resource">
-                                    <a>The client link</a>
-                                </ld-link>
-                                ```
-
-                                Will set the link's href so that it can be happily bookmarked in the browser:
-
-                                ``` html
-                                <a href="/my-app/bookmarkable/resource">The client link</a>
-                                ```
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/bookmark-ld-link.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Relative URL as route" data-url$="{{base}}/base-path-mapping">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                The second item in the menu on the left behaves just like the first one, but the
-                                address bar now shows only part of the `resourceUrl` property. This is because it is
-                                possible to set a base URL for translating resource identifiers.
-
-                                ``` html
-                                <ld-navigator base="{{base}}/"></ld-navigator>
-                                ```
-
-                                By setting the `base` property of `<ld-navigator>` any URL relative to that base will
-                                be used as relative in the address bare. Note though, that the `resourceUrl` property
-                                will always give you the absolute URL.
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/base-path-mapping.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Base client path" data-url$="{{base}}/base-state-path">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                A Single Page Application doesn't necessarily live in the root of your web server.
-                                Such is the case with these pages which are hosted using GitHub Pages. This is important
-                                with HTML5 history, because `<ld-navigator>` element will by default try to
-                                push the state by replacing the entire client path.
-
-                                To retain the base path it is possible to set the `client-base-path` attribute of
-                                `<ld-navigator>`. It's value will be prepended to the routing path. The page
-                                you're looking at uses it as follows:
-
-                                ``` html
-                                <ld-navigator client-base-path="ld-navigation"></ld-navigator>
-                                ```
-
-                                This way, when changing client state, the address will show for example
-                                `/ld-navigation/my/resource/path` instead of just `/my/resource/path`.
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/base-state-path.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Dynamic navigation" data-url$="{{base}}/dynamic-navigation">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                Navigation through `<ld-navigator>` can also be done programmatially with JavaScript.
-
-                                To do that, use the `LdNavigation.Helpers.fireNavigation` function:
-
-                                ``` javascript
-                                var newResourceUrl = 'http://api.example.com/next/resource';
-                                LdNavigation.Helpers.fireNavigation(target, newResourceUrl);
-                                ```
-
-                                This is the same function which is used by `ld-link` to trigger resource URL change.
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/dynamic-navigation.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Navigation events" data-url$="{{base}}/events">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                The `<ld-navigator>` element publishes a `resource-url-changed` event whenever the
-                                URL changes after navigation or browser history change. It can be used for Polymer
-                                databinding or with ordinary JS code.
-
-                                ``` html
-                                <ld-navigator on-resource-url-changed="handleChange"></ld-navigator>
-                                ```
-
-                                ``` javascript
-                                document.querySelector('ld-navigator').addEventHandler('resource-url-changed', handleChange);
-                                ```
-
-                                There is also a bubbling event, which triggers the navigation. `<ld-navigator>`
-                                listens to in on [window level](https://github.com/tpluscode/ld-navigation/blob/master/src/ld-navigator.ts#L9).
-
-                                ``` javascript
-                                window.addEventListener('ld-navigated', (e:CustomEvent) => this.resourceUrl = e.detail.resourceUrl);
-                                ```
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/events.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
 
                 <paper-card heading="Works great with Polymer" data-url$="{{base}}/polymer">
                     <div class="card-content">
                         <div class="card-content">
-                            <marked-element>
-                                <div class="markdown-html"></div>
-                                <script type="text/markdown">
-                                See how the menu selection updates when you move between states? This is done using Polymer's
-                                declarative binding syntax
-
-                                ``` html
-                                <ld-navigator resource-url="{ {resource-url}}"></ld-navigator>
-
-                                <paper-listbox attr-for-selected="data-url" selected="[ [resourceUrl]]"></paper-listbox>
-                                ```
-
-                                With some code, this will of course work with any DOM library because those bindings are
-                                just attributes and events.
-
-                                (Forgive invalid binding syntax, but I don't know how to display it correctly with
-                                `<marked-element>`).
-
-                                [back]: javascript:history.back()
-                                [fwd]: javascript:history.forward()
-                            </script>
-                            </marked-element>
+                            <zero-md file="/demo/pages/polymer.md">
+                                <div class="md-html"></div>
+                            </zero-md>
                         </div>
                     </div>
                 </paper-card>
 
                 <paper-card heading="No documentation page here" data-url="not-found">
                     <div class="card-content">
-                        <marked-element>
-                            <div class="markdown-html"></div>
-                            <script type="text/markdown">
-                                It looks like address doesn't represent any documentation page. This is good though.
-
-                                As you see above it is still transformed into the `resourceUrl` property. It is up to the consumer
-                                application to determine whether the URL is correct. Usually it will mean trying to GET that resource
-                                with an AJAX request and decide what should happen next.
-                            </script>
-                        </marked-element>
+                        <zero-md file="/demo/pages/not-found.md">
+                            <div class="md-html"></div>
+                        </zero-md>
                     </div>
                 </paper-card>
             </iron-pages>

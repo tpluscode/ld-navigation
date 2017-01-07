@@ -33,7 +33,8 @@
     "paper-toast": "PolymerElements/paper-toast#~1.3.0",
     "github-fork-ribbon-css": "~0.2.0",
     "upper88-title": "~0.1.0",
-    "prism-element": "PolymerElements/prism-element#^1.2.0"
+    "prism-element": "PolymerElements/prism-element#^1.2.0",
+    "zero-md": "^0.2.0"
   },
   "resolutions": {
     "polymer": "^1.6.0"
