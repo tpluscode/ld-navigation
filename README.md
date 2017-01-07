@@ -9,15 +9,11 @@ You then simply GET and decide what to display based on the data returned.
 
 ### &lt;ld-navigator&gt;
 > Control current resource in relation to document path
-
-### &lt;a is="ld-link"&gt;
-> Initiate transition between application states
-
-### &lt;ld-navigation-history&gt;
 > Maintain browser history with HTML history API
-
-### &lt;ld-navigation-context&gt;
 > Set up base resource URL and base client path to tweak routing
+
+### &lt;ld-link&gt;
+> Initiate transition between application states
 
 ## Demos
 
@@ -46,13 +42,11 @@ Let's assume that:
 <!-- navigator exposes a resourceUrl property, see below -->
 <ld-navigator></ld-navigator>
 
-<!-- just drop in html and it will maintain the history -->
-<!-- you could do without it, but would break the 'backspace button' -->
-<ld-navigation-history></ld-navigation-history>
-
-<!-- ld-link extends anchor -->
-<a is="ld-link" resource-url="http://api.my.app/people">get people</a>
-<a is="ld-link" resource-url="http://api.my.app/projects">get projects</a>
+<!-- ld-link replaces or wraps anchor -->
+<ld-link resource-url="http://api.my.app/people">get people</ld-link>
+<ld-link resource-url="http://api.my.app/projects">
+    <a>get projects</a>
+</ld-link>
 
 <script>
 var navigator = document.querySelector('ld-navigator')
@@ -74,7 +68,7 @@ Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly (and,
 by changing adding the `<ld-navigation-context>` tag:
 
 ``` html
-<ld-navigation-context base="http://api.my.app"></ld-navigation-context>
+<ld-navigator base="http://api.my.app"></ld-navigator>
 ```
 
 This way the API domain is stripped out from the browser address bar and `http://www.my.app/people` remains. This is where client-side
