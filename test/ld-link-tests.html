@@ -5,6 +5,7 @@
     <title>ld-link-tests</title>
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -14,9 +15,18 @@
             <ld-link></ld-link>
         </template>
     </test-fixture>
-    <test-fixture id="has-resource-url">
+    <test-fixture id="anchor-child">
         <template>
-            <ld-link resource-url="http://example.com/some/path"></ld-link>
+            <ld-link resource-url="http://example.com/some/path">
+                <a>The link</a>
+            </ld-link>
+        </template>
+    </test-fixture>
+    <test-fixture id="no-link-child">
+        <template>
+            <ld-link resource-url="http://example.com/some/path">
+                Simple text link
+            </ld-link>
         </template>
     </test-fixture>
 
@@ -35,7 +45,7 @@
 
         });
 
-        describe('<ld-link resource-url="http://example.com/some/path">', function () {
+        describe('<ld-link resource-url="http://example.com/some/path"><a/></ld-link>', function () {
 
             beforeEach(function () {
                 ldNavigator = document.querySelector('ld-navigator');
@@ -45,32 +55,47 @@
 
                 beforeEach(function () {
                     ldNavigator.base = '';
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders absolute href link', function () {
+                it('sets absolute href link', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '/http://example.com/some/path');
                 });
 
-                it('when clicked, triggers navigation', function(done) {
+                it('when anchor clicked, triggers navigation', function(done) {
 
-                    window.addEventListener('ld-navigated', function(e) {
+                    testHandler(window, 'ld-navigated', function(e) {
                         assert.equal(e.detail.resourceUrl, ldLink.resourceUrl);
                         done();
                     });
 
+                    ldLink.querySelector('a').click();
+                });
+
+                it('when clicked, does nothing', function(done) {
+
+                    var handler = function() {
+                        done(new Error('navigation shouldn\'t have happened'));
+                    };
+                    window.addEventListener('ld-navigated', handler);
+
                     ldLink.click();
+
+                    window.setTimeout(function() {
+                      window.removeEventListener('ld-navigated', handler);
+                      done();
+                    }, 50);
                 });
             });
 
             describe('with base', function() {
                 beforeEach(function () {
                     ldNavigator.base = 'http://example.com';
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders relative href link', function () {
+                it('sets relative href link', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '/some/path');
                 });
@@ -80,10 +105,10 @@
                 beforeEach(function () {
                     ldNavigator.base = 'http://example.com';
                     ldNavigator.clientBasePath = 'some/base';
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders relative href link with client base prepended', function () {
+                it('sets relative href link with client base prepended', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '/some/base/some/path');
                 });
@@ -94,10 +119,10 @@
                 beforeEach(function () {
                     ldNavigator.base = '';
                     ldNavigator.useHashFragment = true;
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders absolute href link', function () {
+                it('sets absolute href link', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '#http://example.com/some/path');
                 });
@@ -107,10 +132,10 @@
                 beforeEach(function () {
                     ldNavigator.base = 'http://example.com';
                     ldNavigator.useHashFragment = true;
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders relative href link', function () {
+                it('sets relative href link', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '#/some/path');
                 });
@@ -121,13 +146,33 @@
                     ldNavigator.base = 'http://example.com';
                     ldNavigator.clientBasePath = 'some/base';
                     ldNavigator.useHashFragment = true;
-                    ldLink = fixture('has-resource-url');
+                    ldLink = fixture('anchor-child');
                 });
 
-                it('renders relative href link', function () {
+                it('sets relative href link', function () {
 
                     assert.equal(ldLink.querySelector('a').getAttribute('href'), '#/some/path');
                 });
+            });
+        });
+
+        describe('<ld-link resource-url="http://example.com/some/path"> text </ld-link>', function () {
+            beforeEach(function () {
+                ldLink = fixture('no-link-child');
+            });
+            
+            it('should not render anchor', function() {
+                assert.isNull(ldLink.querySelector('a'));
+            });
+
+            it('when clicked, triggers navigation', function(done) {
+
+                testHandler(window, 'ld-navigated', function(e) {
+                    assert.equal(e.detail.resourceUrl, ldLink.resourceUrl);
+                    done();
+                });
+
+                ldLink.click();
             });
         });
 

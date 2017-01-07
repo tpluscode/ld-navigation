@@ -28,14 +28,15 @@ var LinkedDataLink = (function (_super) {
         _super.apply(this, arguments);
     }
     LinkedDataLink.prototype.createdCallback = function () {
-        var _this = this;
         if (this.hasAttribute(resourceUrlAttrName)) {
             this.resourceUrl = this.getAttribute(resourceUrlAttrName);
         }
-        this.addEventListener('click', function (e) {
-            LdNavigation.Helpers.fireNavigation(_this, _this.resourceUrl);
-            e.preventDefault();
-        });
+        if (this._anchor) {
+            this._anchor.addEventListener('click', navigate.bind(this));
+        }
+        else {
+            this.addEventListener('click', navigate.bind(this));
+        }
     };
     Object.defineProperty(LinkedDataLink.prototype, "resourceUrl", {
         get: function () {
@@ -44,9 +45,16 @@ var LinkedDataLink = (function (_super) {
         set: function (url) {
             this._resourceUrl = url;
             this.setAttribute('href', url);
-            if (!this._anchor) {
-                this._createAnchor();
+            if (this._anchor) {
+                this._setLink();
             }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LinkedDataLink.prototype, "_anchor", {
+        get: function () {
+            return this.querySelector('a');
         },
         enumerable: true,
         configurable: true
@@ -56,10 +64,9 @@ var LinkedDataLink = (function (_super) {
             this.resourceUrl = newVal;
         }
     };
-    LinkedDataLink.prototype._createAnchor = function () {
+    LinkedDataLink.prototype._setLink = function () {
         var state = LdNavigator.Instance.getStatePath(this.resourceUrl);
         console.log(state);
-        this._anchor = document.createElement('a');
         if (LdNavigator.Instance.useHashFragment) {
             this._anchor.href = '#' + state;
         }
@@ -70,6 +77,10 @@ var LinkedDataLink = (function (_super) {
     };
     return LinkedDataLink;
 }(HTMLAnchorElement));
+function navigate(e) {
+    LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
+    e.preventDefault();
+}
 document['registerElement']('ld-link', {
     prototype: LinkedDataLink.prototype
 });

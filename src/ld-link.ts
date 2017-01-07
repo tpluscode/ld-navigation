@@ -4,17 +4,17 @@ const resourceUrlAttrName = 'resource-url';
 
 class LinkedDataLink extends HTMLAnchorElement {
     private _resourceUrl:string;
-    private _anchor:HTMLAnchorElement;
 
     createdCallback() {
         if (this.hasAttribute(resourceUrlAttrName)) {
             this.resourceUrl = this.getAttribute(resourceUrlAttrName);
         }
 
-        this.addEventListener('click', e => {
-            LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
-            e.preventDefault();
-        });
+        if(this._anchor) {
+            this._anchor.addEventListener('click', navigate.bind(this));
+        } else {
+            this.addEventListener('click', navigate.bind(this));
+        }
     }
 
     get resourceUrl():string {
@@ -25,9 +25,13 @@ class LinkedDataLink extends HTMLAnchorElement {
         this._resourceUrl = url;
         this.setAttribute('href', url);
 
-        if(!this._anchor) {
-            this._createAnchor();
+        if(this._anchor) {
+            this._setLink();
         }
+    }
+
+    private get _anchor(): HTMLAnchorElement {
+        return this.querySelector('a');
     }
 
     attributeChangedCallback(attr, oldVal, newVal) {
@@ -36,10 +40,9 @@ class LinkedDataLink extends HTMLAnchorElement {
         }
     }
 
-    private _createAnchor() {
+    private _setLink() {
         const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
         console.log(state);
-        this._anchor = document.createElement('a');
 
         if(LdNavigator.Instance.useHashFragment) {
             this._anchor.href = '#' + state;
@@ -49,6 +52,11 @@ class LinkedDataLink extends HTMLAnchorElement {
 
         this.appendChild(this._anchor);
     }
+}
+
+function navigate(e: Event) {
+    LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
+    e.preventDefault();
 }
 
 document['registerElement']('ld-link', {
