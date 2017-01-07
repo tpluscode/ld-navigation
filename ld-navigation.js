@@ -5,28 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var LdNavigation;
 (function (LdNavigation) {
-    var LdContext = (function () {
-        function LdContext() {
-            this._base = '';
-        }
-        Object.defineProperty(LdContext.prototype, "base", {
-            get: function () {
-                return this._base;
-            },
-            set: function (url) {
-                if (url && url.replace) {
-                    url = url.replace(new RegExp('/$'), '');
-                }
-                this._base = url;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LdContext.prototype.clear = function () {
-            this.base = '';
-        };
-        return LdContext;
-    }());
     var Helpers = (function () {
         function Helpers() {
         }
@@ -41,14 +19,8 @@ var LdNavigation;
         return Helpers;
     }());
     LdNavigation.Helpers = Helpers;
-    var context = new LdContext();
-    if (LdNavigation && LdNavigation.Context) {
-        context.base = LdNavigation.Context.base;
-    }
-    LdNavigation.Context = context;
 })(LdNavigation || (LdNavigation = {}));
 /// <reference path="LdNavigation.ts" />
-'use strict';
 var resourceUrlAttrName = 'resource-url';
 var LinkedDataLink = (function (_super) {
     __extends(LinkedDataLink, _super);
@@ -56,14 +28,15 @@ var LinkedDataLink = (function (_super) {
         _super.apply(this, arguments);
     }
     LinkedDataLink.prototype.createdCallback = function () {
-        var _this = this;
         if (this.hasAttribute(resourceUrlAttrName)) {
             this.resourceUrl = this.getAttribute(resourceUrlAttrName);
         }
-        this.addEventListener('click', function (e) {
-            LdNavigation.Helpers.fireNavigation(_this, _this.resourceUrl);
-            e.preventDefault();
-        });
+        if (this._anchor) {
+            this._anchor.addEventListener('click', navigate.bind(this));
+        }
+        else {
+            this.addEventListener('click', navigate.bind(this));
+        }
     };
     Object.defineProperty(LinkedDataLink.prototype, "resourceUrl", {
         get: function () {
@@ -72,6 +45,16 @@ var LinkedDataLink = (function (_super) {
         set: function (url) {
             this._resourceUrl = url;
             this.setAttribute('href', url);
+            if (this._anchor) {
+                this._setLink();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LinkedDataLink.prototype, "_anchor", {
+        get: function () {
+            return this.querySelector('a');
         },
         enumerable: true,
         configurable: true
@@ -81,119 +64,25 @@ var LinkedDataLink = (function (_super) {
             this.resourceUrl = newVal;
         }
     };
-    return LinkedDataLink;
-}(HTMLAnchorElement));
-document.registerElement('ld-link', {
-    prototype: LinkedDataLink.prototype,
-    extends: 'a'
-});
-/// <reference path="LdNavigation.ts" />
-var LdNavigationContextElement = (function (_super) {
-    __extends(LdNavigationContextElement, _super);
-    function LdNavigationContextElement() {
-        _super.apply(this, arguments);
-    }
-    LdNavigationContextElement.prototype.createdCallback = function () {
-        if (this.getAttribute('base')) {
-            LdNavigation.Context.base = this.getAttribute('base');
-        }
-        if (this.getAttribute('client-base-path')) {
-            LdNavigation.Context.clientBasePath = this.getAttribute('client-base-path');
-        }
-    };
-    LdNavigationContextElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
-        switch (attr) {
-            case 'base':
-                LdNavigation.Context.base = newVal;
-                break;
-            case 'client-base-path':
-                LdNavigation.Context.clientBasePath = newVal;
-                break;
-        }
-    };
-    return LdNavigationContextElement;
-}(HTMLElement));
-document.registerElement('ld-navigation-context', LdNavigationContextElement);
-/// <reference path="LdNavigation.ts" />
-'use strict';
-(function (window, document) {
-    var currentResourceUrl;
-    var NavigationHistoryElement = (function (_super) {
-        __extends(NavigationHistoryElement, _super);
-        function NavigationHistoryElement() {
-            _super.apply(this, arguments);
-        }
-        NavigationHistoryElement.prototype.createdCallback = function () {
-            if (!(window.history && window.history.pushState)) {
-                this.setAttribute('use-hash-fragment', '');
-            }
-        };
-        NavigationHistoryElement.prototype.attachedCallback = function () {
-            var _this = this;
-            if (document.location.hash) {
-                hashChanged.call(this);
-            }
-            this._ldNavigatedHandler = function (e) {
-                currentResourceUrl = e.detail.resourceUrl;
-                if (usesHashFragment(_this)) {
-                    document.location.hash = getStatePath.call(_this, e.detail.resourceUrl);
-                }
-                else if (e.detail.resourceUrl !== history.state) {
-                    history.pushState(e.detail.resourceUrl, '', getStatePath.call(_this, e.detail.resourceUrl));
-                }
-            };
-            window.addEventListener('ld-navigated', this._ldNavigatedHandler);
-            this._popstateHandler = function () {
-                if (usesHashFragment(_this) === false) {
-                    LdNavigation.Helpers.fireNavigation(_this, history.state);
-                }
-            };
-            window.addEventListener('popstate', this._popstateHandler);
-            this._hashchangeHandler = hashChanged.bind(this);
-            window.addEventListener('hashchange', this._hashchangeHandler);
-        };
-        NavigationHistoryElement.prototype.detachedCallback = function () {
-            window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
-            window.removeEventListener('popstate', this._popstateHandler);
-            window.removeEventListener('hashchange', this._hashchangeHandler);
-        };
-        return NavigationHistoryElement;
-    }(HTMLElement));
-    function getStatePath(absoluteUrl) {
-        var resourcePath;
-        if (resourceUrlMatchesBase(absoluteUrl)) {
-            resourcePath = absoluteUrl.replace(new RegExp('^' + LdNavigation.Context.base), '');
-        }
-        else if (usesHashFragment(this)) {
-            resourcePath = absoluteUrl;
+    LinkedDataLink.prototype._setLink = function () {
+        var state = LdNavigator.Instance.getStatePath(this.resourceUrl);
+        if (LdNavigator.Instance.useHashFragment) {
+            this._anchor.href = '#' + state;
         }
         else {
-            resourcePath = '/' + absoluteUrl;
+            this._anchor.href = state;
         }
-        if (LdNavigation.Context.clientBasePath && usesHashFragment(this) === false) {
-            return '/' + LdNavigation.Context.clientBasePath + resourcePath;
-        }
-        return resourcePath;
-    }
-    function hashChanged() {
-        if (usesHashFragment(this)) {
-            var resourceUrl = document.location.hash.substr(1, document.location.hash.length - 1);
-            if (!/^http:\/\//.test(resourceUrl)) {
-                resourceUrl = LdNavigation.Context.base + resourceUrl;
-            }
-            if (currentResourceUrl !== resourceUrl) {
-                LdNavigation.Helpers.fireNavigation(this, resourceUrl);
-            }
-        }
-    }
-    function resourceUrlMatchesBase(absoluteUrl) {
-        return !!LdNavigation.Context.base && !!absoluteUrl.match('^' + LdNavigation.Context.base);
-    }
-    function usesHashFragment(historyElement) {
-        return historyElement.getAttribute('use-hash-fragment') !== null;
-    }
-    document.registerElement('ld-navigation-history', NavigationHistoryElement);
-})(window, document);
+        this.appendChild(this._anchor);
+    };
+    return LinkedDataLink;
+}(HTMLAnchorElement));
+function navigate(e) {
+    LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
+    e.preventDefault();
+}
+document['registerElement']('ld-link', {
+    prototype: LinkedDataLink.prototype
+});
 /// <reference path="LdNavigation.ts" />
 var LdNavigatorElement = (function (_super) {
     __extends(LdNavigatorElement, _super);
@@ -201,52 +90,204 @@ var LdNavigatorElement = (function (_super) {
         _super.apply(this, arguments);
     }
     LdNavigatorElement.prototype.attachedCallback = function () {
-        this._ldNavigatedHandler = handleLdNavigated.bind(this);
-        window.addEventListener('ld-navigated', this._ldNavigatedHandler);
-        notifyResourceUrlChanged.call(this, this.resourceUrl);
+        this._handlers = [];
+        this._handlers.push({ event: 'ld-navigated', handler: this._handleNavigation.bind(this) });
+        this._handlers.push({ event: 'popstate', handler: this._navigateOnPopstate.bind(this) });
+        this._handlers.push({ event: 'hashchange', handler: this._notifyOnHashchange.bind(this) });
+        this._handlers.forEach(function (h) {
+            window.addEventListener(h.event, h.handler);
+        });
+        notifyResourceUrlChanged(this);
+    };
+    LdNavigatorElement.prototype.createdCallback = function () {
+        this.base = this.getAttribute('base');
+        this.clientBasePath = this.getAttribute('client-base-path');
+        LdNavigator.Instance.useHashFragment = this.getAttribute('use-hash-fragment') !== null;
+        if (!(window.history && window.history.pushState)) {
+            this.useHashFragment = true;
+        }
     };
     LdNavigatorElement.prototype.detachedCallback = function () {
-        window.removeEventListener('ld-navigated', this._ldNavigatedHandler);
+        this._handlers.forEach(function (h) {
+            window.removeEventListener(h.event, h.handler);
+        });
+    };
+    LdNavigatorElement.prototype.attributeChangedCallback = function (attr, oldVal, newVal) {
+        switch (attr) {
+            case 'base':
+                this.base = newVal;
+                break;
+            case 'client-base-path':
+                this.clientBasePath = newVal;
+                break;
+            case 'use-hash-fragment':
+                LdNavigator.Instance.useHashFragment = newVal !== null;
+                break;
+        }
     };
     Object.defineProperty(LdNavigatorElement.prototype, "resourceUrl", {
         get: function () {
-            if (!this._resourceUrl) {
-                var path = document.location.pathname;
-                if (LdNavigation.Context.clientBasePath) {
-                    path = path.replace(new RegExp('\/' + LdNavigation.Context.clientBasePath + '\/'), '');
-                }
-                if (/^http:\/\//.test(path)) {
-                    this._resourceUrl = path + document.location.search;
-                }
-                else {
-                    if (LdNavigation.Context.clientBasePath) {
-                        path = '/' + path;
-                    }
-                    this._resourceUrl = LdNavigation.Context.base + path + document.location.search;
-                }
-            }
-            return this._resourceUrl;
+            return LdNavigator.Instance.resourceUrl;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "resourcePath", {
+        get: function () {
+            return LdNavigator.Instance.resourcePath;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "statePath", {
+        get: function () {
+            return LdNavigator.Instance.statePath;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "base", {
+        get: function () {
+            return LdNavigator.Instance.base;
         },
         set: function (url) {
-            if (this._resourceUrl != url) {
-                this._resourceUrl = url;
-                notifyResourceUrlChanged.call(this, url);
+            LdNavigator.Instance.base = url;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "clientBasePath", {
+        get: function () {
+            return LdNavigator.Instance.clientBasePath;
+        },
+        set: function (clientBasePath) {
+            LdNavigator.Instance.clientBasePath = clientBasePath || '';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LdNavigatorElement.prototype, "useHashFragment", {
+        get: function () {
+            return LdNavigator.Instance.useHashFragment;
+        },
+        set: function (useHash) {
+            if (useHash) {
+                this.setAttribute('use-hash-fragment', '');
+            }
+            else {
+                this.removeAttribute('use-hash-fragment');
             }
         },
         enumerable: true,
         configurable: true
     });
+    LdNavigatorElement.prototype._handleNavigation = function (e) {
+        var prevUrl = this.resourceUrl;
+        if (this.useHashFragment) {
+            document.location.hash = LdNavigator.Instance.getStatePath(e.detail.resourceUrl);
+        }
+        else if (e.detail.resourceUrl !== history.state) {
+            history.pushState(e.detail.resourceUrl, '', LdNavigator.Instance.getStatePath(e.detail.resourceUrl));
+        }
+        if (prevUrl !== this.resourceUrl) {
+            notifyResourceUrlChanged(this);
+        }
+    };
+    LdNavigatorElement.prototype._navigateOnPopstate = function () {
+        if (this.useHashFragment === false) {
+            notifyResourceUrlChanged(this);
+        }
+    };
+    LdNavigatorElement.prototype._notifyOnHashchange = function () {
+        if (this.useHashFragment) {
+            notifyResourceUrlChanged(this);
+        }
+    };
     return LdNavigatorElement;
 }(HTMLElement));
-function handleLdNavigated(e) {
-    this.resourceUrl = e.detail.resourceUrl;
-}
-function notifyResourceUrlChanged(url) {
-    this.dispatchEvent(new CustomEvent('resource-url-changed', {
+function notifyResourceUrlChanged(elem) {
+    elem.dispatchEvent(new CustomEvent('resource-url-changed', {
         detail: {
-            value: url
+            value: elem.resourceUrl
         }
     }));
 }
-document.registerElement('ld-navigator', LdNavigatorElement);
+document['registerElement']('ld-navigator', LdNavigatorElement);
+var LdNavigator;
+(function (LdNavigator_1) {
+    var LdNavigator = (function () {
+        function LdNavigator() {
+            this._base = '';
+            this.clientBasePath = '';
+            this.useHashFragment = false;
+        }
+        Object.defineProperty(LdNavigator.prototype, "base", {
+            get: function () {
+                return this._base;
+            },
+            set: function (url) {
+                if (url && url.replace) {
+                    url = url.replace(new RegExp('/$'), '');
+                }
+                this._base = url || '';
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LdNavigator.prototype, "resourcePath", {
+            get: function () {
+                var path = (this.useHashFragment
+                    ? document.location.hash.substr(1, document.location.hash.length - 1)
+                    : document.location.pathname).replace(/^\//, '');
+                if (this.clientBasePath) {
+                    return path.replace(new RegExp('^' + this.clientBasePath + '\/'), '');
+                }
+                return path;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LdNavigator.prototype, "statePath", {
+            get: function () {
+                return '/' + this.resourcePath;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LdNavigator.prototype, "resourceUrl", {
+            get: function () {
+                var path = this.resourcePath;
+                if (/^http:\/\//.test(path)) {
+                    return path + document.location.search;
+                }
+                else {
+                    return this.base + '/' + path + document.location.search;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LdNavigator.prototype.getStatePath = function (absoluteUrl) {
+            var resourcePath;
+            if (this._resourceUrlMatchesBase(absoluteUrl)) {
+                resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
+            }
+            else if (this.useHashFragment) {
+                resourcePath = absoluteUrl;
+            }
+            else {
+                resourcePath = '/' + absoluteUrl;
+            }
+            if (this.clientBasePath && this.useHashFragment === false) {
+                return '/' + this.clientBasePath + resourcePath;
+            }
+            return resourcePath;
+        };
+        LdNavigator.prototype._resourceUrlMatchesBase = function (absoluteUrl) {
+            return !!this.base && !!absoluteUrl.match('^' + this.base);
+        };
+        return LdNavigator;
+    }());
+    LdNavigator_1.Instance = new LdNavigator();
+})(LdNavigator || (LdNavigator = {}));
 //# sourceMappingURL=ld-navigation.js.map

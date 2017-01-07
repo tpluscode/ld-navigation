@@ -4,88 +4,68 @@
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
 
 <test-fixture id="HistoryElementUsingHash">
     <template>
-        <ld-navigation-history use-hash-fragment></ld-navigation-history>
+        <ld-navigator use-hash-fragment></ld-navigator>
     </template>
 </test-fixture>
 
 <test-fixture id="HistoryElementWithBaseUsingHashFixture">
     <template>
-        <ld-navigation-context base="http://base.example.org"></ld-navigation-context>
-
-        <ld-navigation-history use-hash-fragment></ld-navigation-history>
+        <ld-navigator use-hash-fragment base="http://base.example.org"></ld-navigator>
     </template>
 </test-fixture>
 
 <script>
     var elem;
 
-    describe('<ld-navigation-history use-hash-fragment>', function() {
+    describe('<ld-navigator use-hash-fragment>', function() {
 
-        var handler;
         beforeEach(function(){
-            LdNavigation.Context.clear();
             elem = fixture('HistoryElementUsingHash');
         });
 
         it('should set URL hash when ld-navigated event occurs', function(done) {
 
-            handler = function() {
+            testHandler(window, 'ld-navigated', function() {
                 assert.equal(location.hash, '#http://example.org/hash/path');
                 done();
-            };
-
-            window.addEventListener('ld-navigated', handler);
+            });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://example.org/hash/path');
         });
 
-        it('should trigger navigation on hashchange event', function(done) {
+        it('should change resourceUrl on hashchange event', function(done) {
 
-            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/initial/path');
-            LdNavigation.Helpers.fireNavigation(document, 'http://example.org/next/path');
-
-            handler = function(e) {
-                assert.equal(e.detail.resourceUrl, 'http://example.org/initial/path');
+            testHandler(elem, 'resource-url-changed', function(e) {
+                assert.equal(e.detail.value, 'http://example.org/explicit/path');
+                assert.equal(elem.resourceUrl, 'http://example.org/explicit/path');
                 done();
-            };
+            });
 
-            window.addEventListener('ld-navigated', handler);
-            history.back();
-        });
-
-        afterEach(function () {
-            window.removeEventListener('ld-navigated', handler);
+            document.location.hash = 'http://example.org/explicit/path';
         });
     });
 
-    describe('<ld-navigation-history use-hash-fragment> with base', function() {
+    describe('<ld-navigator use-hash-fragment base="">', function() {
 
-        var handler;
         beforeEach(function(){
-            LdNavigation.Context.clear();
-            elem = fixture('HistoryElementWithBaseUsingHashFixture')[1];
+            elem = fixture('HistoryElementWithBaseUsingHashFixture');
         });
 
         it('should push relative URL state when ld-navigated event occurs', function(done) {
 
-            handler = function() {
-                assert.equal(location.hash, '#/some/other/path');
-                done();
-            };
-
-            window.addEventListener('ld-navigated', handler);
+            testHandler(window, 'hashchange', function() {
+              assert.equal(location.hash, '#/some/other/path');
+              done();
+            });
 
             LdNavigation.Helpers.fireNavigation(document, 'http://base.example.org/some/other/path');
-        });
-
-        afterEach(function () {
-            window.removeEventListener('ld-navigated', handler);
         });
     });
 </script>

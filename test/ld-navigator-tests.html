@@ -5,6 +5,7 @@
     <title>ld-link-tests</title>
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
 </head>
 <body>
@@ -16,15 +17,13 @@
 
     <test-fixture id="NavigatorWithBase">
         <template>
-            <ld-navigation-context base="http://example.com"></ld-navigation-context>
-            <ld-navigator></ld-navigator>
+            <ld-navigator base="http://example.com"></ld-navigator>
         </template>
     </test-fixture>
 
     <test-fixture id="NavigatorWithClientBase">
         <template>
-            <ld-navigation-context base="http://example.com" client-base-path="components/html5-history/test"></ld-navigation-context>
-            <ld-navigator></ld-navigator>
+            <ld-navigator base="http://example.com" client-base-path="components/html5-history/test"></ld-navigator>
         </template>
     </test-fixture>
 
@@ -34,12 +33,7 @@
         describe('<ld-navigator>', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
                 ldNavigator = fixture('EmptyNavigator');
-            });
-
-            afterEach(function(){
-                document.getElementById('EmptyNavigator').restore();
             });
 
             it('doesn\'t set attribute when setting base URL property', function(){
@@ -59,49 +53,65 @@
 
             it('should not change resource url when it is same as current', function(done) {
 
+                var handled;
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
 
                 ldNavigator.addEventListener('resource-url-changed', function(e) {
+                    handled = true;
                     done(new Error('event shouldn\'t have happened'));
                 });
 
                 LdNavigation.Helpers.fireNavigation(document, 'http://example.org/current/resource');
 
                 window.setTimeout(function() {
-                    done();
+                    if(!handled)
+                        done();
                 }, 200);
             });
 
             it('has resource URL set to relative document path', function() {
+               window.history.pushState({}, '', '/test/ld-navigator-tests.html');
                assert.isTrue(new RegExp('^/.*test/ld-navigator-tests.html').test(ldNavigator.resourceUrl));
             });
+
+          it('sets property when setting base attribute', function() {
+            ldNavigator.setAttribute('base', 'http://example.org');
+            assert.equal(ldNavigator.base, 'http://example.org');
+          });
+
+          it('sets property when setting client-base-path attribute', function() {
+            ldNavigator.setAttribute('client-base-path', 'my/test');
+            assert.equal(ldNavigator.clientBasePath, 'my/test');
+          });
+
+          it('should remove trailing slash from base URL', function(){
+            ldNavigator.setAttribute('base', 'http://example.org/');
+
+            assert.equal(ldNavigator.base, 'http://example.org');
+          });
         });
 
-        describe('<ld-navigator> with base', function(){
+        describe('<ld-navigator base="http://example.com">', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
-                ldNavigator = fixture('NavigatorWithBase')[1];
+                ldNavigator = fixture('NavigatorWithBase');
             });
 
             it('has resource URL set to absolute document path', function() {
                 window.history.pushState({}, '', '/some/client/path/ld-navigator-tests.html');
-                delete ldNavigator._resourceUrl;
 
                 assert.equal(ldNavigator.resourceUrl, 'http://example.com/some/client/path/ld-navigator-tests.html');
             });
         });
 
-        describe('<ld-navigator> with client base', function(){
+        describe('<ld-navigator base="http://example.com" client-base-path="components/html5-history/test">', function(){
 
             beforeEach(function(){
-                LdNavigation.Context.clear();
-                ldNavigator = fixture('NavigatorWithClientBase')[1];
+                ldNavigator = fixture('NavigatorWithClientBase');
             });
 
             it('has resource URL without base client path', function() {
                 window.history.pushState({}, '', '/components/html5-history/test/ld-navigator-tests.html');
-                delete ldNavigator._resourceUrl;
 
                 assert.equal(ldNavigator.resourceUrl, 'http://example.com/ld-navigator-tests.html');
             });

@@ -3,8 +3,22 @@
 <head>
     <meta charset="utf-8">
     <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="../bower_components/polymer/polymer.html" />
-    <link rel="import" href="../ld-navigation.html">
+    <link rel="import" href="../bower_components/app-layout/app-layout.html"/>
+    <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html"/>
+    <link rel="import" href="../bower_components/paper-item/paper-item.html"/>
+    <link rel="import" href="../bower_components/paper-card/paper-card.html"/>
+    <link rel="import" href="../bower_components/paper-toast/paper-toast.html"/>
+    <link rel="import" href="../bower_components/paper-button/paper-button.html"/>
+    <link rel="import" href="../bower_components/iron-pages/iron-pages.html"/>
+    <link rel="import" href="../bower_components/zero-md/zero-md.html"/>
+    <link rel="import" href="../bower_components/upper88-title/upper88-title.html" />
+    <link rel="stylesheet" href="../bower_components/zero-md/highlight-themes/default.css">
+    <link rel="stylesheet" href="../bower_components/zero-md/markdown-themes/default.css">
+    <link rel="import" href="../ld-navigation.html"/>
+
+    <link rel="stylesheet" href="../bower_components/github-fork-ribbon-css/gh-fork-ribbon.css" />
+
+    <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
         /////////////////////////////////////////////////////////////////////////
         // Single Page Apps for GitHub Pages
@@ -28,30 +42,232 @@
                 });
                 if (q.p !== undefined) {
                     window.history.replaceState(null, null,
-                            l.pathname.slice(0, -1) + (q.p || '') +
-                            (q.q ? ('?' + q.q) : '') +
-                            l.hash
+                        l.pathname.slice(0, -1) + (q.p || '') +
+                        (q.q ? ('?' + q.q) : '') +
+                        l.hash
                     );
                 }
             }
         }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
+
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        paper-item a {
+            line-height: 40px;
+            display: block;
+            height: 40px;
+            width: 100%;
+        }
+
+        paper-card {
+            margin: 10px;
+        }
+
+        paper-toast {
+            width: 100%;
+        }
+
+        paper-toast a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        app-drawer-layout > div {
+            max-width: 900px;
+        }
+    </style>
 </head>
 <body>
 
-<template is="dom-bind">
-    <ld-navigation-context base="http://api.example.com" client-base-path="demo"></ld-navigation-context>
-    <ld-navigator resource-url="{{resourceUrl}}"></ld-navigator>
-    <ld-navigation-history></ld-navigation-history>
+<template id="app" is="dom-bind">
+    <ld-navigator resource-url="{{resourceUrl}}"
+                  on-resource-url-changed="openToast"
+                  base="{{base}}/"
+                  client-base-path="ld-navigation"
+                  use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
-    <div>Resource URL: <span>{{resourceUrl}}</span></div>
+    <upper88-title hidden value$="[[getTitle(selectedItem)]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
-    <div>
-        <button onclick="history.back()">back</button>
-        <a is="ld-link" resource-url="http://example.com/x/y/z">Absolute URL outside mappings</a>
-        <a is="ld-link" resource-url="http://api.example.com/x/y/z">Absolute URL within base URL namespace</a>
-        <button onclick="history.forward()">forward</button>
-    </div>
+    <paper-toast id="toast">
+        You just navigated to [[resourceUrl]]. <ld-link resource-url="{{base}}/events"><a>How do I know?</a></ld-link>
+    </paper-toast>
+
+    <app-drawer-layout>
+        <app-drawer>
+            <paper-listbox attr-for-selected="data-url" selected="[[resourceUrl]]" on-iron-select="menuNavigate">
+
+                <paper-item data-url="http://example.com/using-absolute-paths-as-state">
+                    <ld-link resource-url="http://example.com/using-absolute-paths-as-state">Unmapped base URL</ld-link>
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/base-path-mapping">
+                    <ld-link resource-url="{{base}}/base-path-mapping">Mapped base URL</ld-link>
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/bookmark-ld-link">
+                    <ld-link resource-url="{{base}}/bookmark-ld-link">Bookmarkable ld-link</ld-link>
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/base-state-path">
+                    <ld-link resource-url="{{base}}/base-state-path">Base state path</ld-link>
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/dynamic-navigation" on-tap="navigate">
+                    Dynamic navigation
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/events">
+                    <ld-link resource-url="{{base}}/events">Navigation events</ld-link>
+                </paper-item>
+
+                <paper-item data-url$="{{base}}/polymer">
+                    <ld-link resource-url="{{base}}/polymer">Works great with Polymer</ld-link>
+                </paper-item>
+
+            </paper-listbox>
+        </app-drawer>
+        <div>
+            <paper-card heading="Current resource URL is">
+                <div class="card-content">
+                    {{resourceUrl}}
+                </div>
+            </paper-card>
+
+            <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resourceUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
+                <paper-card heading="SPA routing - Linked Data-style" data-url$="{{base}}/">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/index.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="location.hash history fallback" data-url$="{{base}}/?useHash">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/hash.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Absolute URL as route" data-url="http://example.com/using-absolute-paths-as-state">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/absolute-paths-as-state.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Bookmarkable ld-link" data-url$="{{base}}/bookmark-ld-link">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/bookmark-ld-link.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Relative URL as route" data-url$="{{base}}/base-path-mapping">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/base-path-mapping.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Base client path" data-url$="{{base}}/base-state-path">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/base-state-path.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Dynamic navigation" data-url$="{{base}}/dynamic-navigation">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/dynamic-navigation.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Navigation events" data-url$="{{base}}/events">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/events.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Works great with Polymer" data-url$="{{base}}/polymer">
+                    <div class="card-content">
+                        <div class="card-content">
+                            <zero-md file="/demo/pages/polymer.md">
+                                <div class="md-html"></div>
+                            </zero-md>
+                        </div>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="No documentation page here" data-url="not-found">
+                    <div class="card-content">
+                        <zero-md file="/demo/pages/not-found.md">
+                            <div class="md-html"></div>
+                        </zero-md>
+                    </div>
+                </paper-card>
+            </iron-pages>
+        </div>
+    </app-drawer-layout>
 </template>
+
+<a class="github-fork-ribbon" href="http://github.com/tpluscode/ld-navigation" title="Fork me on GitHub">Fork me on GitHub</a>
+
+<script>
+    var wrapperElement = document.querySelector('#app');
+
+    wrapperElement.base = 'http://geeky.rest/navigation/v0.3.0';
+
+    wrapperElement.navigate = function (evt) {
+        LdNavigation.Helpers.fireNavigation(window, evt.target.getAttribute('data-url'));
+    };
+
+    wrapperElement.openToast = function () {
+        this.$.toast.open();
+    };
+
+    wrapperElement.getTitle = function(selectedItem) {
+        if(selectedItem) {
+            return selectedItem.heading;
+        }
+
+        return '';
+    };
+
+    wrapperElement.menuNavigate = function(e) {
+        var link = e.target.selectedItem.querySelector('ld-link');
+
+        if(link) {
+          link.click();
+        }
+    };
+
+    if (getParameterByName('useHash') !== null) {
+        wrapperElement.useHashFragment = true;
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+</script>
 </body>
