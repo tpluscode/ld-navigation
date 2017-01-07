@@ -66,7 +66,6 @@ var LinkedDataLink = (function (_super) {
     };
     LinkedDataLink.prototype._setLink = function () {
         var state = LdNavigator.Instance.getStatePath(this.resourceUrl);
-        console.log(state);
         if (LdNavigator.Instance.useHashFragment) {
             this._anchor.href = '#' + state;
         }

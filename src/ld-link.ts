@@ -42,7 +42,6 @@ class LinkedDataLink extends HTMLAnchorElement {
 
     private _setLink() {
         const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
-        console.log(state);
 
         if(LdNavigator.Instance.useHashFragment) {
             this._anchor.href = '#' + state;
