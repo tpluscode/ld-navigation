@@ -2,7 +2,7 @@
 
 const resourceUrlAttrName = 'resource-url';
 
-class LinkedDataLink extends HTMLAnchorElement {
+class LinkedDataLink extends HTMLElement {
     private _resourceUrl:string;
 
     createdCallback() {

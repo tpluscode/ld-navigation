@@ -75,7 +75,7 @@ var LinkedDataLink = (function (_super) {
         this.appendChild(this._anchor);
     };
     return LinkedDataLink;
-}(HTMLAnchorElement));
+}(HTMLElement));
 function navigate(e) {
     LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
     e.preventDefault();
