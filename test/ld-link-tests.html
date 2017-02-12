@@ -92,6 +92,15 @@
                 ldNavigator = document.querySelector('ld-navigator');
             });
 
+            it('removes hrefs when resource-url is unset', function () {
+                ldLink = fixture('anchor-child');
+
+                ldLink.resourceUrl = null;
+
+                assert.isNull(ldLink.getAttribute('href'));
+                assert.isNull(ldLink.querySelector('a').getAttribute('href'));
+            });
+
             describe('without base', function(){
 
                 beforeEach(function () {

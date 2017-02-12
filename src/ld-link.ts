@@ -23,9 +23,8 @@ class LinkedDataLink extends HTMLElement {
 
     set resourceUrl(url:string) {
         this._resourceUrl = url;
-        if(!url) return;
 
-        this.setAttribute('href', url);
+        this.removeAttribute('href');
 
         if(this._anchor) {
             this._setLink();
@@ -43,15 +42,17 @@ class LinkedDataLink extends HTMLElement {
     }
 
     private _setLink() {
-        const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
+        if(this.resourceUrl) {
+            const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
 
-        if(LdNavigator.Instance.useHashFragment) {
-            this._anchor.href = '#' + state;
+            if (LdNavigator.Instance.useHashFragment) {
+                this._anchor.href = '#' + state;
+            } else {
+                this._anchor.href = state;
+            }
         } else {
-            this._anchor.href = state;
+            this._anchor.removeAttribute('href');
         }
-
-        this.appendChild(this._anchor);
     }
 }
 

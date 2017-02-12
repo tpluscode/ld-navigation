@@ -44,9 +44,7 @@ var LinkedDataLink = (function (_super) {
         },
         set: function (url) {
             this._resourceUrl = url;
-            if (!url)
-                return;
-            this.setAttribute('href', url);
+            this.removeAttribute('href');
             if (this._anchor) {
                 this._setLink();
             }
@@ -67,14 +65,18 @@ var LinkedDataLink = (function (_super) {
         }
     };
     LinkedDataLink.prototype._setLink = function () {
-        var state = LdNavigator.Instance.getStatePath(this.resourceUrl);
-        if (LdNavigator.Instance.useHashFragment) {
-            this._anchor.href = '#' + state;
+        if (this.resourceUrl) {
+            var state = LdNavigator.Instance.getStatePath(this.resourceUrl);
+            if (LdNavigator.Instance.useHashFragment) {
+                this._anchor.href = '#' + state;
+            }
+            else {
+                this._anchor.href = state;
+            }
         }
         else {
-            this._anchor.href = state;
+            this._anchor.removeAttribute('href');
         }
-        this.appendChild(this._anchor);
     };
     return LinkedDataLink;
 }(HTMLElement));
