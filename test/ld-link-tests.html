@@ -15,6 +15,13 @@
             <ld-link></ld-link>
         </template>
     </test-fixture>
+    <test-fixture id="no-resource-url-with-anchor">
+        <template>
+            <ld-link>
+                <a></a>
+            </ld-link>
+        </template>
+    </test-fixture>
     <test-fixture id="anchor-child">
         <template>
             <ld-link resource-url="http://example.com/some/path">
@@ -43,6 +50,40 @@
                 assert.isNull(ldLink.querySelector('a'));
             });
 
+            describe('when set with null resource-url', function() {
+
+                beforeEach(function() {
+                    ldLink.resourceUrl = null;
+                });
+
+                it('does not set self href', function() {
+                    assert.isNull(ldLink.getAttribute('href'));
+                });
+
+            });
+
+        });
+
+        describe('<ld-link><a/></ld-link>', function () {
+
+            beforeEach(function () {
+                ldLink = fixture('no-resource-url-with-anchor');
+            });
+
+            describe('when set with null resource-url', function() {
+
+                beforeEach(function () {
+                    ldLink.resourceUrl = null;
+                });
+
+                it('does not set link', function () {
+                    assert.isNull(ldLink.querySelector('a').getAttribute('href'));
+                });
+
+                it('does not set href to self', function () {
+                    assert.isNull(ldLink.getAttribute('href'));
+                });
+            });
         });
 
         describe('<ld-link resource-url="http://example.com/some/path"><a/></ld-link>', function () {

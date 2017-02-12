@@ -44,6 +44,8 @@ var LinkedDataLink = (function (_super) {
         },
         set: function (url) {
             this._resourceUrl = url;
+            if (!url)
+                return;
             this.setAttribute('href', url);
             if (this._anchor) {
                 this._setLink();

@@ -23,6 +23,8 @@ class LinkedDataLink extends HTMLElement {
 
     set resourceUrl(url:string) {
         this._resourceUrl = url;
+        if(!url) return;
+
         this.setAttribute('href', url);
 
         if(this._anchor) {
