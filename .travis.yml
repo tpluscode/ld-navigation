@@ -4,6 +4,7 @@ node_js:
   - 5.5
 install:
   - npm i -g bower
+  - npm i
   - bower i
 before_script:
   - npm run build
