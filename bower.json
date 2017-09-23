@@ -35,5 +35,9 @@
     "prism-element": "^2.0.1",
     "zero-md": "^0.2.0",
     "paper-card": "polymerelements/paper-card#^2.0.0"
+  },
+  "resolutions": {
+    "polymer": "^2.1.0",
+    "webcomponentsjs": "^v1.0.2"
   }
 }
