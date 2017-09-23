@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ld-link-tests</title>
-    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
     <script src="event-helper.js"></script>
     <link rel="import" href="../ld-navigation.html">
@@ -44,6 +44,7 @@
 
             beforeEach(function () {
                 ldLink = fixture('no-resource-url');
+                debugger;
             });
 
             it('renders no link', function () {

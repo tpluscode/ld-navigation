@@ -1,9 +1,11 @@
 /// <reference path="LdNavigation.ts" />
 
+import LdNavigator from './LdNavigator';
+
 class LdNavigatorElement extends HTMLElement {
     private _handlers;
 
-    attachedCallback() {
+    connectedCallback() {
         this._handlers = [];
 
         this._handlers.push({ event: 'ld-navigated', handler: this._handleNavigation.bind(this) });
@@ -17,17 +19,27 @@ class LdNavigatorElement extends HTMLElement {
         notifyResourceUrlChanged(this);
     }
 
-    createdCallback() {
+    constructor() {
+        super();
+
         this.base = this.getAttribute('base');
         this.clientBasePath = this.getAttribute('client-base-path');
-        LdNavigator.Instance.useHashFragment = this.getAttribute('use-hash-fragment') !== null;
+        LdNavigator.useHashFragment = this.getAttribute('use-hash-fragment') !== null;
 
         if (!(window.history && window.history.pushState)) {
             this.useHashFragment = true;
         }
     }
 
-    detachedCallback() {
+    static get observedAttributes() {
+        return [
+            'base',
+            'client-base-path',
+            'use-hash-fragment'
+        ]
+    }
+
+    disconnectedCallback() {
         this._handlers.forEach(h => {
             window.removeEventListener(h.event, h.handler);
         });
@@ -42,41 +54,41 @@ class LdNavigatorElement extends HTMLElement {
                 this.clientBasePath = newVal;
                 break;
             case 'use-hash-fragment':
-                LdNavigator.Instance.useHashFragment = newVal !== null;
+                LdNavigator.useHashFragment = newVal !== null;
                 break;
         }
     }
 
     get resourceUrl():string {
-        return LdNavigator.Instance.resourceUrl;
+        return LdNavigator.resourceUrl;
     }
 
     get resourcePath(): string {
-        return LdNavigator.Instance.resourcePath;
+        return LdNavigator.resourcePath;
     }
 
     get statePath() {
-        return LdNavigator.Instance.statePath;
+        return LdNavigator.statePath;
     }
 
     get base(): string {
-        return LdNavigator.Instance.base;
+        return LdNavigator.base;
     }
 
     set base(url:string) {
-        LdNavigator.Instance.base = url;
+        LdNavigator.base = url;
     }
 
     get clientBasePath(): string{
-        return LdNavigator.Instance.clientBasePath;
+        return LdNavigator.clientBasePath;
     }
 
     set clientBasePath(clientBasePath: string) {
-        LdNavigator.Instance.clientBasePath = clientBasePath || '';
+        LdNavigator.clientBasePath = clientBasePath || '';
     }
 
     get useHashFragment(): boolean {
-        return LdNavigator.Instance.useHashFragment;
+        return LdNavigator.useHashFragment;
     }
 
     set useHashFragment(useHash: boolean) {
@@ -91,9 +103,9 @@ class LdNavigatorElement extends HTMLElement {
         let prevUrl = this.resourceUrl;
 
         if (this.useHashFragment) {
-            document.location.hash = LdNavigator.Instance.getStatePath(e.detail.resourceUrl);
+            document.location.hash = LdNavigator.getStatePath(e.detail.resourceUrl);
         } else if (e.detail.resourceUrl !== history.state) {
-            history.pushState(e.detail.resourceUrl, '', LdNavigator.Instance.getStatePath(e.detail.resourceUrl));
+            history.pushState(e.detail.resourceUrl, '', LdNavigator.getStatePath(e.detail.resourceUrl));
         }
 
         if(prevUrl !== this.resourceUrl){
@@ -122,4 +134,4 @@ function notifyResourceUrlChanged(elem: LdNavigatorElement) {
     }));
 }
 
-document['registerElement']('ld-navigator', LdNavigatorElement);
+window.customElements.define('ld-navigator', LdNavigatorElement);
