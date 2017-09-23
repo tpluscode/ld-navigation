@@ -1,11 +1,14 @@
-/// <reference path="LdNavigation.ts" />
+import LdNavigator from './LdNavigator';
+import Helpers from './LdNavigation';
 
 const resourceUrlAttrName = 'resource-url';
 
 class LinkedDataLink extends HTMLElement {
     private _resourceUrl:string;
 
-    createdCallback() {
+    constructor() {
+        super();
+
         if (this.hasAttribute(resourceUrlAttrName)) {
             this.resourceUrl = this.getAttribute(resourceUrlAttrName);
         }
@@ -15,6 +18,12 @@ class LinkedDataLink extends HTMLElement {
         } else {
             this.addEventListener('click', navigate.bind(this));
         }
+    }
+
+    static get observedAttributes() {
+        return [
+            resourceUrlAttrName
+        ];
     }
 
     get resourceUrl():string {
@@ -43,9 +52,9 @@ class LinkedDataLink extends HTMLElement {
 
     private _setLink() {
         if(this.resourceUrl) {
-            const state = LdNavigator.Instance.getStatePath(this.resourceUrl);
+            const state = LdNavigator.getStatePath(this.resourceUrl);
 
-            if (LdNavigator.Instance.useHashFragment) {
+            if (LdNavigator.useHashFragment) {
                 this._anchor.href = '#' + state;
             } else {
                 this._anchor.href = state;
@@ -57,10 +66,8 @@ class LinkedDataLink extends HTMLElement {
 }
 
 function navigate(e: Event) {
-    LdNavigation.Helpers.fireNavigation(this, this.resourceUrl);
+    Helpers.fireNavigation(this, this.resourceUrl);
     e.preventDefault();
 }
 
-document['registerElement']('ld-link', {
-    prototype: LinkedDataLink.prototype
-});
+window.customElements.define('ld-link',  LinkedDataLink);

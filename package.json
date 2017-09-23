@@ -1,10 +1,22 @@
 {
+  "name": "LdNavigation",
+  "main": "ld-navigation.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "install": "npm install -g web-component-tester wct-local wct-sauce bower typings typescript",
+    "build": "rollup -c",
     "test": "wct --plugin sauce",
     "test-local": "wct -p -l chrome --skip-selenium-install"
+  },
+  "devDependencies": {
+    "rollup": "^0.50.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "typescript": "^2.5.2",
+    "typings": "^2.1.1",
+    "wct-local": "^2.0.15",
+    "wct-sauce": "^1.8.6",
+    "web-component-tester": "^6.2.0"
   }
 }

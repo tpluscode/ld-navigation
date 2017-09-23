@@ -3,10 +3,10 @@ language: node_js
 node_js:
   - 5.5
 install:
-  - npm i
+  - npm i -g bower
   - bower i
 before_script:
-  - tsc
+  - npm run build
 branches:
   except:
     - gh-pages
