@@ -4,7 +4,8 @@ export default class Helpers {
             detail: {
                 resourceUrl: resourceUrl
             },
-            bubbles: true
+            bubbles: true,
+            composed: true
         }));
     }
 }
