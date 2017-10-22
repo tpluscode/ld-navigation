@@ -36,6 +36,13 @@
             </ld-link>
         </template>
     </test-fixture>
+    <test-fixture id="non-anchor-child">
+        <template>
+            <ld-link resource-url="http://example.com/some/path">
+                <paper-icon-button></paper-icon-button>
+            </ld-link>
+        </template>
+    </test-fixture>
 
     <script>
         var ldLink, ldNavigator;
@@ -211,7 +218,7 @@
             beforeEach(function () {
                 ldLink = fixture('no-link-child');
             });
-            
+
             it('should not render anchor', function() {
                 assert.isNull(ldLink.querySelector('a'));
             });
@@ -224,6 +231,16 @@
                 });
 
                 ldLink.click();
+            });
+        });
+
+        describe('<ld-link resource-url="http://example.com/some/path"> other element </ld-link>', function () {
+            beforeEach(function () {
+                ldLink = fixture('non-anchor-child');
+            });
+
+            it('should not render anchor', function() {
+                assert.isNull(ldLink.querySelector('a'));
             });
         });
 
