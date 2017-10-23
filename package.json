@@ -1,5 +1,6 @@
 {
   "name": "LdNavigation",
+  "version": "0.4.0-a2",
   "main": "ld-navigation.js",
   "directories": {
     "test": "tests"
