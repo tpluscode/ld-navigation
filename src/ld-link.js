@@ -1,4 +1,4 @@
-/* global HTMLElement */
+/* global HTMLElement, MutationObserver */
 import LdNavigator from './LdNavigator'
 import Helpers from './LdNavigation'
 
@@ -19,6 +19,18 @@ class LinkedDataLink extends HTMLElement {
     }
   }
 
+  connectedCallback () {
+    this._setLink()
+    this._observer = new MutationObserver(this._setLink.bind(this))
+    this._observer.observe(this, {
+      attributes: false, childList: true, subtree: true
+    })
+  }
+
+  disconnectedCallback () {
+    this._observer.disconnect()
+  }
+
   static get observedAttributes () {
     return [
       resourceUrlAttrName
@@ -34,9 +46,7 @@ class LinkedDataLink extends HTMLElement {
 
     this.removeAttribute('href')
 
-    if (this._anchor) {
-      this._setLink()
-    }
+    this._setLink()
   }
 
   get _anchor () {
@@ -50,6 +60,8 @@ class LinkedDataLink extends HTMLElement {
   }
 
   _setLink () {
+    if (!this._anchor) return
+
     if (this.resourceUrl) {
       const state = LdNavigator.getStatePath(this.resourceUrl)
 
@@ -65,6 +77,7 @@ class LinkedDataLink extends HTMLElement {
 }
 
 function navigate (e) {
+  debugger
   Helpers.fireNavigation(this, this.resourceUrl)
   e.preventDefault()
 }
