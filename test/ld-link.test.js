@@ -4,6 +4,7 @@ import { html } from 'lit-html'
 import { ifDefined } from 'lit-html/directives/if-defined'
 import '../src/ld-navigator'
 import '../src/ld-link'
+import eventToPromise from './eventToPromise'
 
 async function ldLinkFixture ({ base, useHashFragment, resourceUrl, clientBasePath } = {}, inner = '') {
   const addNavigator = base || useHashFragment || clientBasePath
@@ -197,8 +198,3 @@ describe('<ld-link resource-url="http://example.com/some/path"> other element </
   })
 })
 
-function eventToPromise (target, event) {
-  return new Promise(resolve => {
-    target.addEventListener(event, resolve)
-  })
-}
