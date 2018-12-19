@@ -1,71 +1,72 @@
-import LdNavigator from './LdNavigator';
-import Helpers from './LdNavigation';
+/* global HTMLElement */
+import LdNavigator from './LdNavigator'
+import Helpers from './LdNavigation'
 
-const resourceUrlAttrName = 'resource-url';
+const resourceUrlAttrName = 'resource-url'
 
 class LinkedDataLink extends HTMLElement {
-    constructor() {
-        super();
+  constructor () {
+    super()
 
-        if (this.hasAttribute(resourceUrlAttrName)) {
-            this.resourceUrl = this.getAttribute(resourceUrlAttrName);
-        }
-
-        if(this._anchor) {
-            this._anchor.addEventListener('click', navigate.bind(this));
-        } else {
-            this.addEventListener('click', navigate.bind(this));
-        }
+    if (this.hasAttribute(resourceUrlAttrName)) {
+      this.resourceUrl = this.getAttribute(resourceUrlAttrName)
     }
 
-    static get observedAttributes() {
-        return [
-            resourceUrlAttrName
-        ];
+    if (this._anchor) {
+      this._anchor.addEventListener('click', navigate.bind(this))
+    } else {
+      this.addEventListener('click', navigate.bind(this))
     }
+  }
 
-    get resourceUrl() {
-        return this._resourceUrl;
+  static get observedAttributes () {
+    return [
+      resourceUrlAttrName
+    ]
+  }
+
+  get resourceUrl () {
+    return this._resourceUrl
+  }
+
+  set resourceUrl (url) {
+    this._resourceUrl = url
+
+    this.removeAttribute('href')
+
+    if (this._anchor) {
+      this._setLink()
     }
+  }
 
-    set resourceUrl(url) {
-        this._resourceUrl = url;
+  get _anchor () {
+    return this.querySelector('a')
+  }
 
-        this.removeAttribute('href');
-
-        if(this._anchor) {
-            this._setLink();
-        }
+  attributeChangedCallback (attr, oldVal, newVal) {
+    if (attr === resourceUrlAttrName) {
+      this.resourceUrl = newVal
     }
+  }
 
-    get _anchor() {
-        return this.querySelector('a');
+  _setLink () {
+    if (this.resourceUrl) {
+      const state = LdNavigator.getStatePath(this.resourceUrl)
+
+      if (LdNavigator.useHashFragment) {
+        this._anchor.href = '#' + state
+      } else {
+        this._anchor.href = state
+      }
+    } else {
+      this._anchor.removeAttribute('href')
     }
-
-    attributeChangedCallback(attr, oldVal, newVal) {
-        if (attr === resourceUrlAttrName) {
-            this.resourceUrl = newVal;
-        }
-    }
-
-    _setLink() {
-        if(this.resourceUrl) {
-            const state = LdNavigator.getStatePath(this.resourceUrl);
-
-            if (LdNavigator.useHashFragment) {
-                this._anchor.href = '#' + state;
-            } else {
-                this._anchor.href = state;
-            }
-        } else {
-            this._anchor.removeAttribute('href');
-        }
-    }
+  }
 }
 
-function navigate(e) {
-    Helpers.fireNavigation(this, this.resourceUrl);
-    e.preventDefault();
+function navigate (e) {
+  Helpers.fireNavigation(this, this.resourceUrl)
+  e.preventDefault()
 }
 
-window.customElements.define('ld-link',  LinkedDataLink);
+window.customElements.define('ld-link', LinkedDataLink)
