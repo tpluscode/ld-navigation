@@ -4,8 +4,6 @@ import Helpers from './LdNavigation';
 const resourceUrlAttrName = 'resource-url';
 
 class LinkedDataLink extends HTMLElement {
-    private _resourceUrl:string;
-
     constructor() {
         super();
 
@@ -26,11 +24,11 @@ class LinkedDataLink extends HTMLElement {
         ];
     }
 
-    get resourceUrl():string {
+    get resourceUrl() {
         return this._resourceUrl;
     }
 
-    set resourceUrl(url:string) {
+    set resourceUrl(url) {
         this._resourceUrl = url;
 
         this.removeAttribute('href');
@@ -40,7 +38,7 @@ class LinkedDataLink extends HTMLElement {
         }
     }
 
-    private get _anchor(): HTMLAnchorElement {
+    get _anchor() {
         return this.querySelector('a');
     }
 
@@ -50,7 +48,7 @@ class LinkedDataLink extends HTMLElement {
         }
     }
 
-    private _setLink() {
+    _setLink() {
         if(this.resourceUrl) {
             const state = LdNavigator.getStatePath(this.resourceUrl);
 
@@ -65,7 +63,7 @@ class LinkedDataLink extends HTMLElement {
     }
 }
 
-function navigate(e: Event) {
+function navigate(e) {
     Helpers.fireNavigation(this, this.resourceUrl);
     e.preventDefault();
 }

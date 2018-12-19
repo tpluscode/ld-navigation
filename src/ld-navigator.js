@@ -1,13 +1,7 @@
-/// <reference path="LdNavigation.ts" />
-
 import LdNavigator from './LdNavigator';
 
 class LdNavigatorElement extends HTMLElement {
-    private _handlers;
-
     connectedCallback() {
-        this._handlers = [];
-
         this._handlers.push({ event: 'ld-navigated', handler: this._handleNavigation.bind(this) });
         this._handlers.push({ event: 'popstate', handler: this._navigateOnPopstate.bind(this) });
         this._handlers.push({ event: 'hashchange', handler: this._notifyOnHashchange.bind(this) });
@@ -21,6 +15,7 @@ class LdNavigatorElement extends HTMLElement {
 
     constructor() {
         super();
+        this._handlers = [];
 
         this.base = this.getAttribute('base');
         this.clientBasePath = this.getAttribute('client-base-path');
@@ -59,11 +54,11 @@ class LdNavigatorElement extends HTMLElement {
         }
     }
 
-    get resourceUrl():string {
+    get resourceUrl() {
         return LdNavigator.resourceUrl;
     }
 
-    get resourcePath(): string {
+    get resourcePath() {
         return LdNavigator.resourcePath;
     }
 
@@ -71,27 +66,27 @@ class LdNavigatorElement extends HTMLElement {
         return LdNavigator.statePath;
     }
 
-    get base(): string {
+    get base() {
         return LdNavigator.base;
     }
 
-    set base(url:string) {
+    set base(url) {
         LdNavigator.base = url;
     }
 
-    get clientBasePath(): string{
+    get clientBasePath() {
         return LdNavigator.clientBasePath;
     }
 
-    set clientBasePath(clientBasePath: string) {
+    set clientBasePath(clientBasePath) {
         LdNavigator.clientBasePath = clientBasePath || '';
     }
 
-    get useHashFragment(): boolean {
+    get useHashFragment() {
         return LdNavigator.useHashFragment;
     }
 
-    set useHashFragment(useHash: boolean) {
+    set useHashFragment(useHash) {
         if(useHash) {
             this.setAttribute('use-hash-fragment', '');
         } else{
@@ -99,7 +94,7 @@ class LdNavigatorElement extends HTMLElement {
         }
     }
 
-    private _handleNavigation(e: CustomEvent) {
+    _handleNavigation(e) {
         let prevUrl = this.resourceUrl;
 
         if (this.useHashFragment) {
@@ -113,20 +108,20 @@ class LdNavigatorElement extends HTMLElement {
         }
     }
 
-    private _navigateOnPopstate() {
+    _navigateOnPopstate() {
         if (this.useHashFragment === false) {
             notifyResourceUrlChanged(this);
         }
     }
 
-    private _notifyOnHashchange() {
+    _notifyOnHashchange() {
         if (this.useHashFragment) {
             notifyResourceUrlChanged(this);
         }
     }
 }
 
-function notifyResourceUrlChanged(elem: LdNavigatorElement) {
+function notifyResourceUrlChanged(elem) {
     elem.dispatchEvent(new CustomEvent('resource-url-changed', {
         detail: {
             value: elem.resourceUrl

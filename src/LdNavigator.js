@@ -1,13 +1,15 @@
 class LdNavigator {
-    private _base: string = '';
-    clientBasePath: string = '';
-    useHashFragment: boolean = false;
+    constructor() {
+        this._base = ''
+        this.clientBasePath = ''
+        this.useHashFragment = false
+    }
 
     get base() {
         return this._base;
     }
 
-    set base(url:string) {
+    set base(url) {
         if (url && url.replace) {
             url = url.replace(new RegExp('/$'), '');
         }
@@ -15,7 +17,7 @@ class LdNavigator {
         this._base = url || '';
     }
 
-    get resourcePath(): string {
+    get resourcePath() {
         const path = (this.useHashFragment
             ? document.location.hash.substr(1, document.location.hash.length - 1)
             : document.location.pathname).replace(/^\//, '');
@@ -31,7 +33,7 @@ class LdNavigator {
         return this.resourcePath;
     }
 
-    get resourceUrl():string {
+    get resourceUrl() {
         const path = this.resourcePath;
 
         if (/^http:\/\//.test(path)) {
@@ -41,7 +43,7 @@ class LdNavigator {
         }
     }
 
-    getStatePath(absoluteUrl: string): string {
+    getStatePath(absoluteUrl) {
 
         let resourcePath = absoluteUrl.replace(new RegExp('^' + this.base), '');
 
@@ -56,7 +58,7 @@ class LdNavigator {
         return resourcePath;
     }
 
-    private _resourceUrlMatchesBase(absoluteUrl: string): boolean {
+    _resourceUrlMatchesBase(absoluteUrl) {
         return !!this.base && !!absoluteUrl.match('^' + this.base);
     }
 }

@@ -1,5 +1,5 @@
 export default class Helpers {
-    static fireNavigation(dispatcher:EventTarget, resourceUrl:string) {
+    static fireNavigation(dispatcher, resourceUrl) {
         dispatcher.dispatchEvent(new CustomEvent('ld-navigated', {
             detail: {
                 resourceUrl: resourceUrl
