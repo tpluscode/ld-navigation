@@ -3,14 +3,14 @@
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
-import Helpers from '../NavigationHelper'
+import navigate from '../fireNavigation'
 
 describe('<ld-navigator use-hash-fragment>', () => {
   it('should set URL hash when ld-navigated event occurs', async () => {
     await navigatorFixture({ useHashFragment: true })
     const forNavigation = eventToPromise(window, 'ld-navigated')
 
-    Helpers.fireNavigation(document, 'http://example.org/hash/path')
+    navigate('http://example.org/hash/path')
     await forNavigation
 
     expect(location.hash).to.equal('#/http://example.org/hash/path')
@@ -33,7 +33,7 @@ describe('<ld-navigator use-hash-fragment base="">', () => {
     await navigatorFixture({ useHashFragment: true, base: 'http://base.example.org' })
     const forHashChange = eventToPromise(window, 'hashchange')
 
-    Helpers.fireNavigation(document, 'http://base.example.org/some/other/path')
+    navigate('http://base.example.org/some/other/path')
     await forHashChange
 
     expect(location.hash).to.equal('#/some/other/path')

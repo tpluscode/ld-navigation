@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
 import '../ld-navigator'
-import Helpers from '../NavigationHelper'
+import navigate from '../fireNavigation'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
 
@@ -19,7 +19,7 @@ describe('<ld-navigator>', () => {
     const ldNavigator = await navigatorFixture()
     const forChangeEvent = eventToPromise(ldNavigator, 'resource-url-changed')
 
-    Helpers.fireNavigation(document, 'http://example.org/current/resource')
+    navigate('http://example.org/current/resource')
     const e = await forChangeEvent
 
     expect(e.detail.value).to.equal('http://example.org/current/resource')
@@ -28,13 +28,13 @@ describe('<ld-navigator>', () => {
   it('should not change resource url when it is same as current', async () => {
     let handled
     const ldNavigator = await navigatorFixture()
-    Helpers.fireNavigation(document, 'http://example.org/current/resource')
+    navigate('http://example.org/current/resource')
 
     ldNavigator.addEventListener('resource-url-changed', function (e) {
       handled = true
     })
 
-    Helpers.fireNavigation(document, 'http://example.org/current/resource')
+    navigate('http://example.org/current/resource')
 
     return new Promise((resolve, reject) => {
       window.setTimeout(

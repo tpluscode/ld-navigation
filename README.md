@@ -28,10 +28,12 @@ Run `yarn add ld-navigation`
 In your code
 
 ```js
+// main element, required
 import 'ld-navigation/ld-navigator'
-// optionally
+// optionally, to wrap links
 import 'ld-navigation/ld-link'
-import NavigationHelper from 'ld-navigation/NavigationHelper'
+// optionally, to initiate navigation manually
+import fireNavigation from 'ld-navigation/fireNavigation'
 ```
 
 **No external dependencies**

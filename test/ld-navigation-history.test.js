@@ -3,14 +3,14 @@
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
-import Helpers from '../NavigationHelper'
+import navigate from '../fireNavigation'
 
 describe('<ld-navigator>', () => {
   it('should push absolute URL state when ld-navigated event occurs', async () => {
     const elem = await navigatorFixture()
     const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
 
-    Helpers.fireNavigation(document, 'http://example.org/some/path')
+    navigate('http://example.org/some/path')
     await forChangeEvent
 
     expect(location.pathname).to.equal('/http://example.org/some/path')
@@ -19,8 +19,8 @@ describe('<ld-navigator>', () => {
   it('should trigger navigation on popstate event', async () => {
     const elem = await navigatorFixture()
     const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
-    Helpers.fireNavigation(document, 'http://example.org/initial/path')
-    Helpers.fireNavigation(document, 'http://example.org/next/path')
+    navigate('http://example.org/initial/path')
+    navigate('http://example.org/next/path')
 
     history.back()
     const e = await forChangeEvent
@@ -34,7 +34,7 @@ describe('<ld-navigator base>', () => {
     await navigatorFixture({ base: 'http://base2.example.org' })
     const forNavigation = eventToPromise(window, 'ld-navigated')
 
-    Helpers.fireNavigation(document, 'http://base2.example.org/some/other/path')
+    navigate('http://base2.example.org/some/other/path')
     await forNavigation
 
     expect(location.pathname).to.equal('/some/other/path')
@@ -46,7 +46,7 @@ describe('<ld-navigator base base-client-path="app-base">', () => {
     await navigatorFixture({ base: 'http://base2.example.org', clientBasePath: 'app-base' })
     const forNavigation = eventToPromise(window, 'ld-navigated')
 
-    Helpers.fireNavigation(document, 'http://example.org/some/path')
+    navigate('http://example.org/some/path')
     await forNavigation
 
     expect(location.pathname).to.equal('/app-base/http://example.org/some/path')
