@@ -1,0 +1,21 @@
+{
+  "entrypoint": "demo/index.html",
+  "shell": "demo/demo-app.js",
+  "sources": [
+    "demo/demo-app.js",
+    "package.json"
+  ],
+  "extraDependencies": [
+    "index.html",
+    "404.html",
+    "demo/pages/*.md",
+    "node_modules/@webcomponents/webcomponentsjs/**"
+  ],
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    }
+  ],
+  "moduleResolution": "node",
+  "npm": true
+}
