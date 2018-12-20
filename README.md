@@ -1,4 +1,4 @@
-# ld-navigation [![Build Status](https://travis-ci.org/tpluscode/ld-navigation.svg?branch=master)](https://travis-ci.org/tpluscode/ld-navigation)
+# ld-navigation [![Build Status](https://travis-ci.org/tpluscode/ld-navigation.svg?branch=master)](https://travis-ci.org/tpluscode/ld-navigation) [![Coverage](https://img.shields.io/codecov/c/github/tpluscide/ld-navigation.png)](https://codecov.io/gh/tpluscode/ld-navigation)
 
 A set of Web Components for data-driven Linked Data REST client in the browser.
 
