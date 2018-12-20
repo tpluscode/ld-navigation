@@ -1,7 +1,7 @@
 /* global describe, it */
 /* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
-import '../src/ld-navigator'
+import '../ld-navigator'
 import Helpers from '../NavigationHelper'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
