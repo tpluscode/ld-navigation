@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "standard && karma start karma.es5.bs.config.js",
+    "test:es5": "standard && karma start karma.es5.config.js",
     "test:local": "karma start karma.config.js"
   },
   "devDependencies": {
