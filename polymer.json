@@ -9,7 +9,8 @@
     "index.html",
     "404.html",
     "demo/pages/*.md",
-    "node_modules/@webcomponents/webcomponentsjs/**"
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/github-fork-ribbon-css/**"
   ],
   "builds": [
     {
