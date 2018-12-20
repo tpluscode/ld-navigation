@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c",
     "test": "standard && karma start karma.es5.bs.config.js",
     "test:local": "karma start karma.config.js"
   },
