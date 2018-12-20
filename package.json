@@ -25,7 +25,6 @@
     "github-fork-ribbon-css": "^0.2.1",
     "polymer-cli": "^1.9.3",
     "standard": "^12.0.1",
-    "upper88-title": "https://github.com/erikwett/upper88-title",
     "zero-md": "https://github.com/zerodevx/zero-md"
   },
   "dependencies": {

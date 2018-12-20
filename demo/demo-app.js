@@ -7,7 +7,7 @@ import '@polymer/paper-button/paper-button'
 import '@polymer/paper-item/paper-item'
 import '@polymer/paper-listbox/paper-listbox'
 import '@polymer/paper-toast/paper-toast'
-import 'upper88-title/upper88-title'
+import './upper88-title'
 import 'zero-md/src/zero-md'
 import fireNavigation from '../fireNavigation'
 import '../ld-link'
@@ -61,7 +61,7 @@ export default class DemoApp extends PolymerElement {
                   client-base-path="demo"
                   use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
-    <upper88-title hidden value$="[[getTitle(selectedItem)]] - ld-navigation - web components for simple client side routing"></upper88-title>
+    <upper88-title hidden value$="[[selectedItem.heading]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
     <paper-toast id="toast">
         You just navigated to [[resourceUrl]]. <ld-link resource-url="{{baseUrl}}/events"><a>How do I know?</a></ld-link>
@@ -191,14 +191,6 @@ export default class DemoApp extends PolymerElement {
 
   openToast () {
     this.$.toast.open()
-  }
-
-  getTitle (selectedItem) {
-    if (selectedItem) {
-      return selectedItem.heading
-    }
-
-    return ''
   }
 
   menuNavigate (e) {
