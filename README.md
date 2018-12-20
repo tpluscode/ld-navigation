@@ -1,10 +1,10 @@
-# ld-navigation [![Build Status](https://travis-ci.org/tpluscode/ld-navigation.svg?branch=master)](https://travis-ci.org/tpluscode/ld-navigation)
+# ld-navigation [![Build Status](https://travis-ci.org/tpluscode/ld-navigation.svg?branch=master)](https://travis-ci.org/tpluscode/ld-navigation) [![Coverage](https://img.shields.io/codecov/c/github/tpluscide/ld-navigation.png)](https://codecov.io/gh/tpluscode/ld-navigation)
 
 A set of Web Components for data-driven Linked Data REST client in the browser.
 
-With ld-navigation you let actual Linked Data be the router of your application. 
+With ld-navigation you let actual Linked Data be the router of your application.
 
-You then simply GET and decide what to display based on the data returned. 
+You then simply GET and decide what to display based on the data returned.
 **No more client-side routing**.
 
 ### &lt;ld-navigator&gt;
@@ -23,9 +23,18 @@ You then simply GET and decide what to display based on the data returned.
 
 ## Installation
 
-Run `bower install --save ld-navigation`
+Run `yarn add ld-navigation`
 
-Add `bower_components/ld-navigation/ld-navigation.html` in your HTML document
+In your code
+
+```js
+// main element, required
+import 'ld-navigation/ld-navigator'
+// optionally, to wrap links
+import 'ld-navigation/ld-link'
+// optionally, to initiate navigation manually
+import fireNavigation from 'ld-navigation/fireNavigation'
+```
 
 **No external dependencies**
 
@@ -36,9 +45,6 @@ Let's assume that:
 * Your Linked Data API is at `http://api.my.app/`.
 
 ``` html
-<!-- there is no direct dependency, but you'll likely need that -->
-<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-
 <!-- navigator exposes a resourceUrl property, see below -->
 <ld-navigator></ld-navigator>
 
@@ -53,7 +59,7 @@ var navigator = document.querySelector('ld-navigator')
 navigator.addEventListener('resource-url-changed', function(e) {
     // same url sits in e.detail.resourceUrl
     var nextUrl = navigator.resourceUrl;
-    
+
     // no go ahead and $.get or window.fetch your data from nextUrl
     window.fetch(nextUrl).then(bindDataWithPage);
   });
@@ -80,9 +86,9 @@ routing becomes virtually obsolete.
 
 ## Tests
 
-Tests are written with [web-component-tester](/Polymer/web-component-tester) in Mocha BDD style.
+Tests are written with [@open-wc/testing](http://open-wc.org).
 
 ``` bash
-npm install
-npm run test-local
+yarn install
+yarn test:local
 ```
