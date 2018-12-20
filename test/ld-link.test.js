@@ -3,8 +3,8 @@
 import { litFixture as fixture, expect } from '@open-wc/testing'
 import { html } from 'lit-html'
 import { ifDefined } from 'lit-html/directives/if-defined'
-import '../src/ld-navigator'
-import '../src/ld-link'
+import '../ld-navigator'
+import '../ld-link'
 import eventToPromise from './eventToPromise'
 
 async function ldLinkFixture ({ base, useHashFragment, resourceUrl, clientBasePath } = {}, inner = '') {

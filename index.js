@@ -1,9 +1,8 @@
-import './src/ld-link';
-import './src/ld-navigator';
-import LdNavigator from './src/LdNavigator';
-import Helpers from './src/LdNavigation';
+import './ld-navigator'
+import LdNavigator from './LdNavigator'
+import Helpers from './LdNavigation'
 
 export {
-    Helpers,
-    LdNavigator
+  Helpers,
+  LdNavigator
 }

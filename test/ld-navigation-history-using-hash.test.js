@@ -3,7 +3,7 @@
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
-import Helpers from '../src/LdNavigation'
+import Helpers from '../LdNavigation'
 
 describe('<ld-navigator use-hash-fragment>', () => {
   it('should set URL hash when ld-navigated event occurs', async () => {
