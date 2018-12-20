@@ -1,6 +1,6 @@
 /* global HTMLElement, MutationObserver */
 import LdNavigator from './LdNavigator'
-import Helpers from './LdNavigation'
+import Helpers from './NavigationHelper'
 
 const resourceUrlAttrName = 'resource-url'
 
@@ -77,7 +77,6 @@ class LinkedDataLink extends HTMLElement {
 }
 
 function navigate (e) {
-  debugger
   Helpers.fireNavigation(this, this.resourceUrl)
   e.preventDefault()
 }

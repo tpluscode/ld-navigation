@@ -23,7 +23,7 @@ class LdNavigator {
       : document.location.pathname).replace(/^\//, '')
 
     if (this.clientBasePath) {
-      return path.replace(new RegExp('^' + this.clientBasePath + '\/'), '')
+      return path.replace(new RegExp('^' + this.clientBasePath + '/'), '')
     }
 
     return path

@@ -198,4 +198,3 @@ describe('<ld-link resource-url="http://example.com/some/path"> other element </
     expect(ldLink.querySelector('a')).to.be.null
   })
 })
-
