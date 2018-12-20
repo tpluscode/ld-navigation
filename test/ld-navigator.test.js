@@ -1,15 +1,10 @@
 /* global describe, it */
-import { expect, litFixture } from '@open-wc/testing'
-import { html } from 'lit-html'
-import { ifDefined } from 'lit-html/directives/if-defined'
+/* eslint-disable no-unused-expressions */
+import { expect } from '@open-wc/testing'
 import '../src/ld-navigator'
 import Helpers from '../src/LdNavigation'
 import eventToPromise from './eventToPromise'
-
-function navigatorFixture ({ base, clientBasePath } = {}) {
-  return litFixture(html`<ld-navigator base="${ifDefined(base)}"
-                                       client-base-path="${ifDefined(clientBasePath)}"></ld-navigator>`)
-}
+import navigatorFixture from './ld-navigator.fixture'
 
 describe('<ld-navigator>', () => {
   it('doesn\'t set attribute when setting base URL property', async () => {

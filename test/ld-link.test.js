@@ -1,4 +1,5 @@
 /* global describe, beforeEach, it */
+/* eslint-disable no-unused-expressions */
 import { litFixture as fixture, expect } from '@open-wc/testing'
 import { html } from 'lit-html'
 import { ifDefined } from 'lit-html/directives/if-defined'
