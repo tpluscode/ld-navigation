@@ -23,7 +23,7 @@ You then simply GET and decide what to display based on the data returned.
 
 ## Installation
 
-Run `npm install --save ld-navigation`
+Run `yarn add ld-navigation`
 
 In your code
 
