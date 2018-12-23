@@ -25,6 +25,8 @@ class LdNavigatorElement extends HTMLElement {
     if (!(window.history && window.history.pushState)) {
       this.useHashFragment = true
     }
+
+    this._lastUrl = null
   }
 
   static get observedAttributes () {
@@ -123,11 +125,14 @@ class LdNavigatorElement extends HTMLElement {
 }
 
 function notifyResourceUrlChanged (elem) {
+  if (elem._lastUrl === elem.resourceUrl) { return }
+
   elem.dispatchEvent(new CustomEvent('resource-url-changed', {
     detail: {
       value: elem.resourceUrl
     }
   }))
+  elem._lastUrl = elem.resourceUrl
 }
 
 window.customElements.define('ld-navigator', LdNavigatorElement)
