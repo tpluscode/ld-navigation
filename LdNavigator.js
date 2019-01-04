@@ -36,7 +36,7 @@ class LdNavigator {
   get resourceUrl () {
     const path = this.resourcePath
 
-    if (/^http:\/\//.test(path)) {
+    if (/^https?:\/\//.test(path)) {
       return path + document.location.search
     } else {
       return this.base + '/' + path + document.location.search
