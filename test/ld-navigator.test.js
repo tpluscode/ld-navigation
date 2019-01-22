@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, location */
 /* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
 import '../ld-navigator'
@@ -73,6 +73,30 @@ describe('<ld-navigator>', () => {
     })
 
     expect(ldNavigator.base).to.equal('http://example.org')
+  })
+
+  it('should preserve resource id hash part in location', async () => {
+    const elem = await navigatorFixture()
+    const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
+
+    navigate('http://example.org/some/path#id')
+    await forChangeEvent
+
+    expect(location.href).to.match(/http:\/\/example.org\/some\/path#id$/)
+    expect(elem.resourceUrl).to.equal('http://example.org/some/path#id')
+  })
+})
+
+describe('<ld-navigator use-hash-fragment>', () => {
+  it('should preserve resource id hash part in location', async () => {
+    const elem = await navigatorFixture({ useHashFragment: true })
+    const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
+
+    navigate('http://example.org/some/path#id')
+    await forChangeEvent
+
+    expect(location.hash).to.equal('#/http://example.org/some/path#id')
+    expect(elem.resourceUrl).to.equal('http://example.org/some/path#id')
   })
 })
 
