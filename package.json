@@ -1,8 +1,12 @@
 {
   "name": "ld-navigation",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tpluscode/ld-navigation.git"
+  },
   "scripts": {
     "test": "standard && karma start karma.es5.bs.config.js",
     "test:es5": "standard && karma start karma.es5.config.js",
