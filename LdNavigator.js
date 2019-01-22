@@ -18,9 +18,13 @@ class LdNavigator {
   }
 
   get resourcePath () {
-    const path = (this.useHashFragment
-      ? document.location.hash.substr(1, document.location.hash.length - 1)
-      : document.location.pathname).replace(/^\//, '')
+    let path
+    if (this.useHashFragment) {
+      path = document.location.hash.substr(1, document.location.hash.length - 1).replace(/^\//, '')
+    } else {
+      path = document.location.pathname.replace(/^\//, '')
+      path += document.location.hash
+    }
 
     if (this.clientBasePath) {
       return path.replace(new RegExp('^' + this.clientBasePath + '/'), '')

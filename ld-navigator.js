@@ -1,7 +1,7 @@
 /* global HTMLElement, CustomEvent, history */
 import LdNavigator from './LdNavigator'
 
-class LdNavigatorElement extends HTMLElement {
+export default class LdNavigatorElement extends HTMLElement {
   connectedCallback () {
     this._handlers.push({ event: 'ld-navigated', handler: this._handleNavigation.bind(this) })
     this._handlers.push({ event: 'popstate', handler: this._navigateOnPopstate.bind(this) })
