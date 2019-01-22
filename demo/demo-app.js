@@ -7,6 +7,7 @@ import '@polymer/paper-button/paper-button'
 import '@polymer/paper-item/paper-item'
 import '@polymer/paper-listbox/paper-listbox'
 import '@polymer/paper-toast/paper-toast'
+import '@polymer/paper-checkbox/paper-checkbox'
 import './upper88-title'
 import 'zero-md/src/zero-md'
 import fireNavigation from '../fireNavigation'
@@ -21,7 +22,8 @@ export default class DemoApp extends PolymerElement {
   static get properties () {
     return {
       baseUrl: String,
-      resourceUrl: String
+      resourceUrl: String,
+      useHashFragment: Boolean
     }
   }
 
@@ -100,6 +102,8 @@ export default class DemoApp extends PolymerElement {
                 </paper-item>
 
             </paper-listbox>
+            
+            <paper-checkbox checked="{{useHashFragment}}" style="margin-left: 15px">Use hash fragment</paper-checkbox>
         </app-drawer>
         <div>
             <paper-card heading="Current resource URL is">
@@ -116,7 +120,7 @@ export default class DemoApp extends PolymerElement {
                     </div>
                 </paper-card>
 
-                <paper-card heading="location.hash history fallback" data-url$="{{baseUrl}}/?useHash">
+                <paper-card heading="location.hash history fallback" data-url$="{{baseUrl}}/use-hash">
                     <div class="card-content">
                         <zero-md src="pages/hash.md">
                         </zero-md>
