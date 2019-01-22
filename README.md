@@ -19,7 +19,7 @@ You then simply GET and decide what to display based on the data returned.
 
 [Demos and sort-of documentation](https://routing.hypermedia.app/demo/).
 
-[`ld-navigation` also plays nice with location.hash history](https://routing.hypermedia.app/demo/?useHash).
+[`ld-navigation` also plays nice with location.hash history](https://routing.hypermedia.app/demo/#use-hash).
 
 ## Installation
 
