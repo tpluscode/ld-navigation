@@ -1,16 +1,23 @@
-/* global HTMLElement, MutationObserver */
 import LdNavigator from './LdNavigator'
 import go from './fireNavigation'
 
 const resourceUrlAttrName = 'resource-url'
 
-class LinkedDataLink extends HTMLElement {
-  constructor () {
+function navigate(this: LinkedDataLink, e: Event): void {
+  if (this.resourceUrl) {
+    go(this, this.resourceUrl)
+  }
+  e.preventDefault()
+}
+
+export class LinkedDataLink extends HTMLElement {
+  private _observer: MutationObserver
+  private _resourceUrl: string | null = null
+
+  constructor() {
     super()
 
-    if (this.hasAttribute(resourceUrlAttrName)) {
-      this.resourceUrl = this.getAttribute(resourceUrlAttrName)
-    }
+    this._observer = new MutationObserver(this._setLink.bind(this))
 
     if (this._anchor) {
       this._anchor.addEventListener('click', navigate.bind(this))
@@ -19,29 +26,33 @@ class LinkedDataLink extends HTMLElement {
     }
   }
 
-  connectedCallback () {
+  connectedCallback() {
     this._setLink()
-    this._observer = new MutationObserver(this._setLink.bind(this))
+
+    if (this.hasAttribute(resourceUrlAttrName)) {
+      this.resourceUrl = this.getAttribute(resourceUrlAttrName)
+    }
+
     this._observer.observe(this, {
-      attributes: false, childList: true, subtree: true
+      attributes: false,
+      childList: true,
+      subtree: true,
     })
   }
 
-  disconnectedCallback () {
+  disconnectedCallback() {
     this._observer.disconnect()
   }
 
-  static get observedAttributes () {
-    return [
-      resourceUrlAttrName
-    ]
+  static get observedAttributes() {
+    return [resourceUrlAttrName]
   }
 
-  get resourceUrl () {
+  get resourceUrl() {
     return this._resourceUrl
   }
 
-  set resourceUrl (url) {
+  set resourceUrl(url) {
     this._resourceUrl = url
 
     this.removeAttribute('href')
@@ -49,24 +60,24 @@ class LinkedDataLink extends HTMLElement {
     this._setLink()
   }
 
-  get _anchor () {
+  get _anchor() {
     return this.querySelector('a')
   }
 
-  attributeChangedCallback (attr, oldVal, newVal) {
+  attributeChangedCallback(attr: string, oldVal: string, newVal: string) {
     if (attr === resourceUrlAttrName) {
       this.resourceUrl = newVal
     }
   }
 
-  _setLink () {
+  _setLink() {
     if (!this._anchor) return
 
     if (this.resourceUrl) {
       const state = LdNavigator.getStatePath(this.resourceUrl)
 
       if (LdNavigator.useHashFragment) {
-        this._anchor.href = '#' + state
+        this._anchor.href = `#${state}`
       } else {
         this._anchor.href = state
       }
@@ -74,11 +85,6 @@ class LinkedDataLink extends HTMLElement {
       this._anchor.removeAttribute('href')
     }
   }
-}
-
-function navigate (e) {
-  go(this, this.resourceUrl)
-  e.preventDefault()
 }
 
 window.customElements.define('ld-link', LinkedDataLink)

@@ -1,13 +1,11 @@
-/* global describe, it, location */
-/* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
-import '../ld-navigator'
+import '../ld-navigator.ts'
 import navigate from '../fireNavigation'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
 
 describe('<ld-navigator>', () => {
-  it('doesn\'t set attribute when setting base URL property', async () => {
+  it("doesn't set attribute when setting base URL property", async () => {
     const ldNavigator = await navigatorFixture()
 
     ldNavigator.base = 'http://example.org/'
@@ -26,11 +24,11 @@ describe('<ld-navigator>', () => {
   })
 
   it('should not change resource url when it is same as current', async () => {
-    let handled
+    let handled: boolean
     const ldNavigator = await navigatorFixture()
     navigate('http://example.org/current/resource')
 
-    ldNavigator.addEventListener('resource-url-changed', function (e) {
+    ldNavigator.addEventListener('resource-url-changed', () => {
       handled = true
     })
 
@@ -38,8 +36,12 @@ describe('<ld-navigator>', () => {
 
     return new Promise((resolve, reject) => {
       window.setTimeout(
-        () => handled ? reject(new Error('resource-url-changed event should not have happened')) : resolve(),
-        200)
+        () =>
+          handled
+            ? reject(new Error('resource-url-changed event should not have happened'))
+            : resolve(),
+        200,
+      )
     })
   })
 
@@ -53,7 +55,7 @@ describe('<ld-navigator>', () => {
 
   it('sets property when setting base attribute', async () => {
     const ldNavigator = await navigatorFixture({
-      base: 'http://example.org'
+      base: 'http://example.org',
     })
 
     expect(ldNavigator.base).to.equal('http://example.org')
@@ -61,7 +63,7 @@ describe('<ld-navigator>', () => {
 
   it('sets property when setting client-base-path attribute', async () => {
     const ldNavigator = await navigatorFixture({
-      clientBasePath: 'my/test'
+      clientBasePath: 'my/test',
     })
 
     expect(ldNavigator.clientBasePath).to.equal('my/test')
@@ -69,7 +71,7 @@ describe('<ld-navigator>', () => {
 
   it('should remove trailing slash from base URL', async () => {
     const ldNavigator = await navigatorFixture({
-      base: 'http://example.org/'
+      base: 'http://example.org/',
     })
 
     expect(ldNavigator.base).to.equal('http://example.org')
@@ -82,7 +84,7 @@ describe('<ld-navigator>', () => {
     navigate('http://example.org/some/path#id')
     await forChangeEvent
 
-    expect(location.href).to.match(/http:\/\/example.org\/some\/path#id$/)
+    expect(window.location.href).to.match(/http:\/\/example.org\/some\/path#id$/)
     expect(elem.resourceUrl).to.equal('http://example.org/some/path#id')
   })
 })
@@ -95,7 +97,7 @@ describe('<ld-navigator use-hash-fragment>', () => {
     navigate('http://example.org/some/path#id')
     await forChangeEvent
 
-    expect(location.hash).to.equal('#/http://example.org/some/path#id')
+    expect(window.location.hash).to.equal('#/http://example.org/some/path#id')
     expect(elem.resourceUrl).to.equal('http://example.org/some/path#id')
   })
 })
@@ -103,12 +105,14 @@ describe('<ld-navigator use-hash-fragment>', () => {
 describe('<ld-navigator base="http://example.com">', () => {
   it('has resource URL set to absolute document path', async () => {
     const ldNavigator = await navigatorFixture({
-      base: 'http://example.com'
+      base: 'http://example.com',
     })
 
     window.history.pushState({}, '', '/some/client/path/ld-navigator-tests.html')
 
-    expect(ldNavigator.resourceUrl).to.equal('http://example.com/some/client/path/ld-navigator-tests.html')
+    expect(ldNavigator.resourceUrl).to.equal(
+      'http://example.com/some/client/path/ld-navigator-tests.html',
+    )
   })
 })
 
@@ -116,7 +120,7 @@ describe('<ld-navigator base="http://example.com" client-base-path="components/h
   it('has resource URL without base client path', async () => {
     const ldNavigator = await navigatorFixture({
       base: 'http://example.com',
-      clientBasePath: 'components/html5-history/test'
+      clientBasePath: 'components/html5-history/test',
     })
 
     window.history.pushState({}, '', '/components/html5-history/test/ld-navigator-tests.html')

@@ -1,5 +1,3 @@
-/* global describe, location, it, history */
-/* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
@@ -13,7 +11,7 @@ describe('<ld-navigator>', () => {
     navigate('http://example.org/some/path')
     await forChangeEvent
 
-    expect(location.pathname).to.equal('/http://example.org/some/path')
+    expect(window.location.pathname).to.equal('/http://example.org/some/path')
   })
 
   it('should trigger navigation on popstate event', async () => {
@@ -22,7 +20,7 @@ describe('<ld-navigator>', () => {
     navigate('http://example.org/initial/path')
     navigate('http://example.org/next/path')
 
-    history.back()
+    window.history.back()
     const e = await forChangeEvent
 
     expect(e.detail.value).to.equal('http://example.org/initial/path')
@@ -37,7 +35,7 @@ describe('<ld-navigator base>', () => {
     navigate('http://base2.example.org/some/other/path')
     await forNavigation
 
-    expect(location.pathname).to.equal('/some/other/path')
+    expect(window.location.pathname).to.equal('/some/other/path')
   })
 })
 
@@ -49,6 +47,6 @@ describe('<ld-navigator base base-client-path="app-base">', () => {
     navigate('http://example.org/some/path')
     await forNavigation
 
-    expect(location.pathname).to.equal('/app-base/http://example.org/some/path')
+    expect(window.location.pathname).to.equal('/app-base/http://example.org/some/path')
   })
 })

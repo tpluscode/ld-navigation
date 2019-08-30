@@ -1,5 +1,3 @@
-/* global describe, location, it */
-/* eslint-disable no-unused-expressions */
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
@@ -13,7 +11,7 @@ describe('<ld-navigator use-hash-fragment>', () => {
     navigate('http://example.org/hash/path')
     await forNavigation
 
-    expect(location.hash).to.equal('#/http://example.org/hash/path')
+    expect(window.location.hash).to.equal('#/http://example.org/hash/path')
   })
 
   it('should change resourceUrl on hashchange event', async () => {
@@ -36,6 +34,6 @@ describe('<ld-navigator use-hash-fragment base="">', () => {
     navigate('http://base.example.org/some/other/path')
     await forHashChange
 
-    expect(location.hash).to.equal('#/some/other/path')
+    expect(window.location.hash).to.equal('#/some/other/path')
   })
 })

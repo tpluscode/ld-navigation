@@ -1,0 +1,48 @@
+{
+  "root": true,
+  "extends": [
+    "@open-wc/eslint-config",
+    "eslint-config-prettier",
+    "plugin:@typescript-eslint/recommended",
+    "standard"
+  ],
+  "env": {
+    "browser": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "lit",
+    "import"
+  ],
+  "rules": {
+    "indent": "off",
+    "import/no-unresolved": "warn",
+    "import/extensions": "off",
+    "space-before-function-paren": [
+      "error",
+      {
+        "named": "never"
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "@typescript-eslint/no-var-requires": "warn",
+    "@typescript-eslint/indent": ["error", 2]
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ]
+}

@@ -1,8 +1,36 @@
-/* global HTMLElement, CustomEvent, history */
+/* eslint-disable class-methods-use-this */
 import LdNavigator from './LdNavigator'
 
-export default class LdNavigatorElement extends HTMLElement {
-  connectedCallback () {
+function notifyResourceUrlChanged(elem: LdNavigatorElement): void {
+  if (elem._lastUrl === elem.resourceUrl) {
+    return
+  }
+
+  elem.dispatchEvent(
+    new CustomEvent('resource-url-changed', {
+      detail: {
+        value: elem.resourceUrl,
+      },
+    }),
+  )
+  // eslint-disable-next-line no-param-reassign
+  elem._lastUrl = elem.resourceUrl
+}
+
+interface Handler {
+  event: string
+  handler: any
+}
+
+export class LdNavigatorElement extends HTMLElement {
+  public _lastUrl: string | null = null
+  public _handlers: Handler[]
+
+  connectedCallback() {
+    this.base = this.getAttribute('base') || ''
+    this.clientBasePath = this.getAttribute('client-base-path') || ''
+    LdNavigator.useHashFragment = this.getAttribute('use-hash-fragment') !== null
+
     this._handlers.push({ event: 'ld-navigated', handler: this._handleNavigation.bind(this) })
     this._handlers.push({ event: 'popstate', handler: this._navigateOnPopstate.bind(this) })
     this._handlers.push({ event: 'hashchange', handler: this._notifyOnHashchange.bind(this) })
@@ -14,13 +42,9 @@ export default class LdNavigatorElement extends HTMLElement {
     notifyResourceUrlChanged(this)
   }
 
-  constructor () {
+  constructor() {
     super()
     this._handlers = []
-
-    this.base = this.getAttribute('base')
-    this.clientBasePath = this.getAttribute('client-base-path')
-    LdNavigator.useHashFragment = this.getAttribute('use-hash-fragment') !== null
 
     if (!(window.history && window.history.pushState)) {
       this.useHashFragment = true
@@ -29,21 +53,18 @@ export default class LdNavigatorElement extends HTMLElement {
     this._lastUrl = null
   }
 
-  static get observedAttributes () {
-    return [
-      'base',
-      'client-base-path',
-      'use-hash-fragment'
-    ]
+  static get observedAttributes() {
+    return ['base', 'client-base-path', 'use-hash-fragment']
   }
 
-  disconnectedCallback () {
+  disconnectedCallback() {
     this._handlers.forEach(h => {
       window.removeEventListener(h.event, h.handler)
     })
   }
 
-  attributeChangedCallback (attr, oldVal, newVal) {
+  attributeChangedCallback(attr: string, oldVal: string, newVal: string) {
+    // eslint-disable-next-line default-case
     switch (attr) {
       case 'base':
         this.base = newVal
@@ -57,39 +78,39 @@ export default class LdNavigatorElement extends HTMLElement {
     }
   }
 
-  get resourceUrl () {
+  get resourceUrl() {
     return LdNavigator.resourceUrl
   }
 
-  get resourcePath () {
+  get resourcePath() {
     return LdNavigator.resourcePath
   }
 
-  get statePath () {
+  get statePath() {
     return LdNavigator.statePath
   }
 
-  get base () {
+  get base() {
     return LdNavigator.base
   }
 
-  set base (url) {
+  set base(url) {
     LdNavigator.base = url
   }
 
-  get clientBasePath () {
+  get clientBasePath() {
     return LdNavigator.clientBasePath
   }
 
-  set clientBasePath (clientBasePath) {
+  set clientBasePath(clientBasePath) {
     LdNavigator.clientBasePath = clientBasePath || ''
   }
 
-  get useHashFragment () {
+  get useHashFragment() {
     return LdNavigator.useHashFragment
   }
 
-  set useHashFragment (useHash) {
+  set useHashFragment(useHash) {
     if (useHash) {
       this.setAttribute('use-hash-fragment', '')
     } else {
@@ -97,13 +118,17 @@ export default class LdNavigatorElement extends HTMLElement {
     }
   }
 
-  _handleNavigation (e) {
-    let prevUrl = this.resourceUrl
+  _handleNavigation(e: CustomEvent) {
+    const prevUrl = this.resourceUrl
 
     if (this.useHashFragment) {
       document.location.hash = LdNavigator.getStatePath(e.detail.resourceUrl)
-    } else if (e.detail.resourceUrl !== history.state) {
-      history.pushState(e.detail.resourceUrl, '', LdNavigator.getStatePath(e.detail.resourceUrl))
+    } else if (e.detail.resourceUrl !== window.history.state) {
+      window.history.pushState(
+        e.detail.resourceUrl,
+        '',
+        LdNavigator.getStatePath(e.detail.resourceUrl),
+      )
     }
 
     if (prevUrl !== this.resourceUrl) {
@@ -111,28 +136,17 @@ export default class LdNavigatorElement extends HTMLElement {
     }
   }
 
-  _navigateOnPopstate () {
+  _navigateOnPopstate() {
     if (this.useHashFragment === false) {
       notifyResourceUrlChanged(this)
     }
   }
 
-  _notifyOnHashchange () {
+  _notifyOnHashchange() {
     if (this.useHashFragment) {
       notifyResourceUrlChanged(this)
     }
   }
-}
-
-function notifyResourceUrlChanged (elem) {
-  if (elem._lastUrl === elem.resourceUrl) { return }
-
-  elem.dispatchEvent(new CustomEvent('resource-url-changed', {
-    detail: {
-      value: elem.resourceUrl
-    }
-  }))
-  elem._lastUrl = elem.resourceUrl
 }
 
 window.customElements.define('ld-navigator', LdNavigatorElement)
