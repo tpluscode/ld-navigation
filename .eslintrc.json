@@ -34,7 +34,12 @@
       "always-multiline"
     ],
     "@typescript-eslint/no-var-requires": "warn",
-    "@typescript-eslint/indent": ["error", 2]
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/member-delimiter-style": ["error", {
+      "multiline": {
+        "delimiter": "none"
+      }
+    }]
   },
   "overrides": [
     {

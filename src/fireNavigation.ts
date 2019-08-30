@@ -1,4 +1,4 @@
-export default function(dispatcher: EventTarget | string, url?: string): void {
+export default function go(dispatcher: EventTarget | string, url?: string): void {
   let eventSource: EventTarget
   let resourceUrl = url
   if (typeof dispatcher === 'string') {
