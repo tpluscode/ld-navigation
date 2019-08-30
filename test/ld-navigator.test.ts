@@ -1,6 +1,6 @@
 import { expect } from '@open-wc/testing'
-import '../ld-navigator.ts'
-import navigate from '../fireNavigation'
+import '../src/ld-navigator.ts'
+import navigate from '../src/fireNavigation'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
 

@@ -1,7 +1,7 @@
 import { expect } from '@open-wc/testing'
 import eventToPromise from './eventToPromise'
 import navigatorFixture from './ld-navigator.fixture'
-import navigate from '../fireNavigation'
+import navigate from '../src/fireNavigation'
 
 describe('<ld-navigator>', () => {
   it('should push absolute URL state when ld-navigated event occurs', async () => {

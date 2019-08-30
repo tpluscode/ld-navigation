@@ -1,10 +1,10 @@
 import { litFixture as fixture, expect } from '@open-wc/testing'
 import { html, TemplateResult } from 'lit-html'
 import { ifDefined } from 'lit-html/directives/if-defined'
-import '../ld-navigator.ts'
-import '../ld-link.ts'
+import '../src/ld-navigator.ts'
+import '../src/ld-link.ts'
 import eventToPromise from './eventToPromise'
-import { LinkedDataLink } from '../ld-link'
+import { LinkedDataLink } from '../src/ld-link'
 
 interface FixtureOptions {
   base?: string

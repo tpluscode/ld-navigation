@@ -9,8 +9,11 @@
     "strict": true,
     "declaration": true,
     "sourceMap": true,
+    "outDir": ".",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": []
 }
