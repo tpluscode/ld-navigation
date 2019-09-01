@@ -1,11 +1,15 @@
-import { expect } from '@open-wc/testing'
+import { expect, fixture } from '@open-wc/testing'
+import { html } from 'lit-html'
 import eventToPromise from './eventToPromise'
-import navigatorFixture from './ld-navigator.fixture'
 import navigate from '../src/fireNavigation'
 
 describe('<ld-navigator>', () => {
   it('should push absolute URL state when ld-navigated event occurs', async () => {
-    const elem = await navigatorFixture()
+    const elem = await fixture(
+      html`
+        <ld-navigator></ld-navigator>
+      `,
+    )
     const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
 
     navigate('http://example.org/some/path')
@@ -15,10 +19,14 @@ describe('<ld-navigator>', () => {
   })
 
   it('should trigger navigation on popstate event', async () => {
-    const elem = await navigatorFixture()
-    const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
+    const elem = await fixture(
+      html`
+        <ld-navigator></ld-navigator>
+      `,
+    )
     navigate('http://example.org/initial/path')
     navigate('http://example.org/next/path')
+    const forChangeEvent = eventToPromise(elem, 'resource-url-changed')
 
     window.history.back()
     const e = await forChangeEvent
@@ -29,7 +37,11 @@ describe('<ld-navigator>', () => {
 
 describe('<ld-navigator base>', () => {
   it('should push relative URL state when ld-navigated event occurs', async () => {
-    await navigatorFixture({ base: 'http://base2.example.org' })
+    await fixture(
+      html`
+        <ld-navigator base="http://base2.example.org"></ld-navigator>
+      `,
+    )
     const forNavigation = eventToPromise(window, 'ld-navigated')
 
     navigate('http://base2.example.org/some/other/path')
@@ -41,7 +53,11 @@ describe('<ld-navigator base>', () => {
 
 describe('<ld-navigator base base-client-path="app-base">', () => {
   it('should push absolute URL state with base prepended when ld-navigated event occurs', async () => {
-    await navigatorFixture({ base: 'http://base2.example.org', clientBasePath: 'app-base' })
+    await fixture(
+      html`
+        <ld-navigator base="http://base2.example.org" client-base-path="app-base"></ld-navigator>
+      `,
+    )
     const forNavigation = eventToPromise(window, 'ld-navigated')
 
     navigate('http://example.org/some/path')

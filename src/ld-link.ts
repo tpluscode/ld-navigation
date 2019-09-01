@@ -1,5 +1,5 @@
-import LdNavigator from './LdNavigator'
 import go from './fireNavigation'
+import { StateMapper } from './StateMapper'
 
 const resourceUrlAttrName = 'resource-url'
 
@@ -74,12 +74,21 @@ export class LinkedDataLink extends HTMLElement {
     if (!this._anchor) return
 
     if (this.resourceUrl) {
-      const state = LdNavigator.getStatePath(this.resourceUrl)
+      const detail = {
+        stateMapper: null as StateMapper | null,
+      }
+      this.dispatchEvent(
+        new CustomEvent('state-mapper-attach', {
+          detail,
+          composed: true,
+          bubbles: true,
+        }),
+      )
 
-      if (LdNavigator.useHashFragment) {
-        this._anchor.href = `#${state}`
+      if (detail.stateMapper) {
+        this._anchor.href = detail.stateMapper.getStateUrl(this.resourceUrl)
       } else {
-        this._anchor.href = state
+        this._anchor.href = this.resourceUrl
       }
     } else {
       this._anchor.removeAttribute('href')

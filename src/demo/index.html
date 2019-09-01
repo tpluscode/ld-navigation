@@ -2,9 +2,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js" async></script>
-    <script src="demo-app.js" type="module" async></script>
-
     <link rel="stylesheet" href="../node_modules/github-fork-ribbon-css/gh-fork-ribbon.css" />
 
     <!-- Start Single Page Apps for GitHub Pages -->
@@ -52,8 +49,9 @@
 <script>
   const wrapperElement = document.querySelector('demo-app')
 
-if (window.location.hash === '#use-hash') {
-    wrapperElement.useHashFragment = true
+if (window.location.hash !== '') {
+    wrapperElement.setAttribute('use-hash-fragment', '')
 }
 </script>
+<script type="module" src="./demo-app.ts"></script>
 </body>
