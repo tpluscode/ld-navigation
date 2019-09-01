@@ -56,7 +56,6 @@
     "copy-webpack-plugin": "^5.0.4",
     "cz-conventional-changelog": "^3.0.2",
     "eslint-plugin-lit": "^1.2.0",
-    "github-fork-ribbon-css": "^0.2.1",
     "husky": "^3.0.3",
     "lint-staged": "^9.2.1",
     "lit-html": "^1.1.2",
