@@ -9,4 +9,4 @@ build/
 !*.config.js
 !*.conf.js
 *.js.map
-demo/
+/demo/
