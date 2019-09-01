@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import EventEmitter from 'little-emitter'
 
 export class StateMapper extends EventEmitter {
   private _base = ''
