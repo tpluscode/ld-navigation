@@ -8,8 +8,8 @@
     "url": "git://github.com/tpluscode/ld-navigation.git"
   },
   "files": [
-    "*.js",
-    "*.d.ts"
+    "**/*.js",
+    "**/*.d.ts"
   ],
   "scripts": {
     "prepare": "tsc",

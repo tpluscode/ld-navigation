@@ -15,5 +15,5 @@
     "esModuleInterop": true
   },
   "include": ["src/**/*"],
-  "exclude": []
+  "exclude": ["src/demo/**/*"]
 }
