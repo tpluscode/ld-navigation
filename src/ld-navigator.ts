@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { StateMapper } from './StateMapper'
+import { LdNavigationOptions } from './lib/LdNavigationOptions'
 
 interface Handler {
   event: string
@@ -9,22 +10,57 @@ interface Handler {
 
 export class LdNavigator extends HTMLElement {
   private _resourceUrl?: string
-  public stateMapper = new StateMapper(document.location)
+  private __reflect = false
+  private __options: LdNavigationOptions = new LdNavigationOptions()
+  public stateMapper: StateMapper
+
+  constructor() {
+    super()
+    this.stateMapper = new StateMapper(this.__options)
+  }
 
   connectedCallback() {
-    this.stateMapper.on('state-change', (url: string) => {
-      this.resourceUrl = url
+    this.__options = new LdNavigationOptions({
+      baseUrl: this.getAttribute('base-url') || '',
+      useHashFragment: this.hasAttribute('use-hash-fragment'),
+      clientBasePath: this.getAttribute('client-base-path') || '',
     })
+    this.stateMapper = new StateMapper(this.__options)
 
     if (this.parentNode) {
       this.parentNode.addEventListener(
         'state-mapper-attach',
         (e: any) => {
-          e.detail.stateMapper = this.stateMapper
+          e.detail.ldNavigator = this
         },
         true,
       )
     }
+
+    document.addEventListener('ld-navigated', (e: any) => {
+      if (this.__reflect) {
+        if (this.__options.useHashFragment) {
+          document.location.href = `/${
+            this.__options.clientBasePath
+          }/#${this.stateMapper.getStatePath(e.detail.resourceUrl)}`
+        } else if (e.detail.resourceUrl !== window.history.state) {
+          window.history.pushState(
+            e.detail.resourceUrl,
+            '',
+            `/${this.__options.clientBasePath}${this.stateMapper.getStatePath(
+              e.detail.resourceUrl,
+            )}`,
+          )
+        }
+        this.notifyResourceUrlChanged()
+      } else {
+        this.resourceUrl = e.detail.resourceUrl
+      }
+    })
+
+    window.addEventListener('popstate', this.notifyResourceUrlChanged.bind(this))
+
+    window.addEventListener('hashchange', this.notifyResourceUrlChanged.bind(this))
 
     this.notifyResourceUrlChanged()
   }
@@ -36,19 +72,30 @@ export class LdNavigator extends HTMLElement {
   attributeChangedCallback(attr: string, oldVal: string, newVal: string) {
     // eslint-disable-next-line default-case
     switch (attr) {
-      case 'base':
-        this.base = newVal
+      case 'base-url':
+        this.__options = new LdNavigationOptions({
+          ...this.__options,
+          baseUrl: newVal,
+        })
         break
       case 'client-base-path':
-        StateMapper.clientBasePath = newVal
+        this.__options = new LdNavigationOptions({
+          ...this.__options,
+          clientBasePath: newVal,
+        })
         break
       case 'use-hash-fragment':
-        StateMapper.useHashFragment = newVal !== null
+        this.__options = new LdNavigationOptions({
+          ...this.__options,
+          useHashFragment: newVal !== null,
+        })
         break
       case 'reflect-to-addressbar':
-        this.stateMapper.reflect = true
+        this.__reflect = newVal !== null
         break
     }
+
+    this.stateMapper = new StateMapper(this.__options)
   }
 
   set resourceUrl(value: string) {
@@ -61,19 +108,15 @@ export class LdNavigator extends HTMLElement {
   }
 
   get resourceUrl() {
-    return this._resourceUrl || this.stateMapper.resourceUrl
+    if (this.__reflect) {
+      return this.mappedResourceUrl
+    }
+
+    return this._resourceUrl || this.mappedResourceUrl
   }
 
   get mappedResourceUrl() {
-    return this.stateMapper.resourceUrl
-  }
-
-  get base() {
-    return this.stateMapper.base
-  }
-
-  set base(url) {
-    this.stateMapper.base = url
+    return this.stateMapper.getResourceUrl(new URL(document.location.href))
   }
 
   private notifyResourceUrlChanged() {

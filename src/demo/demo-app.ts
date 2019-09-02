@@ -25,6 +25,9 @@ export default class DemoApp extends PolymerElement {
       baseUrl: String,
       resourceUrl: String,
       useHashFragment: Boolean,
+      reflect: {
+        value: true,
+      },
     }
   }
 
@@ -60,9 +63,9 @@ export default class DemoApp extends PolymerElement {
 
     <ld-navigator resource-url="{{resourceUrl}}"
                   on-resource-url-changed="openToast"
-                  base="{{baseUrl}}/"
+                  base-url$="{{baseUrl}}/"
                   client-base-path="demo"
-                  reflect-to-addressbar
+                  reflect-to-addressbar$="[[reflect]]"
                   use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
     <upper88-title hidden value$="[[selectedItem.heading]] - ld-navigation - web components for simple client side routing"></upper88-title>
@@ -106,6 +109,7 @@ export default class DemoApp extends PolymerElement {
             </paper-listbox>
             
             <paper-checkbox checked="{{useHashFragment}}" style="margin-left: 15px">Use hash fragment</paper-checkbox>
+            <paper-checkbox checked="{{reflect}}" style="margin-left: 15px">Reflect to address bar</paper-checkbox>
         </app-drawer>
         <div>
             <paper-card heading="Current resource URL is">
