@@ -12,11 +12,25 @@ export class LdNavigator extends HTMLElement {
   private _resourceUrl?: string
   private __reflect = false
   private __options: LdNavigationOptions = new LdNavigationOptions()
-  public stateMapper: StateMapper
+  private __stateMapper: StateMapper | null = null
+  private __createStateMapper: (o: LdNavigationOptions) => StateMapper
 
   constructor() {
     super()
-    this.stateMapper = new StateMapper(this.__options)
+    this.__createStateMapper = opts => new StateMapper(opts)
+  }
+
+  public get stateMapper() {
+    if (!this.__stateMapper) {
+      this.__stateMapper = this.__createStateMapper(this.__options)
+    }
+
+    return this.__stateMapper
+  }
+
+  public set createStateMapper(func: (o: LdNavigationOptions) => StateMapper) {
+    this.__createStateMapper = func
+    this.__stateMapper = null
   }
 
   connectedCallback() {
@@ -25,7 +39,6 @@ export class LdNavigator extends HTMLElement {
       useHashFragment: this.hasAttribute('use-hash-fragment'),
       clientBasePath: this.getAttribute('client-base-path') || '',
     })
-    this.stateMapper = new StateMapper(this.__options)
 
     if (this.parentNode) {
       this.parentNode.addEventListener(
@@ -95,7 +108,7 @@ export class LdNavigator extends HTMLElement {
         break
     }
 
-    this.stateMapper = new StateMapper(this.__options)
+    this.__stateMapper = null
   }
 
   set resourceUrl(value: string) {
