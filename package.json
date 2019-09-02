@@ -7,6 +7,10 @@
     "type": "git",
     "url": "git://github.com/tpluscode/ld-navigation.git"
   },
+  "files": [
+    "*.js",
+    "*.d.ts"
+  ],
   "scripts": {
     "prepare": "tsc",
     "test": "karma start --coverage",
