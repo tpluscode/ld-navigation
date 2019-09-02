@@ -19,7 +19,7 @@ You then simply GET and decide what to display based on the data returned.
 
 [Demos and sort-of documentation](https://routing.hypermedia.app/demo/).
 
-[`ld-navigation` also plays nice with location.hash history](https://routing.hypermedia.app/demo/#use-hash).
+[`ld-navigation` also plays nice with location.hash history](https://routing.hypermedia.app/demo/#hash).
 
 ## Installation
 
@@ -74,7 +74,7 @@ Obviously an URL like `http://www.my.app/http://api.my.app/people` is ugly (and,
 by adding an attribute to the `<ld-navigator>` tag:
 
 ``` html
-<ld-navigator base="http://api.my.app"></ld-navigator>
+<ld-navigator base-url="http://api.my.app"></ld-navigator>
 ```
 
 This way the API domain is stripped out from the browser address bar and `http://www.my.app/people` remains. This is where client-side
