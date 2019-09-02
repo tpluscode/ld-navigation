@@ -5,7 +5,7 @@ property set to a correct *client URL* according to the `<ld-navigator>` setup.
 For example markup like
 
 ``` html
-<ld-navigator base="http://example.com/base"
+<ld-navigator base-url="http://example.com/base"
               client-base-path="my-app"></ld-navigator>
 
 <ld-link resource-url="http://example.com/base/bookmarkable/resource">

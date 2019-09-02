@@ -3,7 +3,7 @@ address bar now shows only part of the `resourceUrl` property. This is because i
 possible to set a base URL for translating resource identifiers.
 
 ``` html
-<ld-navigator base="{{base}}/"></ld-navigator>
+<ld-navigator base-url="{{base}}/"></ld-navigator>
 ```
 
 By setting the `base` property of `<ld-navigator>` any URL relative to that base will

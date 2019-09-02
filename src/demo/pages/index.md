@@ -17,4 +17,4 @@ Wraps anchor so that state transitions are possible
 
 [gh]: https://github.com/tpluscode/ld-navigation
 [history]: https://developer.mozilla.org/en/docs/Web/API/History
-[useHash]: #useHash
+[useHash]: #/hash

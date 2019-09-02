@@ -126,7 +126,7 @@ export default class DemoApp extends PolymerElement {
                     </div>
                 </paper-card>
 
-                <paper-card heading="location.hash history fallback" data-url$="{{baseUrl}}/use-hash">
+                <paper-card heading="location.hash history fallback" data-url$="{{baseUrl}}/hash">
                     <div class="card-content">
                         <zero-md src="pages/hash.md">
                         </zero-md>
