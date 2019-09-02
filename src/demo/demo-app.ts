@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { html, PolymerElement } from '@polymer/polymer'
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout'
 import '@polymer/app-layout/app-drawer/app-drawer'
@@ -8,26 +9,29 @@ import '@polymer/paper-item/paper-item'
 import '@polymer/paper-listbox/paper-listbox'
 import '@polymer/paper-toast/paper-toast'
 import '@polymer/paper-checkbox/paper-checkbox'
-import './upper88-title'
+import './upper88-title.ts'
 import 'zero-md/src/zero-md'
 import fireNavigation from '../fireNavigation'
-import '../ld-link'
-import '../ld-navigator'
+import '../ld-link.ts'
+import '../ld-navigator.ts'
 
 export default class DemoApp extends PolymerElement {
-  static get is () {
+  static get is() {
     return 'demo-app'
   }
 
-  static get properties () {
+  static get properties() {
     return {
       baseUrl: String,
       resourceUrl: String,
-      useHashFragment: Boolean
+      useHashFragment: Boolean,
+      reflect: {
+        value: true,
+      },
     }
   }
 
-  static get template () {
+  static get template() {
     return html`
     <style>
         a {
@@ -59,8 +63,9 @@ export default class DemoApp extends PolymerElement {
 
     <ld-navigator resource-url="{{resourceUrl}}"
                   on-resource-url-changed="openToast"
-                  base="{{baseUrl}}/"
+                  base-url$="{{baseUrl}}/"
                   client-base-path="demo"
+                  reflect-to-addressbar$="[[reflect]]"
                   use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
     <upper88-title hidden value$="[[selectedItem.heading]] - ld-navigation - web components for simple client side routing"></upper88-title>
@@ -104,6 +109,7 @@ export default class DemoApp extends PolymerElement {
             </paper-listbox>
             
             <paper-checkbox checked="{{useHashFragment}}" style="margin-left: 15px">Use hash fragment</paper-checkbox>
+            <paper-checkbox checked="{{reflect}}" style="margin-left: 15px">Reflect to address bar</paper-checkbox>
         </app-drawer>
         <div>
             <paper-card heading="Current resource URL is">
@@ -189,15 +195,17 @@ export default class DemoApp extends PolymerElement {
     </app-drawer-layout>`
   }
 
-  navigate (evt) {
-    fireNavigation(window, evt.target.getAttribute('data-url'))
+  // eslint-disable-next-line class-methods-use-this
+  navigate(evt: any) {
+    fireNavigation(evt.target, evt.target.getAttribute('data-url'))
   }
 
-  openToast () {
-    this.$.toast.open()
+  openToast() {
+    ;(this.$.toast as any).open()
   }
 
-  menuNavigate (e) {
+  // eslint-disable-next-line class-methods-use-this
+  menuNavigate(e: any) {
     const link = e.target.selectedItem.querySelector('ld-link')
 
     if (link) {

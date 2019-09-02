@@ -4,3 +4,9 @@ node_modules
 coverage/
 yarn-error.log
 build/
+*.d.ts
+*.js
+!*.config.js
+!*.conf.js
+*.js.map
+/demo/
