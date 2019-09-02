@@ -1,5 +1,6 @@
 {
-  "name": "ld-navigation", 
+  "name": "ld-navigation",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "version": "1.0.0-0"
 }
