@@ -78,7 +78,7 @@ export class LinkedDataLink extends HTMLElement {
         ldNavigator: null as LdNavigator | null,
       }
       this.dispatchEvent(
-        new CustomEvent('state-mapper-attach', {
+        new CustomEvent('navigator-attach', {
           detail,
           composed: true,
           bubbles: true,

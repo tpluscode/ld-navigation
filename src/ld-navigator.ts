@@ -29,7 +29,7 @@ export class LdNavigator extends HTMLElement {
 
     if (this.parentNode) {
       this.parentNode.addEventListener(
-        'state-mapper-attach',
+        'navigator-attach',
         (e: any) => {
           e.detail.ldNavigator = this
         },
@@ -116,7 +116,7 @@ export class LdNavigator extends HTMLElement {
   }
 
   get mappedResourceUrl() {
-    return this.stateMapper.getResourceUrl(new URL(document.location.href))
+    return this.stateMapper.getResourceUrl(document.location.href)
   }
 
   private notifyResourceUrlChanged() {

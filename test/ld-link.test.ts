@@ -104,12 +104,14 @@ describe('<ld-link>', () => {
     it('sets current state url as href', async () => {
       // given
       document.addEventListener(
-        'state-mapper-attach',
+        'navigator-attach',
         function listener(e: any) {
-          e.detail.stateMapper = {
-            getStateUrl: () => '/some/path',
+          e.detail.ldNavigator = {
+            stateMapper: {
+              getStateUrl: () => '/some/path',
+            },
           }
-          document.removeEventListener('state-mapper-attach', listener)
+          document.removeEventListener('navigator-attach', listener)
         } as (e: Event) => void,
         true,
       )

@@ -23,7 +23,8 @@ export class StateMapper {
     return path
   }
 
-  getResourceUrl(url: URL) {
+  getResourceUrl(urlString: string) {
+    const url = new URL(urlString)
     const path = this.getResourcePath(url)
 
     if (/^https?:\/\//.test(path)) {
