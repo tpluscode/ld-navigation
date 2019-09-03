@@ -46,7 +46,6 @@
     "@polymer/iron-pages": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-card": "^3.0.1",
-    "@polymer/paper-checkbox": "^3.1.0",
     "@polymer/paper-item": "^3.0.1",
     "@polymer/paper-listbox": "^3.0.1",
     "@polymer/paper-toast": "^3.0.1",

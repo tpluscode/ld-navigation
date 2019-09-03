@@ -8,14 +8,13 @@ import '@polymer/paper-button/paper-button'
 import '@polymer/paper-item/paper-item'
 import '@polymer/paper-listbox/paper-listbox'
 import '@polymer/paper-toast/paper-toast'
-import '@polymer/paper-checkbox/paper-checkbox'
 import './upper88-title.ts'
 import 'zero-md/src/zero-md'
 import fireNavigation from '../fireNavigation'
 import '../ld-link.ts'
-import '../ld-navigator.ts'
+import { ReflectedInHistory, ResourceScope, StateMapper } from '..'
 
-export default class DemoApp extends PolymerElement {
+export default class DemoApp extends ReflectedInHistory(ResourceScope(PolymerElement)) {
   static get is() {
     return 'demo-app'
   }
@@ -24,11 +23,27 @@ export default class DemoApp extends PolymerElement {
     return {
       baseUrl: String,
       resourceUrl: String,
-      useHashFragment: Boolean,
-      reflect: {
-        value: true,
-      },
     }
+  }
+
+  constructor() {
+    super()
+    this.clientBasePath = 'demo'
+  }
+
+  createStateMapper() {
+    return new StateMapper({
+      baseUrl: this.baseUrl,
+      clientBasePath: this.clientBasePath,
+      useHashFragment: this.usesHashFragment,
+    })
+  }
+
+  onResourceUrlChanged(newValue: string) {
+    super.onResourceUrlChanged(newValue)
+
+    this.resourceUrl = newValue
+    this.openToast()
   }
 
   static get template() {
@@ -60,13 +75,6 @@ export default class DemoApp extends PolymerElement {
 
 
     </style>
-
-    <ld-navigator resource-url="{{resourceUrl}}"
-                  on-resource-url-changed="openToast"
-                  base-url$="{{baseUrl}}/"
-                  client-base-path="demo"
-                  reflect-to-addressbar$="[[reflect]]"
-                  use-hash-fragment$="[[useHashFragment]]"></ld-navigator>
 
     <upper88-title hidden value$="[[selectedItem.heading]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
@@ -107,9 +115,6 @@ export default class DemoApp extends PolymerElement {
                 </paper-item>
 
             </paper-listbox>
-            
-            <paper-checkbox checked="{{useHashFragment}}" style="margin-left: 15px">Use hash fragment</paper-checkbox>
-            <paper-checkbox checked="{{reflect}}" style="margin-left: 15px">Reflect to address bar</paper-checkbox>
         </app-drawer>
         <div>
             <paper-card heading="Current resource URL is">
