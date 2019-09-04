@@ -7,7 +7,7 @@ export function getAllImplementationsOf(cls: object, methodName: string): Functi
     if (proto.prototype && Object.prototype.hasOwnProperty.call(proto.prototype, methodName)) {
       fns.push(proto.prototype[methodName])
     }
-    proto = Object.getPrototypeOf(cls)
+    proto = Object.getPrototypeOf(proto)
   }
 
   return fns
