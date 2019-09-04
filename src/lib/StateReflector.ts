@@ -2,10 +2,9 @@ import { ResourceScopingElement } from './ResourceScope'
 
 type BaseConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
 
-export interface StateReflector {
+export interface StateReflector extends ResourceScopingElement {
   reflectUrlInState(url: string): void
   usesHashFragment: boolean
-  onResourceUrlChanged(url: string): void
 }
 
 type ReturnConstructor = new (...args: any[]) => HTMLElement & StateReflector
@@ -14,17 +13,23 @@ function reflectToHash(element: ResourceScopingElement, url: string): void {
   const hash = `${element.stateMapper.getStatePath(url)}`
 
   if (hash !== document.location.hash) {
-    document.location.href = `/${element.clientBasePath}/#${hash}`
+    document.location.hash = hash
   }
 }
 
 function reflectToHistory(element: ResourceScopingElement, url: string): void {
   if (url !== window.history.state) {
-    window.history.pushState(
-      url,
-      '',
-      `/${element.clientBasePath}${element.stateMapper.getStatePath(url)}`,
-    )
+    const path = element.stateMapper.getStatePath(url)
+
+    if (element.clientBasePath) {
+      window.history.pushState(
+        url,
+        '',
+        `${document.location.origin}/${element.clientBasePath}${path}`,
+      )
+    } else {
+      window.history.pushState(url, '', `${document.location.origin}${path}`)
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { StateMapper } from './StateMapper'
+import { getAllImplementationsOf } from './getImplementations'
 
 interface CustomElementHooks {
   connectedCallback(): void
@@ -12,6 +13,7 @@ export interface ResourceScopingElement extends CustomElementHooks {
   clientBasePath?: string
   usesHashFragment: boolean
   notifyResourceUrlChanged(): void
+  onResourceUrlChanged(url: string): void
 }
 
 type ReturnConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
@@ -71,7 +73,9 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
       this._resourceUrl = value || this.stateMapper.getResourceUrl(document.location.href)
 
       if (this._resourceUrl !== prevUrl) {
-        this.onResourceUrlChanged(this._resourceUrl)
+        getAllImplementationsOf(this.constructor, 'onResourceUrlChanged').forEach(fn =>
+          fn.call(this, this._resourceUrl),
+        )
       }
     }
 
