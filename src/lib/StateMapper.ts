@@ -9,7 +9,7 @@ export class StateMapper {
   private readonly __useHashFragment: boolean
   private readonly __clientBasePath: string
 
-  constructor(options: StateMapperOptions) {
+  constructor(options: StateMapperOptions = {}) {
     this.__baseUrl = (options.baseUrl || '').replace(new RegExp('/$'), '')
     this.__clientBasePath = options.clientBasePath || ''
     this.__useHashFragment = options.useHashFragment || false
