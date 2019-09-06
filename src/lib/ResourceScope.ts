@@ -1,9 +1,11 @@
 /* eslint-disable class-methods-use-this */
+import { BoundClass, BoundMethod } from '@aloreljs/bound-decorator'
 import { StateMapper } from './StateMapper'
 import { getAllImplementationsOf } from './getImplementations'
 
 interface CustomElementHooks {
-  connectedCallback(): void
+  connectedCallback?(): void
+  disconnectedCallback?(): void
 }
 
 type BaseConstructor = new (...args: any[]) => HTMLElement & CustomElementHooks
@@ -12,15 +14,16 @@ export interface ResourceScopingElement extends CustomElementHooks {
   stateMapper: StateMapper
   clientBasePath?: string
   usesHashFragment: boolean
-  notifyResourceUrlChanged(): void
+  notifyResourceUrlChanged(url?: string): void
   onResourceUrlChanged(url: string): void
 }
 
 type ReturnConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
 
 export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnConstructor {
+  @BoundClass()
   abstract class Mixin extends Base implements ResourceScopingElement {
-    protected _resourceUrl?: string
+    public resourceUrl?: string
     protected _stateMapper: StateMapper | null = null
     public clientBasePath?: string
 
@@ -36,9 +39,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
       return this._stateMapper
     }
 
-    public createStateMapper(): StateMapper {
-      throw new Error('To be implemented in mixed class')
-    }
+    public abstract createStateMapper(): StateMapper
 
     connectedCallback() {
       if (super.connectedCallback) {
@@ -53,33 +54,51 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
         true,
       )
 
-      document.addEventListener('ld-navigated', (e: any) => {
-        this.notifyResourceUrlChanged(e.detail.resourceUrl)
-      })
-
-      window.addEventListener('popstate', () => this.notifyResourceUrlChanged())
-      window.addEventListener('pushstate', () => this.notifyResourceUrlChanged())
-      window.addEventListener('hashchange', () => this.notifyResourceUrlChanged())
+      document.addEventListener('ld-navigated', this.__onNavigated)
+      window.addEventListener('popstate', this.__onNavigated)
+      window.addEventListener('pushstate', this.__onNavigated)
+      window.addEventListener('hashchange', this.__onNavigated)
 
       this.notifyResourceUrlChanged()
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('ld-navigated', this.__onNavigated)
+      window.removeEventListener('popstate', this.__onNavigated)
+      window.removeEventListener('pushstate', this.__onNavigated)
+      window.removeEventListener('hashchange', this.__onNavigated)
+
+      if (super.disconnectedCallback) {
+        super.disconnectedCallback()
+      }
     }
 
     get mappedResourceUrl() {
       return this.stateMapper.getResourceUrl(document.location.href)
     }
 
+    @BoundMethod()
     public notifyResourceUrlChanged(value?: string) {
-      const prevUrl = this._resourceUrl
-      this._resourceUrl = value || this.stateMapper.getResourceUrl(document.location.href)
+      const prevUrl = this.resourceUrl
+      this.resourceUrl = value || this.stateMapper.getResourceUrl(document.location.href)
 
-      if (this._resourceUrl !== prevUrl) {
-        getAllImplementationsOf(this.constructor, 'onResourceUrlChanged').forEach(fn =>
-          fn.call(this, this._resourceUrl),
+      if (this.resourceUrl !== prevUrl) {
+        getAllImplementationsOf(this, 'onResourceUrlChanged').forEach(fn =>
+          fn.call(this, this.resourceUrl),
         )
       }
     }
 
     public abstract onResourceUrlChanged(newValue: string): void
+
+    @BoundMethod()
+    private __onNavigated(e: any) {
+      if (e.detail && e.detail.resourceUrl) {
+        this.notifyResourceUrlChanged(e.detail.resourceUrl)
+      } else {
+        this.notifyResourceUrlChanged()
+      }
+    }
   }
 
   return Mixin
