@@ -1,7 +1,7 @@
-export function getAllImplementationsOf(cls: object, methodName: string): Function[] {
-  const fns = []
+export function getAllImplementationsOf(cls: any, methodName: string): Function[] {
+  const fns = methodName in cls ? [cls[methodName]] : []
 
-  let proto = Object.getPrototypeOf(cls)
+  let proto = Object.getPrototypeOf(cls.constructor)
 
   while (proto) {
     if (proto.prototype && Object.prototype.hasOwnProperty.call(proto.prototype, methodName)) {
