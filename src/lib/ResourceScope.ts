@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { BoundClass, BoundMethod } from '@aloreljs/bound-decorator'
+import { boundMethod } from 'autobind-decorator'
 import { StateMapper } from './StateMapper'
 import { getAllImplementationsOf } from './getImplementations'
 
@@ -21,7 +21,6 @@ export interface ResourceScopingElement extends CustomElementHooks {
 type ReturnConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
 
 export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnConstructor {
-  @BoundClass()
   abstract class Mixin extends Base implements ResourceScopingElement {
     public resourceUrl?: string
     protected _stateMapper: StateMapper | null = null
@@ -77,7 +76,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
       return this.stateMapper.getResourceUrl(document.location.href)
     }
 
-    @BoundMethod()
+    @boundMethod
     public notifyResourceUrlChanged(value?: string) {
       const prevUrl = this.resourceUrl
       this.resourceUrl = value || this.stateMapper.getResourceUrl(document.location.href)
@@ -91,7 +90,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
 
     public abstract onResourceUrlChanged(newValue: string): void
 
-    @BoundMethod()
+    @boundMethod
     private __onNavigated(e: any) {
       if (e.detail && e.detail.resourceUrl) {
         this.notifyResourceUrlChanged(e.detail.resourceUrl)
