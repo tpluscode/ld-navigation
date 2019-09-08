@@ -13,7 +13,7 @@ type BaseConstructor = new (...args: any[]) => HTMLElement & CustomElementHooks
 export interface ResourceScopingElement extends CustomElementHooks {
   stateMapper: StateMapper
   clientBasePath?: string
-  usesHashFragment: boolean
+  usesHashFragment?: boolean
   notifyResourceUrlChanged(url?: string): void
   onResourceUrlChanged(url: string): void
 }
@@ -25,10 +25,6 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
     public resourceUrl?: string
     protected _stateMapper: StateMapper | null = null
     public clientBasePath?: string
-
-    get usesHashFragment() {
-      return false
-    }
 
     public get stateMapper() {
       if (!this._stateMapper) {

@@ -18,20 +18,6 @@ class TestElement extends ResourceScope(HTMLElement) {
 }
 
 describe('ResourceScope', () => {
-  describe('.usesHashFragment', () => {
-    it('is false by default', async () => {
-      // given
-      const resourceScope = await fixture<TestElement>(
-        html`
-          <test-element></test-element>
-        `,
-      )
-
-      // then
-      expect(resourceScope.usesHashFragment).to.be.false
-    })
-  })
-
   describe('.onResourceUrlChanged', () => {
     type BaseConstructor = new (...args: any[]) => TestElement
     function TestMixin<B extends BaseConstructor>(Base: B): B {
