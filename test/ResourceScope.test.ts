@@ -77,4 +77,58 @@ describe('ResourceScope', () => {
       expect(onResourceUrlChangedSpy).to.have.calledWithExactly('http://foo/bar')
     })
   })
+
+  describe('.connectedCallback', () => {
+    class WithConnectedCallback extends HTMLElement {
+      public connected = false
+
+      connectedCallback() {
+        this.connected = true
+      }
+
+      createStateMapper() {
+        return sinon.createStubInstance(StateMapper)
+      }
+    }
+
+    it('is called on superclass', async () => {
+      // given
+      customElements.define('with-callback', class extends ResourceScope(WithConnectedCallback) {})
+
+      // when
+      const el = await fixture<WithConnectedCallback>('<with-callback></with-callback>')
+
+      // then
+      expect(el.connected).to.be.true
+    })
+  })
+
+  describe('.disconnectedCallback', () => {
+    class WithDisconnectedCallback extends HTMLElement {
+      public disconnectedCalled = false
+
+      disconnectedCallback() {
+        this.disconnectedCalled = true
+      }
+
+      createStateMapper() {
+        return sinon.createStubInstance(StateMapper)
+      }
+    }
+
+    it('is called on superclass', async () => {
+      // given
+      customElements.define(
+        'with-disconnected',
+        class extends ResourceScope(WithDisconnectedCallback) {},
+      )
+      const el = await fixture<WithDisconnectedCallback>('<with-disconnected></with-disconnected>')
+
+      // when
+      el.remove()
+
+      // then
+      expect(el.disconnectedCalled).to.be.true
+    })
+  })
 })
