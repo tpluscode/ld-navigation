@@ -106,7 +106,7 @@ describe('<ld-link>', () => {
       document.addEventListener(
         'navigator-attach',
         function listener(e: any) {
-          e.detail.ldNavigator = {
+          e.detail.resourceScope = {
             stateMapper: {
               getStateUrl: () => '/some/path',
             },

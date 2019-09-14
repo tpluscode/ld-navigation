@@ -1,5 +1,5 @@
 import go from './fireNavigation'
-import { LdNavigator } from './ld-navigator'
+import { ResourceScopingElement } from './lib/ResourceScope'
 
 const resourceUrlAttrName = 'resource-url'
 
@@ -75,7 +75,7 @@ export class LinkedDataLink extends HTMLElement {
 
     if (this.resourceUrl) {
       const detail = {
-        ldNavigator: null as LdNavigator | null,
+        resourceScope: null as ResourceScopingElement | null,
       }
       this.dispatchEvent(
         new CustomEvent('navigator-attach', {
@@ -85,8 +85,8 @@ export class LinkedDataLink extends HTMLElement {
         }),
       )
 
-      if (detail.ldNavigator) {
-        this._anchor.href = detail.ldNavigator.stateMapper.getStateUrl(this.resourceUrl)
+      if (detail.resourceScope) {
+        this._anchor.href = detail.resourceScope.stateMapper.getStateUrl(this.resourceUrl)
       } else {
         this._anchor.href = this.resourceUrl
       }
