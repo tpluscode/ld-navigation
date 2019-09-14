@@ -105,5 +105,18 @@ describe('StateReflector', () => {
       // then
       expect(document.location.hash).to.be.equal('#hello')
     })
+
+    it('does reflecting when url has changed', async () => {
+      // given
+      const testElement = await fixture<TestHashReflected>('<t-hash></t-hash>')
+      testElement.testMapper = sinon.createStubInstance(StateMapper)
+      testElement.testMapper.getStatePath.returns(document.location.hash)
+
+      // when
+      testElement.onResourceUrlChanged('http://notified/url')
+
+      // then
+      expect(testElement.testMapper.getStatePath).to.be.calledOnceWith('http://notified/url')
+    })
   })
 })

@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, max-classes-per-file */
 import { expect, fixture, html } from '@open-wc/testing'
-import sinon, { SinonSpy } from 'sinon'
+import sinon, { SinonSpy, SinonStub } from 'sinon'
 import { customElement } from 'lit-element'
 import { ResourceScope, StateMapper } from '../src'
 
@@ -75,6 +75,23 @@ describe('ResourceScope', () => {
       // then
       expect(onResourceUrlChangedSpy.callCount).to.equal(1)
       expect(onResourceUrlChangedSpy).to.have.calledWithExactly('http://foo/bar')
+    })
+
+    it('is called when URL changes', async () => {
+      // given
+      const el = await fixture<TestElement>(
+        html`
+          <test-element></test-element>
+        `,
+      )
+      ;(el.stateMapper.getResourceUrl as SinonStub).returns('http://foo/bar.xml')
+
+      // when
+      document.location.hash = 'url-change-test'
+
+      // then
+      expect(onResourceUrlChangedSpy.callCount).to.equal(1)
+      expect(onResourceUrlChangedSpy).to.have.calledWithExactly('http://foo/bar.xml')
     })
   })
 

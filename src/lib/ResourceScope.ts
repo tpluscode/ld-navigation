@@ -75,7 +75,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
     @boundMethod
     public notifyResourceUrlChanged(value?: string) {
       const prevUrl = this.resourceUrl
-      this.resourceUrl = value || this.stateMapper.getResourceUrl(document.location.href)
+      this.resourceUrl = value || this.mappedResourceUrl
 
       if (this.resourceUrl !== prevUrl) {
         getAllImplementationsOf(this, 'onResourceUrlChanged').forEach(fn =>
