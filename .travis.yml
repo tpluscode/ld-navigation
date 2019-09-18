@@ -10,3 +10,12 @@ after_success:
 branches:
   except:
     - gh-pages
+deploy:
+  provider: npm
+  email: npm@t-code.pl
+  api_key:
+    secure: zZMkTnvkHD5OtxYXsSInqgcvtF5Zbx9qiEVjRFdFv31sL05XYwFK9Hz9xLONrLFTq5G7p8MteEi/Qrk41v0euRwX9jAcl6L/L0lme7vDSwzSClLy2JrZGMkRMLdwv0P7l7my2vvLiI5C7EC47ffhxqLCbv8Jx1krRmIKzgsb56uVvPAua5L8ad5Y+c3vukzws207k9yRDON4Z1IM++73TXM1YicXfl6B1OgIZWQFZSKvdkhQOaQtnmXAxvKdeDV/Mp6a0uzmMvtLmNTLfwSe2JVevpVXKeGawzHJkWVslf5kTRfxRk28969Dqo2UkyJ+ffFVTHXKni/WL6jO4h47N2sV73qDe31FWXWKUsQ/8e6U8OFdXznDnTSWNi9ywQlyTx3Ropy8UJ1rwxpYyDOv0LsDgSN7SOo9exl1qu8uFXYy+d3hr601ZzywFjNGnnlY3sqhjGOXxEzcUSZR6jJ6R2qWtErsADRXyncs+HvOY33hqdEV43rXEwQpqHfsfjTtLlXSzEieM1oKKMSGZ281VQMDm4KL+vWILaugkssPnnmdiLDvmg8YdAlW1+J2y6XkS/ykA3XowLqjsvAO5CESU5l9xbV0HL1R5TQMjEfdvfyExcCI5aWqb5Jlcj7cooiEcFmW2+W3UFeHzxeEciFufMWNHhV1QTq/LD+HS0lrbC4=
+  on:
+    tags: true
+    repo: tpluscode/ld-navigation
+  skip_cleanup: true
