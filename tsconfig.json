@@ -8,7 +8,7 @@
     ],
     "strict": true,
     "declaration": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": ".",
     "moduleResolution": "node",
     "experimentalDecorators": true,
