@@ -8,6 +8,9 @@ export interface StateReflector extends ResourceScopingElement {
 }
 
 type ReturnConstructor = new (...args: any[]) => HTMLElement & StateReflector
+interface HistoryAdapter {
+  __history: History
+}
 
 function reflectToHash(element: ResourceScopingElement, url: string): void {
   const hash = `${element.stateMapper.getStatePath(url)}`
@@ -17,18 +20,24 @@ function reflectToHash(element: ResourceScopingElement, url: string): void {
   }
 }
 
-function reflectToHistory(element: ResourceScopingElement, url: string): void {
-  if (url !== window.history.state) {
-    const path = element.stateMapper.getStatePath(url)
+function reflectToHistory(
+  element: ResourceScopingElement & HistoryAdapter,
+  resourceUrl: string,
+): void {
+  if (resourceUrl !== element.__history.state) {
+    const path = element.stateMapper.getStatePath(resourceUrl)
+    let stateUrl
 
     if (element.clientBasePath) {
-      window.history.pushState(
-        url,
-        '',
-        `${document.location.origin}/${element.clientBasePath}${path}`,
-      )
+      stateUrl = `${document.location.origin}/${element.clientBasePath}${path}`
     } else {
-      window.history.pushState(url, '', `${document.location.origin}${path}`)
+      stateUrl = `${document.location.origin}${path}`
+    }
+
+    if (!element.__history.state) {
+      element.__history.replaceState(resourceUrl, '', stateUrl)
+    } else {
+      element.__history.pushState(resourceUrl, '', stateUrl)
     }
   }
 }
@@ -38,6 +47,13 @@ function createMixinFor(desiredTarget: 'hash' | 'history') {
 
   return function ReflectedInHash<B extends BaseConstructor>(Base: B): B & ReturnConstructor {
     class Mixin extends Base implements StateReflector {
+      public readonly __history: History
+
+      constructor(...args: any[]) {
+        super(args)
+        this.__history = window.history
+      }
+
       // eslint-disable-next-line class-methods-use-this
       get usesHashFragment() {
         return actualTarget === 'hash'

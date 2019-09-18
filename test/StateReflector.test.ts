@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this,@typescript-eslint/no-empty-function */
-import sinon from 'sinon'
+import sinon, { SinonSpy } from 'sinon'
 import { expect, fixture } from '@open-wc/testing'
 import { customElement } from 'lit-element'
 import { ReflectedInHash, ReflectedInHistory, StateMapper } from '../src'
@@ -24,17 +24,26 @@ class TestScopedElement extends HTMLElement implements ResourceScopingElement {
 
 describe('StateReflector', () => {
   describe('reflecting to history API', () => {
-    let history: sinon.SinonStubbedInstance<History>
+    let history: {
+      state: unknown
+      pushState: SinonSpy
+      replaceState: SinonSpy
+    }
 
     @customElement('t-history')
-    class TestHistoryReflected extends ReflectedInHistory(TestScopedElement) {}
+    class TestHistoryReflected extends ReflectedInHistory(TestScopedElement) {
+      constructor() {
+        super()
+        ;(this as any).__history = history
+      }
+    }
 
     beforeEach(() => {
-      history = sinon.stub(window.history)
-    })
-
-    afterEach(() => {
-      sinon.restore()
+      history = {
+        pushState: sinon.spy(),
+        replaceState: sinon.spy(),
+        state: null,
+      }
     })
 
     it('does not use hash fragment', async () => {
@@ -50,6 +59,7 @@ describe('StateReflector', () => {
       const testElement = await fixture<TestHistoryReflected>('<t-history></t-history>')
       testElement.testMapper = sinon.createStubInstance(StateMapper)
       testElement.testMapper.getStatePath.returns('/hello')
+      history.state = 'some state'
 
       // when
       testElement.reflectUrlInState('http://hello/world')
@@ -68,6 +78,7 @@ describe('StateReflector', () => {
       testElement.testMapper = sinon.createStubInstance(StateMapper)
       testElement.testMapper.getStatePath.returns('/hello')
       testElement.clientBasePath = 'some/long/path'
+      history.state = 'some state'
 
       // when
       testElement.reflectUrlInState('http://hello/world')
@@ -78,6 +89,21 @@ describe('StateReflector', () => {
         '',
         `${document.location.origin}/some/long/path/hello`,
       )
+    })
+
+    it('does not push state fo initial matching resourceUrl', async () => {
+      // given
+      const testElement = await fixture<TestHistoryReflected>('<t-history></t-history>')
+      testElement.testMapper = sinon.createStubInstance(StateMapper)
+      testElement.testMapper.getStatePath.returns('/hello')
+      testElement.clientBasePath = 'some/long/path'
+
+      // when
+      testElement.reflectUrlInState('http://hello/world')
+
+      // then
+      expect(history.pushState).to.not.have.called
+      expect(history.replaceState).to.have.called
     })
   })
 
