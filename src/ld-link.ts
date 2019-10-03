@@ -4,7 +4,7 @@ import { ResourceScopingElement } from './lib/ResourceScope'
 const resourceUrlAttrName = 'resource-url'
 
 function navigate(this: LinkedDataLink, e: Event): void {
-  if (this.resourceUrl) {
+  if (this.resourceUrl && !this.hasAttribute('disabled')) {
     go(this, this.resourceUrl)
   }
   e.preventDefault()
