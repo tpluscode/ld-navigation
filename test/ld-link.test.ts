@@ -1,6 +1,7 @@
 import { fixture, expect } from '@open-wc/testing'
 import { html } from 'lit-html'
 import '../src/ld-link.ts'
+import sinon from 'sinon'
 import eventToPromise from './eventToPromise'
 import { LinkedDataLink } from '../src/ld-link'
 
@@ -141,6 +142,26 @@ describe('<ld-link>', () => {
 
     // then
     expect(e.detail.resourceUrl).to.equal(ldLink.resourceUrl)
+  })
+
+  it('when disable clicked, does not trigger navigation', async () => {
+    // given
+    const handler = sinon.spy()
+
+    const ldLink = await fixture<LinkedDataLink>(
+      html`
+        <ld-link disabled resource-url="http://example.com/some/path" @ld-navigated="${handler}"
+          >Simple text link</ld-link
+        >
+      `,
+    )
+
+    // when
+    ldLink.click()
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    // then
+    expect(handler).not.to.have.called
   })
 })
 
