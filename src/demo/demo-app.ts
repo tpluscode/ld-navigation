@@ -22,7 +22,7 @@ export default class DemoApp extends ReflectedInHistory(ResourceScope(PolymerEle
   static get properties() {
     return {
       baseUrl: String,
-      resourceUrl: String,
+      resUrl: String,
     }
   }
 
@@ -40,9 +40,7 @@ export default class DemoApp extends ReflectedInHistory(ResourceScope(PolymerEle
   }
 
   onResourceUrlChanged(newValue: string) {
-    super.onResourceUrlChanged(newValue)
-
-    this.resourceUrl = newValue
+    this.resUrl = newValue
     this.openToast()
   }
 
@@ -79,12 +77,12 @@ export default class DemoApp extends ReflectedInHistory(ResourceScope(PolymerEle
     <upper88-title hidden value$="[[selectedItem.heading]] - ld-navigation - web components for simple client side routing"></upper88-title>
 
     <paper-toast id="toast">
-        You just navigated to [[resourceUrl]]. <ld-link resource-url="{{baseUrl}}/events"><a>How do I know?</a></ld-link>
+        You just navigated to [[resUrl]]. <ld-link resource-url="{{baseUrl}}/events"><a>How do I know?</a></ld-link>
     </paper-toast>
 
     <app-drawer-layout>
         <app-drawer slot="drawer">
-            <paper-listbox attr-for-selected="data-url" selected="[[resourceUrl]]" on-iron-select="menuNavigate">
+            <paper-listbox attr-for-selected="data-url" selected="[[resUrl]]" on-iron-select="menuNavigate">
 
                 <paper-item data-url="http://example.com/using-absolute-paths-as-state">
                     <ld-link resource-url="http://example.com/using-absolute-paths-as-state">Unmapped base URL</ld-link>
@@ -119,11 +117,11 @@ export default class DemoApp extends ReflectedInHistory(ResourceScope(PolymerEle
         <div>
             <paper-card heading="Current resource URL is">
                 <div class="card-content">
-                    {{resourceUrl}}
+                    {{resUrl}}
                 </div>
             </paper-card>
 
-            <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resourceUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
+            <iron-pages id="docsPages" attr-for-selected="data-url" selected="[[resUrl]]" selected-item="{{selectedItem}}" fallback-selection="not-found">
                 <paper-card heading="SPA routing - Linked Data-style" data-url$="{{baseUrl}}/">
                     <div class="card-content">
                         <zero-md src="pages/index.md">
