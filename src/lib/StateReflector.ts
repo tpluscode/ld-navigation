@@ -3,7 +3,7 @@ import { ResourceScopingElement } from './ResourceScope'
 type BaseConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
 
 export interface StateReflector extends ResourceScopingElement {
-  reflectUrlInState(url: string): void
+  reflectUrlInState(url: string): Promise<void>
   usesHashFragment: boolean
 }
 
@@ -12,20 +12,22 @@ interface HistoryAdapter {
   __history: History
 }
 
-function reflectToHash(element: ResourceScopingElement, url: string): void {
-  const hash = `${element.stateMapper.getStatePath(url)}`
+async function reflectToHash(element: ResourceScopingElement, url: string) {
+  const stateMapper = await element.stateMapper
+  const hash = `${stateMapper.getStatePath(url)}`
 
   if (hash !== document.location.hash) {
     document.location.hash = hash
   }
 }
 
-function reflectToHistory(
+async function reflectToHistory(
   element: ResourceScopingElement & HistoryAdapter,
   resourceUrl: string,
-): void {
+) {
   if (resourceUrl !== element.__history.state) {
-    const path = element.stateMapper.getStatePath(resourceUrl)
+    const stateMapper = await element.stateMapper
+    const path = stateMapper.getStatePath(resourceUrl)
     let stateUrl
 
     if (element.clientBasePath) {
@@ -59,16 +61,16 @@ function createMixinFor(desiredTarget: 'hash' | 'history') {
         return actualTarget === 'hash'
       }
 
-      reflectUrlInState(url: string) {
+      reflectUrlInState(url: string): Promise<void> {
         if (actualTarget === 'history') {
-          reflectToHistory(this, url)
-        } else {
-          reflectToHash(this, url)
+          return reflectToHistory(this, url)
         }
+
+        return reflectToHash(this, url)
       }
 
       onResourceUrlChanged(newUrl: string) {
-        this.reflectUrlInState(newUrl)
+        return this.reflectUrlInState(newUrl)
       }
     }
 

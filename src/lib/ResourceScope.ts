@@ -11,11 +11,11 @@ interface CustomElementHooks {
 type BaseConstructor = new (...args: any[]) => HTMLElement & CustomElementHooks
 
 export interface ResourceScopingElement extends CustomElementHooks {
-  stateMapper: StateMapper
+  stateMapper: StateMapper | Promise<StateMapper>
   clientBasePath?: string
   usesHashFragment?: boolean
   notifyResourceUrlChanged(url?: string): void
-  onResourceUrlChanged(url: string): void
+  onResourceUrlChanged(url: string): void | Promise<void>
 }
 
 type ReturnConstructor = new (...args: any[]) => HTMLElement & ResourceScopingElement
@@ -23,7 +23,7 @@ type ReturnConstructor = new (...args: any[]) => HTMLElement & ResourceScopingEl
 export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnConstructor {
   abstract class Mixin extends Base implements ResourceScopingElement {
     public resourceUrl?: string
-    protected _stateMapper: StateMapper | null = null
+    protected _stateMapper: StateMapper | Promise<StateMapper> | null = null
     public clientBasePath?: string
 
     public get stateMapper() {
@@ -34,7 +34,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
       return this._stateMapper
     }
 
-    public abstract createStateMapper(): StateMapper
+    public abstract createStateMapper(): StateMapper | Promise<StateMapper>
 
     connectedCallback() {
       if (super.connectedCallback) {
@@ -69,13 +69,17 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
     }
 
     get mappedResourceUrl() {
+      if (this.stateMapper instanceof Promise) {
+        return this.stateMapper.then(sm => sm.getResourceUrl(document.location.href))
+      }
+
       return this.stateMapper.getResourceUrl(document.location.href)
     }
 
     @boundMethod
-    public notifyResourceUrlChanged(value?: string) {
+    public async notifyResourceUrlChanged(value?: string) {
       const prevUrl = this.resourceUrl
-      this.resourceUrl = value || this.mappedResourceUrl
+      this.resourceUrl = value || (await this.mappedResourceUrl)
 
       if (this.resourceUrl !== prevUrl) {
         getAllImplementationsOf(this, 'onResourceUrlChanged').forEach(fn =>
@@ -84,15 +88,20 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
       }
     }
 
-    public abstract onResourceUrlChanged(newValue: string): void
+    public abstract onResourceUrlChanged(newValue: string): void | Promise<void>
 
     @boundMethod
     private __onNavigated(e: any) {
       if (e.detail && e.detail.resourceUrl) {
-        this.notifyResourceUrlChanged(e.detail.resourceUrl)
+        this.notifyResourceUrlChanged(e.detail.resourceUrl).then(this.__notifyUrlChange)
       } else {
-        this.notifyResourceUrlChanged()
+        this.notifyResourceUrlChanged().then(this.__notifyUrlChange)
       }
+    }
+
+    @boundMethod
+    private __notifyUrlChange() {
+      this.dispatchEvent(new Event('url-change-notified'))
     }
   }
 

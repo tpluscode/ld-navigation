@@ -62,7 +62,7 @@ describe('StateReflector', () => {
       history.state = 'some state'
 
       // when
-      testElement.reflectUrlInState('http://hello/world')
+      await testElement.reflectUrlInState('http://hello/world')
 
       // then
       expect(history.pushState).to.have.calledWith(
@@ -81,7 +81,7 @@ describe('StateReflector', () => {
       history.state = 'some state'
 
       // when
-      testElement.reflectUrlInState('http://hello/world')
+      await testElement.reflectUrlInState('http://hello/world')
 
       // then
       expect(history.pushState).to.have.calledWith(
@@ -99,7 +99,7 @@ describe('StateReflector', () => {
       testElement.clientBasePath = 'some/long/path'
 
       // when
-      testElement.reflectUrlInState('http://hello/world')
+      await testElement.reflectUrlInState('http://hello/world')
 
       // then
       expect(history.pushState).to.not.have.called
@@ -126,7 +126,7 @@ describe('StateReflector', () => {
       testElement.testMapper.getStatePath.returns('hello')
 
       // when
-      testElement.reflectUrlInState('http://hello/world')
+      await testElement.reflectUrlInState('http://hello/world')
 
       // then
       expect(document.location.hash).to.be.equal('#hello')
@@ -139,7 +139,7 @@ describe('StateReflector', () => {
       testElement.testMapper.getStatePath.returns(document.location.hash)
 
       // when
-      testElement.onResourceUrlChanged('http://notified/url')
+      await testElement.onResourceUrlChanged('http://notified/url')
 
       // then
       expect(testElement.testMapper.getStatePath).to.be.calledOnceWith('http://notified/url')
