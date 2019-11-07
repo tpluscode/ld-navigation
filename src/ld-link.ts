@@ -70,7 +70,7 @@ export class LinkedDataLink extends HTMLElement {
     }
   }
 
-  _setLink() {
+  async _setLink() {
     if (!this._anchor) return
 
     if (this.resourceUrl) {
@@ -86,7 +86,7 @@ export class LinkedDataLink extends HTMLElement {
       )
 
       if (detail.resourceScope) {
-        this._anchor.href = detail.resourceScope.stateMapper.getStateUrl(this.resourceUrl)
+        this._anchor.href = (await detail.resourceScope.stateMapper).getStateUrl(this.resourceUrl)
       } else {
         this._anchor.href = this.resourceUrl
       }

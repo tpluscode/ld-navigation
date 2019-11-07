@@ -3,6 +3,7 @@ import { expect, fixture, html } from '@open-wc/testing'
 import sinon, { SinonSpy, SinonStub } from 'sinon'
 import { customElement } from 'lit-element'
 import { ResourceScope, StateMapper } from '../src'
+import eventToPromise from './eventToPromise'
 
 let onResourceUrlChangedSpy: SinonSpy
 
@@ -84,10 +85,12 @@ describe('ResourceScope', () => {
           <test-element></test-element>
         `,
       )
-      ;(el.stateMapper.getResourceUrl as SinonStub).returns('http://foo/bar.xml')
+      ;((el.stateMapper as StateMapper).getResourceUrl as SinonStub).returns('http://foo/bar.xml')
+      const forEvent = eventToPromise(el, 'url-change-notified')
 
       // when
       document.location.hash = 'url-change-test'
+      await forEvent
 
       // then
       expect(onResourceUrlChangedSpy.callCount).to.equal(1)
