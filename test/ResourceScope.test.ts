@@ -9,8 +9,14 @@ let onResourceUrlChangedSpy: SinonSpy
 
 @customElement('test-element')
 class TestElement extends ResourceScope(HTMLElement) {
+  stubMapper = sinon.createStubInstance(StateMapper)
+
   createStateMapper() {
-    return sinon.createStubInstance(StateMapper)
+    if (this.hasAttribute('async-mapper')) {
+      return Promise.resolve(this.stubMapper)
+    }
+
+    return this.stubMapper
   }
 
   onResourceUrlChanged(value: string) {
@@ -149,6 +155,24 @@ describe('ResourceScope', () => {
 
       // then
       expect(el.disconnectedCalled).to.be.true
+    })
+  })
+
+  describe('with async state mapper', () => {
+    it('successfully maps resource url', async () => {
+      // given
+      const scoped = await fixture<TestElement>(
+        html`
+          <test-element async-mapper></test-element>
+        `,
+      )
+
+      // when
+      // eslint-disable-next-line no-unused-vars
+      await scoped.mappedResourceUrl
+
+      // then
+      expect(scoped.stubMapper.getResourceUrl.called).to.be.true
     })
   })
 })
