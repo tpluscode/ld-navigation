@@ -101,7 +101,7 @@ export function ResourceScope<B extends BaseConstructor>(Base: B): B & ReturnCon
 
     @boundMethod
     private __notifyUrlChange() {
-      this.dispatchEvent(new Event('url-change-notified'))
+      this.dispatchEvent(new Event('url-changed'))
     }
   }
 
