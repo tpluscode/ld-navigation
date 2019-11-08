@@ -92,7 +92,7 @@ describe('ResourceScope', () => {
         `,
       )
       ;((el.stateMapper as StateMapper).getResourceUrl as SinonStub).returns('http://foo/bar.xml')
-      const forEvent = eventToPromise(el, 'url-change-notified')
+      const forEvent = eventToPromise(el, 'url-changed')
 
       // when
       document.location.hash = 'url-change-test'
