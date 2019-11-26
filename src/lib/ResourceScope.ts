@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { boundMethod } from 'autobind-decorator'
+import { getAllImplementationsOf } from '@tpluscode/all-implementations-of'
 import { StateMapper } from './StateMapper'
-import { getAllImplementationsOf } from './getImplementations'
 
 interface CustomElementHooks {
   connectedCallback?(): void
