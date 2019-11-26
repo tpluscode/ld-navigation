@@ -32,7 +32,8 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "autobind-decorator": "^2.4.0"
+    "autobind-decorator": "^2.4.0",
+    "@tpluscode/all-implementations-of": "^1.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
